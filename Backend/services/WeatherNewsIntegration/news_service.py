@@ -81,25 +81,29 @@ class NewsService:
     def _generate_news_query(self, crops, location, personalized=True):
         """
         Generates a search query for GNews.
-        For personalized: Prioritizes crop + location specific news
-        For general: Broad agriculture news
+        For personalized: Prioritizes crop + location specific news with farming context.
+        For general: Broad agriculture news, schemes, and technology.
         """
         if personalized and crops:
-            # Personalized mode: Focus on specific crops
+            # Personalized mode: Focus on specific crops and location
+            # "wheat OR rice"
             crop_terms = " OR ".join([f'"{c}"' for c in crops])
             crop_query = f"({crop_terms})"
             
-            # Add farming context
-            query = f"{crop_query} AND (farming OR agriculture OR cultivation OR harvest)"
+            # Context keywords from user request: "farming", "schemes", "market", "weather", "subsidy"
+            context_keywords = "(farming OR market OR price OR scheme OR subsidy OR weather OR disease OR pest)"
             
-            # Add location for local news priority
-            if location and location.lower() not in ["unknown", "india"]:
+            query = f"{crop_query} AND {context_keywords}"
+            
+            # Add location for local news priority if known
+            if location and location.lower() not in ["unknown", "india", "none"]:
                 # Prioritize location-specific news
                 query += f' AND "{location}"'
         else:
-            # General mode: Broad agriculture news
-            query = "(agriculture OR farming OR crops OR irrigation OR fertilizer OR seeds)"
-            query += " AND (news OR update OR technology OR innovation OR government OR scheme)"
+            # General mode: Broad agriculture news, Government schemes, Innovation
+            # Keywords to ensure it's distinct from specific crop news
+            query = "(Agriculture OR Farming OR AgTech OR Hydroponics OR Organic Farming)"
+            query += " AND (Government Scheme OR Subsidy OR New Technology OR Innovation OR Startup OR Policy)"
             
         return query
 
