@@ -15,7 +15,7 @@ import {
     Volume2,
     Square
 } from 'lucide-react';
-import { translations } from '../translations';
+import { translations } from '../src/i18n/translations';
 import { api } from '../services/api';
 import { auth } from '../firebase';
 import { getUserProfile } from '../services/firebase_db';
