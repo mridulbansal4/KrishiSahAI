@@ -126,7 +126,7 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
 
     if (loading) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-[#FAFAF7]">
+            <div className="flex flex-col items-center justify-center min-h-screen">
                 <Loader2 className="w-16 h-16 text-[#043744] animate-spin mb-4" />
                 <h2 className="text-2xl font-bold text-[#1E1E1E]">{t.generatingRoadmap}</h2>
                 <p className="text-[#555555] mt-2">{t.analyzingRoadmap}</p>
@@ -136,7 +136,7 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
 
     if (error) {
         return (
-            <div className="flex flex-col items-center justify-center min-h-screen bg-[#FAFAF7] p-8">
+            <div className="flex flex-col items-center justify-center min-h-screen p-8">
                 <AlertTriangle className="w-16 h-16 text-red-500 mb-4" />
                 <h2 className="text-2xl font-bold text-[#1E1E1E] mb-2">{t.analysisFailed}</h2>
                 <p className="text-red-500 mb-6 text-center max-w-md">{error}</p>
@@ -153,7 +153,7 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
     if (!roadmap) return null;
 
     return (
-        <div className="min-h-screen bg-[#FAFAF7] p-4 md:p-8">
+        <div className="min-h-screen p-4 md:p-8">
             <div className="max-w-5xl mx-auto">
                 {/* Header Actions */}
                 <div className="flex items-center justify-between mb-8 no-print">

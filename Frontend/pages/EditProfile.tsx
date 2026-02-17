@@ -104,7 +104,7 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
     if (fetching) return <div className="min-h-screen flex items-center justify-center">{t.analyzingBtn}</div>;
 
     return (
-        <div className="min-h-screen bg-[#F5F8F8] p-4 md:p-8">
+        <div className="min-h-screen p-4 md:p-8">
             <div className="max-w-4xl mx-auto">
                 <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#555555] font-bold mb-6 hover:text-[#043744] transition-colors">
                     <ArrowLeft className="w-5 h-5" /> {t.back}

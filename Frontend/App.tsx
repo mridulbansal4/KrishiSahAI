@@ -61,15 +61,15 @@ const Header: React.FC<{
   };
 
   return (
-    <header className="bg-white border-b border-[#E0E6E6] sticky top-0 z-50">
-      <div className="max-w-7xl mx-auto px-4 md:px-8">
+    <header className="sticky top-5 z-50 mx-4 md:mx-8">
+      <div className="max-w-7xl mx-auto bg-[#EAD8BD] rounded-[20px] shadow-[0_8px_24px_rgba(0,0,0,0.08)] border border-[#D4C5A9] px-4 md:px-8">
         <div className="flex items-center justify-between h-[73px]">
           {/* Brand */}
           <Link to="/" className="flex items-center gap-3 group">
             <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300 overflow-hidden p-1">
               <img src={logo} alt="Logo" className="w-full h-full object-contain" />
             </div>
-            <span className="text-2xl font-bold text-[#043744]">
+            <span className="text-2xl font-bold text-[#3A2E25]">
               {t.brandName}
             </span>
           </Link>
@@ -81,7 +81,7 @@ const Header: React.FC<{
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${location.pathname === item.path ? 'text-[#043744] font-bold bg-[#E8F5F5]' : 'text-[#6B7878] hover:text-[#043744] hover:bg-[#FAFCFC]'}`}
+                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${location.pathname === item.path ? 'text-[#3A2E25] font-bold bg-[#E8F5F5]' : 'text-[#6B7878] hover:text-[#3A2E25] hover:bg-[#FAFCFC]'}`}
                 >
                   {item.label}
                 </Link>
@@ -95,7 +95,7 @@ const Header: React.FC<{
               <div className={`flex items-center gap-1 bg-[#FAFAF7] border border-[#E6E6E6] rounded-full px-1 py-0.5 transition-all group ${weatherLoading ? 'opacity-80' : ''}`}>
                 <button
                   onClick={toggleWeather}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-transparent rounded-full text-[13px] font-bold text-[#043744] hover:bg-[#E8F5E9] transition-all"
+                  className="flex items-center gap-2 px-3 py-1.5 bg-transparent rounded-full text-[13px] font-bold text-[#3A2E25] hover:bg-[#E8F5E9] transition-all"
                   title="View Weather Details"
                 >
                   <span className="group-hover:scale-110 transition-transform">☁</span>
@@ -103,7 +103,7 @@ const Header: React.FC<{
                 </button>
                 <button
                   onClick={refreshWeather}
-                  className={`p-1.5 rounded-full hover:bg-[#E8F5E9] text-[#043744] transition-all ${weatherLoading ? 'animate-spin' : 'hover:scale-110'}`}
+                  className={`p-1.5 rounded-full hover:bg-[#E8F5E9] text-[#3A2E25] transition-all ${weatherLoading ? 'animate-spin' : 'hover:scale-110'}`}
                   title="Refresh Weather"
                 >
                   <RefreshCw size={14} />
@@ -117,7 +117,7 @@ const Header: React.FC<{
                 <button
                   key={l.code}
                   onClick={() => setLanguage(l.code as Language)}
-                  className={`px-3 py-1.5 text-[12px] font-bold rounded-lg transition-all ${language === l.code ? 'bg-[#043744] text-white shadow-md' : 'text-stone-400 hover:text-[#043744]'}`}
+                  className={`px-3 py-1.5 text-[12px] font-bold rounded-lg transition-all ${language === l.code ? 'bg-[#3A2E25] text-white shadow-md' : 'text-stone-400 hover:text-[#3A2E25]'}`}
                 >
                   {l.label}
                 </button>
@@ -127,7 +127,7 @@ const Header: React.FC<{
             {user ? (
               <div className="relative group">
                 <button className="flex items-center gap-2 bg-[#FAFAF7] border border-[#E6E6E6] px-3 py-1.5 rounded-xl hover:bg-stone-100 transition-colors">
-                  <div className="w-8 h-8 rounded-full bg-[#043744] flex items-center justify-center text-white font-bold text-sm">
+                  <div className="w-8 h-8 rounded-full bg-[#3A2E25] flex items-center justify-center text-white font-bold text-sm">
                     {user.name && user.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="hidden md:block text-left">
@@ -137,7 +137,7 @@ const Header: React.FC<{
                 </button>
 
                 <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-[#E6E6E6] rounded-xl shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                  <Link to="/profile/edit" className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[#555555] hover:bg-[#FAFAF7] hover:text-[#043744] transition-colors">
+                  <Link to="/profile/edit" className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[#555555] hover:bg-[#FAFAF7] hover:text-[#3A2E25] transition-colors">
                     <Settings size={16} /> Edit Profile
                   </Link>
                   <div className="h-px bg-[#E6E6E6]"></div>
@@ -151,10 +151,10 @@ const Header: React.FC<{
               </div>
             ) : (
               <div className="flex items-center gap-4">
-                <Link to="/login" className="text-sm font-bold text-[#043744] hover:text-[#0A5F73]">
+                <Link to="/login" className="text-sm font-bold text-[#3A2E25] hover:text-[#8B5E3C]">
                   {t.login}
                 </Link>
-                <Link to="/signup" className="px-5 py-2.5 bg-[#043744] text-white rounded-xl text-sm font-bold hover:bg-[#000D0F] transition-all shadow-md hover:shadow-lg">
+                <Link to="/signup" className="px-5 py-2.5 bg-[#3A2E25] text-white rounded-xl text-sm font-bold hover:bg-[#2C221C] transition-all shadow-md hover:shadow-lg">
                   {t.signup}
                 </Link>
               </div>
@@ -188,11 +188,11 @@ const LoginFlow: React.FC<{ onLogin: (e: string, p: string) => void; onSwitch: (
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left Section - Login Form (Light Section) */}
-      <div className="w-full md:w-1/2 bg-[#F5F8F8] flex items-center justify-center p-6 md:p-12 order-2 md:order-1">
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 order-2 md:order-1">
         <div className="w-full max-w-[480px] bg-white rounded-[20px] shadow-sm p-8 md:p-10">
           <div className="mb-8">
-            <h1 className="text-[32px] font-bold text-[#000D0F] mb-2">{t.login}</h1>
-            <p className="text-[#043744] font-medium">{t.loginTitle}</p>
+            <h1 className="text-[32px] font-bold text-[#2C221C] mb-2">{t.login}</h1>
+            <p className="text-[#3A2E25] font-medium">{t.loginTitle}</p>
           </div>
 
           <form className="space-y-6" onSubmit={handleSubmit}>
@@ -204,34 +204,34 @@ const LoginFlow: React.FC<{ onLogin: (e: string, p: string) => void; onSwitch: (
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-bold text-[#000D0F] mb-2 ml-1">{t.email} / {t.phoneNumber}</label>
+                <label className="block text-sm font-bold text-[#2C221C] mb-2 ml-1">{t.email} / {t.phoneNumber}</label>
                 <input
                   required
                   type="text"
                   placeholder="name@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="w-full p-4 bg-white border border-[#E0E6E6] text-[#000D0F] rounded-[12px] focus:outline-none focus:border-[#043744] focus:shadow-[0_0_0_4px_rgba(4,55,68,0.05)] transition-all"
+                  className="w-full p-4 bg-white border border-[#E0E6E6] text-[#2C221C] rounded-[12px] focus:outline-none focus:border-[#3A2E25] focus:shadow-[0_0_0_4px_rgba(4,55,68,0.05)] transition-all"
                 />
               </div>
               <div>
-                <label className="block text-sm font-bold text-[#000D0F] mb-2 ml-1">{t.password}</label>
+                <label className="block text-sm font-bold text-[#2C221C] mb-2 ml-1">{t.password}</label>
                 <input
                   required
                   type="password"
                   placeholder="••••••••"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="w-full p-4 bg-white border border-[#E0E6E6] text-[#000D0F] rounded-[12px] focus:outline-none focus:border-[#043744] focus:shadow-[0_0_0_4px_rgba(4,55,68,0.05)] transition-all"
+                  className="w-full p-4 bg-white border border-[#E0E6E6] text-[#2C221C] rounded-[12px] focus:outline-none focus:border-[#3A2E25] focus:shadow-[0_0_0_4px_rgba(4,55,68,0.05)] transition-all"
                 />
               </div>
 
               <div className="flex items-center justify-between py-2">
                 <label className="flex items-center gap-2 cursor-pointer group">
-                  <input type="checkbox" className="w-4 h-4 rounded border-[#E0E6E6] text-[#043744] focus:ring-[#043744]" />
-                  <span className="text-sm font-medium text-[#043744]/70 group-hover:text-[#000D0F] transition-colors">{t.rememberMe}</span>
+                  <input type="checkbox" className="w-4 h-4 rounded border-[#E0E6E6] text-[#3A2E25] focus:ring-[#3A2E25]" />
+                  <span className="text-sm font-medium text-[#3A2E25]/70 group-hover:text-[#2C221C] transition-colors">{t.rememberMe}</span>
                 </label>
-                <button type="button" className="text-sm font-bold text-[#043744] hover:underline">
+                <button type="button" className="text-sm font-bold text-[#3A2E25] hover:underline">
                   {t.forgotPassword}
                 </button>
               </div>
@@ -240,14 +240,14 @@ const LoginFlow: React.FC<{ onLogin: (e: string, p: string) => void; onSwitch: (
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-4 bg-[#043744] text-white rounded-[12px] font-bold text-lg hover:bg-[#000D0F] transition-all shadow-sm disabled:opacity-50"
+              className="w-full py-4 bg-[#3A2E25] text-white rounded-[12px] font-bold text-lg hover:bg-[#2C221C] transition-all shadow-sm disabled:opacity-50"
             >
               {loading ? t.loggingIn : t.login}
             </button>
 
             <div className="text-center mt-6">
-              <p className="text-[#043744]/70 text-sm">
-                {t.dontHaveAccount} <button type="button" onClick={onSwitch} className="text-[#043744] font-bold hover:underline">{t.signup}</button>
+              <p className="text-[#3A2E25]/70 text-sm">
+                {t.dontHaveAccount} <button type="button" onClick={onSwitch} className="text-[#3A2E25] font-bold hover:underline">{t.signup}</button>
               </p>
             </div>
           </form>
@@ -255,7 +255,7 @@ const LoginFlow: React.FC<{ onLogin: (e: string, p: string) => void; onSwitch: (
       </div>
 
       {/* Right Section - Logo (Dark Section) */}
-      <div className="w-full md:w-1/2 bg-gradient-to-br from-[#043744] via-[#065A6F] to-[#0A5F73] flex flex-col items-center justify-center p-12 text-center order-1 md:order-2 min-h-[300px] md:min-h-screen">
+      <div className="w-full md:w-1/2 bg-gradient-to-br from-[#3A2E25] via-[#5A4638] to-[#8B5E3C] flex flex-col items-center justify-center p-12 text-center order-1 md:order-2 min-h-[300px] md:min-h-screen">
         <img src={logo} alt="KrishiSahAI Logo" className="h-40 md:h-56 w-auto object-contain mb-8 filter brightness-0 invert opacity-90" />
         <h2 className="text-white text-4xl md:text-5xl font-extrabold mb-4">{t.brandName}</h2>
         <p className="text-white/80 text-lg md:text-xl font-medium tracking-wide">{t.tagline}</p>
@@ -313,30 +313,30 @@ const SignupFlow: React.FC<{ onSignup: (p: any, pass: string) => void; onSwitch:
     }
   };
 
-  const inputClasses = "w-full p-4 bg-white border border-[#E0E6E6] text-[#000D0F] rounded-[12px] focus:outline-none focus:border-[#043744] focus:shadow-[0_0_0_4px_rgba(4,55,68,0.05)] transition-all";
-  const labelClasses = "block text-sm font-bold text-[#000D0F] mb-2 ml-1";
-  const sectionTitleClasses = "text-xl font-bold text-[#000D0F] mb-6";
+  const inputClasses = "w-full p-4 bg-white border border-[#E0E6E6] text-[#2C221C] rounded-[12px] focus:outline-none focus:border-[#3A2E25] focus:shadow-[0_0_0_4px_rgba(4,55,68,0.05)] transition-all";
+  const labelClasses = "block text-sm font-bold text-[#2C221C] mb-2 ml-1";
+  const sectionTitleClasses = "text-xl font-bold text-[#2C221C] mb-6";
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row">
       {/* Left Section - Logo (Dark Section) */}
-      <div className="w-full md:w-1/2 bg-gradient-to-br from-[#043744] via-[#065A6F] to-[#0A5F73] flex flex-col items-center justify-center p-12 text-center min-h-[300px] md:min-h-screen">
+      <div className="w-full md:w-1/2 bg-gradient-to-br from-[#3A2E25] via-[#5A4638] to-[#8B5E3C] flex flex-col items-center justify-center p-12 text-center min-h-[300px] md:min-h-screen">
         <img src={logo} alt="KrishiSahAI Logo" className="h-40 md:h-56 w-auto object-contain mb-8 filter brightness-0 invert opacity-90" />
         <h2 className="text-white text-4xl md:text-5xl font-extrabold mb-4">{t.brandName}</h2>
         <p className="text-white/80 text-lg md:text-xl font-medium tracking-wide">{t.tagline}</p>
       </div>
 
       {/* Right Section - Signup Form (Light Section) */}
-      <div className="w-full md:w-1/2 bg-[#F5F8F8] flex items-center justify-center p-6 md:p-12 overflow-y-auto">
+      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 overflow-y-auto">
         <div className="w-full max-w-[480px] bg-white rounded-[20px] shadow-sm p-8 md:p-10 my-8">
           <div className="mb-10">
-            <h1 className="text-[32px] font-bold text-[#000D0F] mb-2">{t.signup}</h1>
-            <p className="text-[#043744]/70 font-medium">{t.signupTitle}</p>
+            <h1 className="text-[32px] font-bold text-[#2C221C] mb-2">{t.signup}</h1>
+            <p className="text-[#3A2E25]/70 font-medium">{t.signupTitle}</p>
           </div>
 
           <div className="flex gap-2 mb-8">
             {[1, 2, 3].map(s => (
-              <div key={s} className={`h-1 flex-1 rounded-full ${step >= s ? 'bg-[#043744]' : 'bg-[#E0E6E6]'}`} />
+              <div key={s} className={`h-1 flex-1 rounded-full ${step >= s ? 'bg-[#3A2E25]' : 'bg-[#E0E6E6]'}`} />
             ))}
           </div>
 
@@ -424,22 +424,22 @@ const SignupFlow: React.FC<{ onSignup: (p: any, pass: string) => void; onSwitch:
             <div className="flex flex-col gap-4 pt-4">
               <div className="flex gap-4">
                 {step > 1 && (
-                  <button type="button" onClick={handleBack} className="flex-1 py-4 bg-white border border-[#E0E6E6] text-[#043744] rounded-[12px] font-bold hover:bg-[#F5F8F8] transition-all">
+                  <button type="button" onClick={handleBack} className="flex-1 py-4 bg-white border border-[#E0E6E6] text-[#3A2E25] rounded-[12px] font-bold hover:bg-[#F5F8F8] transition-all">
                     {t.back}
                   </button>
                 )}
                 <button
                   type="submit"
                   disabled={loading}
-                  className="flex-[2] py-4 bg-[#043744] text-white rounded-[12px] font-bold hover:bg-[#000D0F] transition-all shadow-sm disabled:opacity-50"
+                  className="flex-[2] py-4 bg-[#3A2E25] text-white rounded-[12px] font-bold hover:bg-[#2C221C] transition-all shadow-sm disabled:opacity-50"
                 >
                   {loading ? t.loading : (step === 3 ? t.submit : t.next)}
                 </button>
               </div>
 
               <div className="text-center mt-4">
-                <p className="text-[#043744]/70 text-sm font-medium">
-                  {t.alreadyHaveAccount} <button type="button" onClick={onSwitch} className="text-[#043744] font-bold hover:underline">{t.login}</button>
+                <p className="text-[#3A2E25]/70 text-sm font-medium">
+                  {t.alreadyHaveAccount} <button type="button" onClick={onSwitch} className="text-[#3A2E25] font-bold hover:underline">{t.login}</button>
                 </p>
               </div>
             </div>
@@ -545,12 +545,12 @@ const AppContent: React.FC = () => {
   return (
     <>
       {loading ? (
-        <div className="min-h-screen flex items-center justify-center text-[#1F5F4A] bg-[#FAFAF7]">{t.loading}</div>
+        <div className="min-h-screen flex items-center justify-center text-[#1F5F4A]">{t.loading}</div>
       ) : !user ? (
         authView === 'login' ? <LoginFlow onLogin={handleLogin} onSwitch={() => setAuthView('signup')} /> : <SignupFlow onSignup={handleSignup} onSwitch={() => setAuthView('login')} />
       ) : (
         <Router>
-          <div className="min-h-screen bg-[#FDFDFC]">
+          <div className="min-h-screen">
             {/* Updated Header with refresh and loading props */}
             <Header
               toggleNotifications={() => { }}

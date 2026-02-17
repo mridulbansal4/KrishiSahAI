@@ -495,7 +495,7 @@ const Chatbot: React.FC = () => {
             <ChatLayout sidebar={Sidebar}>
                 {/* Header for Back Navigation (if from Advisory OR CropCare) - Visible on both Mobile & Desktop */}
                 {(location.state?.fromAdvisory || location.state?.fromCropCare) && (
-                    <div className="flex items-center justify-between p-4 border-b border-[#E0E6E6] bg-white sticky top-0 z-30">
+                    <div className="flex items-center justify-between p-4 border-b border-[#E0E6E6] bg-white/80 backdrop-blur-md sticky top-0 z-30">
                         <button
                             onClick={() => {
                                 // Navigate back to source with restored state
@@ -540,7 +540,7 @@ const Chatbot: React.FC = () => {
                     Simple approach: If fromAdvisory, showing the back button bar above is fine. 
                 */}
                 {!location.state?.fromAdvisory && !location.state?.fromCropCare && (
-                    <div className="md:hidden flex items-center p-4 border-b border-[#E0E6E6] bg-white sticky top-0 z-10">
+                    <div className="md:hidden flex items-center p-4 border-b border-[#E0E6E6] bg-white/80 backdrop-blur-md sticky top-0 z-10">
                         <button onClick={() => setIsSidebarOpen(true)} className="p-2 mr-2">
                             <Menu className="w-6 h-6 text-[#000D0F]" />
                         </button>
@@ -630,7 +630,7 @@ const Chatbot: React.FC = () => {
                 </div>
 
                 {/* Input Area */}
-                <div className="p-4 md:p-6 bg-white border-t border-[#E0E6E6]">
+                <div className="p-4 md:p-6 bg-white/80 backdrop-blur-md border-t border-[#E0E6E6]">
                     <div className="max-w-4xl mx-auto relative flex items-center gap-3">
                         <input
                             value={input}

@@ -9,25 +9,41 @@
 :root {
   --font-sans: 'Inter', 'sans-serif';
 
-  /* Teal Primary Colors */
-  --color-primary: #043744;
-  --color-primary-dark: #000D0F;
-  --color-primary-light: #E8F5F5;
-  --color-primary-hover: #065A6F;
+  /* Beige/Brown Theme Colors */
+  --color-primary: #3A2E25;
+  /* Dark accent (text/buttons) */
+  --color-primary-dark: #2C221C;
+  /* Darker shade for hover/active */
+  --color-primary-light: #EAD8BD;
+  /* Secondary soft beige */
+  --color-primary-hover: #5A4638;
+  /* Muted brown hover */
 
-  /* Teal Accent Colors */
-  --color-accent: #0A5F73;
-  --color-accent-dark: #043744;
-  --color-accent-light: #D0E8ED;
+  /* Accent Colors */
+  --color-accent: #8B5E3C;
+  /* Warm brown accent */
+  --color-accent-dark: #5A4638;
+  --color-accent-light: #F3E4CF;
+  /* Primary background */
 
-  /* Pure White Theme Colors */
-  --bg-primary: #FFFFFF;
-  --bg-secondary: #FAFCFC;
-  --bg-tertiary: #F5F8F8;
-  --border-color: #E0E6E6;
-  --text-primary: #000D0F;
-  --text-secondary: #043744;
-  --text-tertiary: #6B7878;
+  /* Theme Backgrounds */
+  --bg-primary: #F3E4CF;
+  /* Main Background */
+  --bg-secondary: #EAD8BD;
+  /* Cards / Sections */
+  --bg-tertiary: #FAF4E8;
+  /* Lightest beige */
+
+  --border-color: #D4C5A9;
+  /* Soft border */
+
+  /* Text Colors */
+  --text-primary: #3A2E25;
+  /* Main text */
+  --text-secondary: #5A4638;
+  /* Secondary text */
+  --text-tertiary: #8C7B65;
+  /* Muted text */
 }
 
 :root {
@@ -56,9 +72,32 @@ body {
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: url('/bg_image.jpg');
+  background-size: cover;
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   background-color: var(--bg-primary);
+  /* Fallback */
   color: var(--text-primary);
   transition: background-color var(--transition-normal), color var(--transition-normal);
+  position: relative;
+}
+
+/* Global Background Overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background-color: rgba(243, 228, 207, 0.15);
+  /* Much lower opacity to keep image bright/original */
+  opacity: 1;
+  /* Remove the subtle dot opacity */
+  pointer-events: none;
 }
 
 /* Devanagari Font Support */

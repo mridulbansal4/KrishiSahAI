@@ -37,7 +37,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         z-50 md:z-auto
         w-[280px] md:w-full 
         h-full 
-        bg-[#FAFAF7]
+        bg-white/60 backdrop-blur-md
         border-r border-[#E6E6E6]
         transition-transform duration-300 ease-in-out
         ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
