@@ -15,7 +15,6 @@ import {
     Volume2,
     Square
 } from 'lucide-react';
-<<<<<<< HEAD
 import { translations } from '../src/i18n/translations';
 import { api } from '../services/api';
 import { auth } from '../firebase';
@@ -27,7 +26,6 @@ import { api } from '../src/services/api';
 import { auth } from '../src/firebase';
 import { getUserProfile } from '../src/services/firebase_db';
 import { chatService, ChatSession, Message } from '../src/services/chatService';
->>>>>>> 655364a (i have add notification servie)
 import { ChatLayout } from '../components/ChatLayout';
 import { ChatSidebar } from '../components/ChatSidebar';
 import { DeleteConfirmationModal } from '../components/DeleteConfirmationModal';
