@@ -106,13 +106,13 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
     return (
         <div className="min-h-screen p-4 md:p-8">
             <div className="max-w-4xl mx-auto">
-                <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#555555] font-bold mb-6 hover:text-[#043744] transition-colors">
+                <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-gray-600 font-bold mb-6 hover:text-deep-green transition-colors">
                     <ArrowLeft className="w-5 h-5" /> {t.back}
                 </button>
 
                 <div className="bg-white rounded-[32px] border border-[#E6E6E6] shadow-xl p-6 md:p-10">
                     <div className="flex items-center gap-4 mb-8">
-                        <div className="w-16 h-16 bg-[#043744] rounded-full flex items-center justify-center text-white">
+                        <div className="w-16 h-16 bg-deep-green rounded-full flex items-center justify-center text-white">
                             <User className="w-8 h-8" />
                         </div>
                         <div>
@@ -124,8 +124,8 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                     <form onSubmit={handleSubmit} className="space-y-8">
                         {/* Personal Details */}
                         <div className="space-y-4">
-                            <h2 className="text-xl font-bold text-[#1E1E1E] flex items-center gap-2">
-                                <User className="w-5 h-5 text-[#043744]" /> {t.personalInfo}
+                            <h2 className="text-xl font-bold text-deep-green flex items-center gap-2">
+                                <User className="w-5 h-5 text-deep-green/80" /> {t.personalInfo}
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
@@ -134,7 +134,7 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                                         name="name"
                                         value={formData.name}
                                         onChange={handleChange}
-                                        className="w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] text-[#1E1E1E]"
+                                        className="w-full p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] text-[#1E1E1E]"
                                     />
                                 </div>
                                 <div>
@@ -152,7 +152,7 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                                         name="phone"
                                         value={formData.phone}
                                         onChange={handleChange}
-                                        className="w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] text-[#1E1E1E]"
+                                        className="w-full p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] text-[#1E1E1E]"
                                     />
                                 </div>
                                 <div>
@@ -162,7 +162,7 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                                         type="number"
                                         value={formData.age}
                                         onChange={handleChange}
-                                        className="w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] text-[#1E1E1E]"
+                                        className="w-full p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] text-[#1E1E1E]"
                                     />
                                 </div>
                             </div>
@@ -170,8 +170,8 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
 
                         {/* Location Details */}
                         <div className="space-y-4">
-                            <h2 className="text-xl font-bold text-[#1E1E1E] flex items-center gap-2">
-                                <MapPin className="w-5 h-5 text-[#043744]" /> {t.locationDetails}
+                            <h2 className="text-xl font-bold text-deep-green flex items-center gap-2">
+                                <MapPin className="w-5 h-5 text-deep-green/80" /> {t.locationDetails}
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
@@ -180,7 +180,7 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                                         name="state"
                                         value={formData.state}
                                         onChange={handleChange}
-                                        className="w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] text-[#1E1E1E]"
+                                        className="w-full p-4 bg-white border border-gray-200 rounded-xl focus:outline-none focus:border-deep-green focus:ring-4 focus:ring-green-500/10 text-gray-800 font-medium"
                                     >
                                         <option value="">{t.selectState}</option>
                                         <option>Maharashtra</option><option>Karnataka</option><option>Punjab</option><option>Uttar Pradesh</option>
@@ -192,7 +192,7 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                                         name="district"
                                         value={formData.district}
                                         onChange={handleChange}
-                                        className="w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] text-[#1E1E1E]"
+                                        className="w-full p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] text-[#1E1E1E]"
                                     />
                                 </div>
                                 <div>
@@ -201,7 +201,7 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                                         name="village"
                                         value={formData.village}
                                         onChange={handleChange}
-                                        className="w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] text-[#1E1E1E]"
+                                        className="w-full p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] text-[#1E1E1E]"
                                     />
                                 </div>
                             </div>
@@ -209,8 +209,8 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
 
                         {/* Farm Details */}
                         <div className="space-y-4">
-                            <h2 className="text-xl font-bold text-[#1E1E1E] flex items-center gap-2">
-                                <Briefcase className="w-5 h-5 text-[#043744]" /> {t.farmInfo}
+                            <h2 className="text-xl font-bold text-deep-green flex items-center gap-2">
+                                <Briefcase className="w-5 h-5 text-deep-green/80" /> {t.farmInfo}
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
@@ -220,7 +220,7 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                                         type="number"
                                         value={formData.landSize}
                                         onChange={handleChange}
-                                        className="w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] text-[#1E1E1E]"
+                                        className="w-full p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] text-[#1E1E1E]"
                                     />
                                 </div>
                                 <div>
@@ -229,7 +229,7 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                                         name="waterAvailability"
                                         value={formData.waterAvailability}
                                         onChange={handleChange}
-                                        className="w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] text-[#1E1E1E]"
+                                        className="w-full p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] text-[#1E1E1E]"
                                     >
                                         <option>Borewell</option><option>Canal</option><option>River</option><option>Rainfed</option>
                                     </select>
@@ -245,8 +245,8 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                                             type="button"
                                             onClick={() => toggleCrop(crop)}
                                             className={`px-2 py-2 rounded-xl text-xs font-bold border transition-all truncate ${formData.mainCrops.includes(crop)
-                                                ? 'bg-[#043744] text-white border-[#043744]'
-                                                : 'bg-[#FAFAF7] text-[#555555] border-[#E6E6E6] hover:border-[#043744]'
+                                                ? 'bg-deep-green text-white border-deep-green'
+                                                : 'bg-white text-gray-600 border-gray-200 hover:border-deep-green hover:text-deep-green'
                                                 }`}
                                             title={crop}
                                         >
@@ -278,13 +278,13 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                                                             });
                                                         }}
                                                         placeholder={t.typeCrop}
-                                                        className="w-full h-full px-2 py-2 rounded-xl text-xs font-bold border bg-[#043744] text-white border-[#043744] focus:outline-none placeholder:text-white/50"
+                                                        className="w-full h-full px-2 py-2 rounded-xl text-xs font-bold border bg-deep-green text-white border-deep-green focus:outline-none placeholder:text-white/50"
                                                     />
                                                 ) : (
                                                     <button
                                                         type="button"
                                                         onClick={() => setFormData(prev => ({ ...prev, mainCrops: [...prev.mainCrops, ""] }))}
-                                                        className="w-full h-full px-2 py-2 rounded-xl text-xs font-bold border bg-[#FAFAF7] text-[#555555] border-[#E6E6E6] hover:border-[#043744] hover:text-[#043744]"
+                                                        className="w-full h-full px-2 py-2 rounded-xl text-xs font-bold border bg-white text-gray-500 border-gray-200 hover:border-deep-green hover:text-deep-green"
                                                     >
                                                         {t.other}
                                                     </button>
@@ -299,7 +299,7 @@ const EditProfile: React.FC<{ lang: Language }> = ({ lang }) => {
                         <button
                             type="submit"
                             disabled={loading}
-                            className="w-full py-5 bg-[#043744] text-white rounded-2xl font-bold text-xl hover:bg-[#000D0F] transition-all shadow-lg flex items-center justify-center gap-2"
+                            className="w-full py-5 bg-deep-green text-white rounded-2xl font-bold text-xl hover:bg-green-800 transition-all shadow-lg flex items-center justify-center gap-2 active:scale-[0.98]"
                         >
                             {loading ? t.saving : <><Save className="w-5 h-5" /> {t.saveChanges}</>}
                         </button>

@@ -97,6 +97,16 @@ export const translations = {
         startConv: "Speak with KrishiSahAI",
         goAskAI: "Start Chatting",
 
+        // Home Features
+        featureCropCareTitle: "Crop Care",
+        featureCropCareSub: "Save your crops",
+        featureWasteTitle: "Waste to Value",
+        featureWasteSub: "Turn waste to income",
+        featureBusinessTitle: "Business Advisory",
+        featureBusinessSub: "Start agri business",
+        featureKnowledgeTitle: "Knowledge Hub",
+        featureKnowledgeSub: "Learn modern agri-tech",
+
         // Modules
         cropCare: "Crop Care",
         business: "Business",
@@ -108,6 +118,9 @@ export const translations = {
         tapListen: "Tap to listen",
 
         // Crop Care
+        cropCareTitle: "Crop Care",
+        cropCareSubtitle: "Protect your crops with AI-powered disease and pest detection.",
+        getStarted: "Get Started",
         cropAdvisor: "Advisor",
         cropAdvisorSub: "Consultation",
         diseaseDetection: "Disease",
@@ -209,6 +222,9 @@ export const translations = {
         analyzingRoadmap: "Analyzing market trends, labor projections, and financial resilience.",
         analysisFailed: "Detailed Analysis Failed",
         returnToAdvisory: "Return to Advisory",
+        backToAdvisory: "Back to Advisory",
+        exportPlan: "Export Plan",
+        sharePlan: "Share Plan",
         backToOptions: "Back to Options",
         downloadPDF: "Download PDF",
         strategicVerdict: "Final Strategic Verdict",
@@ -354,6 +370,16 @@ export const translations = {
         startConv: "कृषिसहाय से बात करें",
         goAskAI: "बातचीत शुरू करें",
 
+        // Home Features
+        featureCropCareTitle: "फसल सुरक्षा",
+        featureCropCareSub: "अपनी फसल बचाएं",
+        featureWasteTitle: "अपशिष्ट से मूल्य",
+        featureWasteSub: "कचरे को आय में बदलें",
+        featureBusinessTitle: "व्यापार सलाहकार",
+        featureBusinessSub: "कृषि व्यवसाय शुरू करें",
+        featureKnowledgeTitle: "ज्ञान केंद्र",
+        featureKnowledgeSub: "आधुनिक कृषि तकनीक सीखें",
+
         // Modules
         cropCare: "फसल देखभाल",
         business: "व्यवसाय",
@@ -365,6 +391,9 @@ export const translations = {
         tapListen: "सुनने के लिए टैप करें",
 
         // Crop Care
+        cropCareTitle: "फसल सुरक्षा",
+        cropCareSubtitle: "AI-संचालित रोग और कीट पहचान के साथ अपनी फसलों की सुरक्षा करें।",
+        getStarted: "शुरू करें",
         cropAdvisor: "सलाहकार",
         cropAdvisorSub: "परामर्श",
         diseaseDetection: "रोग",
@@ -466,6 +495,9 @@ export const translations = {
         analyzingRoadmap: "बाजार के रुझान, श्रम अनुमान और वित्तीय लचीलापन का विश्लेषण...",
         analysisFailed: "विस्तृत विश्लेषण विफल",
         returnToAdvisory: "सलाह पर वापस जाएं",
+        backToAdvisory: "सलाह पर वापस जाएं",
+        exportPlan: "योजना निर्यात करें",
+        sharePlan: "योजना साझा करें",
         backToOptions: "विकल्पों पर वापस जाएं",
         downloadPDF: "PDF डाउनलोड करें",
         strategicVerdict: "अंतिम रणनीतिक निर्णय",
@@ -611,6 +643,16 @@ export const translations = {
         startConv: "कृषीसहाय शी बोला",
         goAskAI: "संभाषण सुरू करा",
 
+        // Home Features
+        featureCropCareTitle: "पीक संरक्षण",
+        featureCropCareSub: "आपले पीक वाचवा",
+        featureWasteTitle: "टाकाऊ पासून टिकाऊ",
+        featureWasteSub: "कचऱ्याचे उत्पन्नात रूपांतर करा",
+        featureBusinessTitle: "व्यवसाय सल्लागार",
+        featureBusinessSub: "कृषी व्यवसाय सुरू करा",
+        featureKnowledgeTitle: "ज्ञान केंद्र",
+        featureKnowledgeSub: "आधुनिक कृषी तंत्र शिका",
+
         // Modules
         cropCare: "पीक काळजी",
         business: "व्यवसाय",
@@ -622,6 +664,9 @@ export const translations = {
         tapListen: "ऐकण्यासाठी टॅप करा",
 
         // Crop Care
+        cropCareTitle: "पीक संरक्षण",
+        cropCareSubtitle: "AI-आधारित रोग आणि कीड ओळखीसह आपल्या पिकांचे संरक्षण करा.",
+        getStarted: "सुरू करा",
         cropAdvisor: "सल्लागार",
         cropAdvisorSub: "सल्ला",
         diseaseDetection: "रोग",
@@ -723,6 +768,9 @@ export const translations = {
         analyzingRoadmap: "बाजार कल, कामगार अंदाज आणि आर्थिक लवचिकतेचे विश्लेषण...",
         analysisFailed: "तपशीलवार विश्लेषण अयशस्वी",
         returnToAdvisory: "सल्ल्यावर परत जा",
+        backToAdvisory: "सल्ल्यावर परत जा",
+        exportPlan: "योजना निर्यात करा",
+        sharePlan: "योजना शेअर करा",
         backToOptions: "पर्यायांवर परत जा",
         downloadPDF: "PDF डाउनलोड करा",
         strategicVerdict: "अंतिम धोरणात्मक निर्णय",

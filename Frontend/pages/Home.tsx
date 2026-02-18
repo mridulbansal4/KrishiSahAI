@@ -1,123 +1,92 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { useLanguage } from '../src/context/LanguageContext';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Sparkles } from 'lucide-react';
-import PhaseZero from '../components/Home/PhaseZero';
-import NewsFeed from '../components/Home/NewsFeed';
-import logo from '../src/assets/logo.png'; // Assuming logo is available
+import { ArrowRight, Sprout, Recycle, Briefcase, BookOpen, Loader2 } from 'lucide-react';
+import HomeChatPanel from '../components/Home/HomeChatPanel';
+import logo from '../src/assets/logo.png';
+
+const PhaseZero = React.lazy(() => import('../components/Home/PhaseZero'));
 
 const Home: React.FC = () => {
     const { t } = useLanguage();
 
     const features = [
         {
-            img: '/home/1.png',
-            text: 'Save your crops in seconds',
-            link: '/crop-care'
+            title: t.featureCropCareTitle,
+            subtitle: t.featureCropCareSub,
+            link: '/crop-care',
+            icon: <Sprout className="w-16 h-16 md:w-20 md:h-20" />,
+            bgColor: 'bg-[#2E7D32]', // Medium Green
+            hoverColor: 'hover:bg-[#1B5E20]'
         },
         {
-            img: '/home/2.png',
-            text: 'You say waste.\nWe say treasure.',
-            link: '/waste-to-value'
+            title: t.featureWasteTitle,
+            subtitle: t.featureWasteSub,
+            link: '/waste-to-value',
+            icon: <Recycle className="w-16 h-16 md:w-20 md:h-20" />,
+            bgColor: 'bg-[#00695C]', // Blue-Green (Teal)
+            hoverColor: 'hover:bg-[#004D40]'
         },
         {
-            img: '/home/3.png',
-            text: 'Kickstart your business journey now',
-            link: '/advisory'
+            title: t.featureBusinessTitle,
+            subtitle: t.featureBusinessSub,
+            link: '/advisory',
+            icon: <Briefcase className="w-16 h-16 md:w-20 md:h-20" />,
+            bgColor: 'bg-[#1B5E20]', // Dark Green
+            hoverColor: 'hover:bg-[#0D3B12]'
         },
         {
-            img: '/home/4.png',
-            text: 'Be ahead by learning AgriTech',
-            link: '/hub'
+            title: t.featureKnowledgeTitle,
+            subtitle: t.featureKnowledgeSub,
+            link: '/hub',
+            icon: <BookOpen className="w-16 h-16 md:w-20 md:h-20" />,
+            bgColor: 'bg-[#1565C0]', // Blue
+            hoverColor: 'hover:bg-[#0D47A1]'
         }
     ];
 
     return (
-        <div className="min-h-[calc(100vh-100px)] w-full max-w-7xl mx-auto px-4 md:px-8 py-8 space-y-8">
+        <div className="w-full bg-white min-h-[calc(100vh-64px)]">
+            {/* SECTION 1: MAIN DASHBOARD (Split Screen) */}
+            <section className="flex flex-col lg:flex-row h-auto lg:h-[650px] w-full max-w-[1600px] mx-auto p-2 md:p-4 gap-2 md:gap-4 mt-2">
 
-            {/* SECTION 1: TOP SPLIT SECTION */}
-            <section className="min-h-[calc(100vh-120px)] w-full content-center">
-
-                {/* Chatbot Entry - Full Width */}
-                <Link
-                    to="/chat"
-                    className="group relative w-full h-[500px] md:h-[600px] bg-transparent rounded-[40px] overflow-hidden hover:-translate-y-1 transition-all duration-300 flex flex-col justify-start items-center text-center p-8 md:p-12 block"
-                >
-                    <div className="relative z-10 space-y-12 max-w-5xl mx-auto mt-16">
-
-                        <h1 className="text-5xl md:text-7xl font-extrabold text-[#3A2E25] leading-tight drop-shadow-sm tracking-tight">
-                            Ask ANYTHING about your farm to SahAI
-                        </h1>
-
-                        <div className="inline-flex items-center gap-4 text-[#EAD8BD] font-bold uppercase tracking-wider text-2xl mt-8 bg-[#3A2E25] px-12 py-6 rounded-3xl hover:bg-[#5A4638] hover:scale-105 transition-all shadow-2xl">
-                            Start Chatting <ArrowRight className="w-8 h-8" />
-                        </div>
-                    </div>
-                </Link>
-            </section>
-
-            {/* SECTION 2: 4 FEATURE BOXES */}
-            <section className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                {features.map((feature, index) => (
-                    <Link
-                        key={index}
-                        to={feature.link}
-                        className="group relative w-full aspect-[4/3] md:aspect-[16/9] rounded-[20px] overflow-hidden shadow-md hover:shadow-2xl transition-all duration-300 hover:scale-[1.03]"
-                    >
-                        {/* Background Image */}
-                        <div className="absolute inset-0">
-                            <img
-                                src={feature.img}
-                                alt={feature.text}
-                                className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                                style={{ objectPosition: 'center 20%' }} /* Shift content down by showing more top */
-                            />
-                            {/* Gradient Overlay to make text legible on right */}
-                            <div className="absolute inset-0 bg-gradient-to-l from-black/80 via-transparent to-transparent transition-opacity duration-300"></div>
-                        </div>
-
-                        {/* Text Overlay - Right Aligned & Highlighted without BG Box */}
-                        <div className="absolute inset-0 flex items-center justify-end p-8">
-                            <div className="max-w-[60%] text-right">
-                                <h2 className="text-2xl md:text-4xl font-extrabold text-[#FAF4E8] leading-tight drop-shadow-[0_4px_4px_rgba(0,0,0,0.8)] filter brightness-110">
-                                    {feature.text}
-                                </h2>
-                            </div>
-                        </div>
-                    </Link>
-                ))}
-            </section>
-
-            {/* SECTION 3: Validation Phase (Existing) */}
-            <section className="mt-12">
-                <PhaseZero />
-            </section>
-
-            {/* SECTION 4: Footer */}
-            <footer className="w-full bg-[#3A2E25] text-[#EAD8BD] rounded-[40px] p-12 text-center mt-12 shadow-2xl relative overflow-hidden">
-                <div className="relative z-10 max-w-4xl mx-auto space-y-8">
-                    <h2 className="text-3xl md:text-5xl font-extrabold mb-6">
-                        {t.footerTitle || "Empowering Farmers, One Click at a Time"}
-                    </h2>
-                    <p className="text-lg md:text-xl text-[#EAD8BD]/80 max-w-2xl mx-auto">
-                        {t.footerDesc || "Join the revolution of smart farming with KrishiSahAI."}
-                    </p>
-                    <Link
-                        to="/chat"
-                        className="inline-flex items-center gap-3 px-8 py-4 bg-[#EAD8BD] text-[#3A2E25] rounded-2xl font-bold text-lg hover:bg-[#FAF4E8] transition-all shadow-lg hover:scale-105"
-                    >
-                        {t.footerBtn || "Get Started"} <ArrowRight className="w-5 h-5" />
-                    </Link>
-
-                    <div className="mt-12 pt-8 border-t border-[#EAD8BD]/20 text-sm opacity-60">
-                        <p>{t.footerCopyright || "© 2026 KrishiSahAI. All rights reserved."}</p>
-                    </div>
+                {/* LEFT SIDE (40%) - CHATBOT PANEL */}
+                <div className="w-full lg:w-[40%] h-[42vh] lg:h-full order-1">
+                    <HomeChatPanel />
                 </div>
 
-                {/* Decorative Blobs */}
-                <div className="absolute top-0 right-0 w-64 h-64 bg-[#8B5E3C]/20 rounded-full blur-3xl -translate-y-1/2 translate-x-1/2"></div>
-                <div className="absolute bottom-0 left-0 w-64 h-64 bg-[#8B5E3C]/20 rounded-full blur-3xl translate-y-1/2 -translate-x-1/2"></div>
-            </footer>
+                {/* RIGHT SIDE (60%) - FEATURE GRID PANEL */}
+                <div className="w-full lg:w-[60%] h-full order-2">
+                    <div className="grid grid-cols-2 gap-2 md:gap-4 h-full">
+                        {features.map((feature, index) => (
+                            <Link
+                                key={index}
+                                to={feature.link}
+                                className={`group relative w-full h-full min-h-[140px] md:min-h-[200px] flex flex-col justify-center items-center gap-3 md:gap-6 p-4 md:p-8 ${feature.bgColor} ${feature.hoverColor} transition-colors duration-200 no-underline shadow-sm rounded-3xl text-center`}
+                            >
+                                <div className="text-white/80 group-hover:text-white transition-colors group-hover:scale-110 duration-300">
+                                    {feature.icon}
+                                </div>
+                                <div className="flex flex-col items-center">
+                                    <h3 className="text-lg md:text-3xl font-extrabold text-white leading-tight mb-1 md:mb-2 tracking-tight">
+                                        {feature.title}
+                                    </h3>
+                                    <p className="hidden md:flex text-white/80 text-xs md:text-lg font-medium items-center gap-1 md:gap-2 justify-center">
+                                        {feature.subtitle} <ArrowRight className="w-3 h-3 md:w-4 md:h-4 opacity-0 group-hover:opacity-100 transition-opacity translate-y-2 group-hover:translate-y-0 duration-300" />
+                                    </p>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* SECTION 2: Validation Phase */}
+            <section className="py-12 bg-light-green border-t-2 border-deep-green/10">
+                <Suspense fallback={<div className="flex justify-center p-12"><Loader2 className="w-8 h-8 animate-spin text-deep-green" /></div>}>
+                    <PhaseZero />
+                </Suspense>
+            </section>
         </div>
     );
 };

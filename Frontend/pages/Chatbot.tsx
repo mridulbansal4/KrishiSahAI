@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import remarkBreaks from 'remark-breaks';
+import { useLanguage } from '../src/context/LanguageContext';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Language, ChatMessage } from '../types';
 import {
@@ -502,7 +503,7 @@ const Chatbot: React.FC = () => {
                                 const targetPath = location.state?.fromAdvisory ? '/advisory' : '/crop-care';
                                 navigate(targetPath, { state: location.state.previousState });
                             }}
-                            className="flex items-center gap-2 text-[#6B7878] font-bold hover:text-[#043744] transition-colors"
+                            className="flex items-center gap-2 text-[#6B7878] font-bold hover:text-[#1B5E20] transition-colors"
                         >
                             <ArrowLeft className="w-5 h-5" />
                             {t.back} to {location.state?.fromAdvisory ? 'Recommendations' : 'Assessment'}
@@ -513,7 +514,7 @@ const Chatbot: React.FC = () => {
                             <button
                                 onClick={handleDownloadPDF}
                                 disabled={isGeneratingPDF || isLoading}
-                                className="flex items-center gap-2 px-4 py-2 bg-[#043744] text-white rounded-xl font-bold hover:bg-[#000D0F] transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                                className="flex items-center gap-2 px-4 py-2 bg-[#1B5E20] text-white rounded-xl font-bold hover:bg-[#002105] transition-all shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                                 title="Download PDF"
                             >
                                 {isGeneratingPDF ? (
@@ -542,9 +543,9 @@ const Chatbot: React.FC = () => {
                 {!location.state?.fromAdvisory && !location.state?.fromCropCare && (
                     <div className="md:hidden flex items-center p-4 border-b border-[#E0E6E6] bg-white/80 backdrop-blur-md sticky top-0 z-10">
                         <button onClick={() => setIsSidebarOpen(true)} className="p-2 mr-2">
-                            <Menu className="w-6 h-6 text-[#000D0F]" />
+                            <Menu className="w-6 h-6 text-[#002105]" />
                         </button>
-                        <h1 className="text-lg font-bold text-[#000D0F]">Knowledge Assistant</h1>
+                        <h1 className="text-lg font-bold text-[#002105]">Knowledge Assistant</h1>
                     </div>
                 )}
 
@@ -553,23 +554,23 @@ const Chatbot: React.FC = () => {
                     {messages.length === 0 ? (
                         <div className="h-full flex flex-col items-center justify-center text-center opacity-40">
                             <div className="w-24 h-24 bg-[#FAFCFC] rounded-[32px] flex items-center justify-center mb-6">
-                                <Bot className="w-12 h-12 text-[#043744]" />
+                                <Bot className="w-12 h-12 text-[#1B5E20]" />
                             </div>
-                            <h2 className="text-2xl font-bold text-[#000D0F] mb-2">{t.navAskAI}</h2>
+                            <h2 className="text-2xl font-bold text-[#002105] mb-2">{t.navAskAI}</h2>
                             <p className="max-w-xs mx-auto text-[#6B7878]">Ask about crop diseases, market prices, or farming techniques.</p>
                         </div>
                     ) : (
                         messages.map((msg, idx) => (
                             <div key={idx} className={`flex gap-4 ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                                 {msg.role !== 'user' && (
-                                    <div className="w-8 h-8 rounded-full bg-[#043744] flex items-center justify-center mt-2 flex-shrink-0">
+                                    <div className="w-8 h-8 rounded-full bg-[#1B5E20] flex items-center justify-center mt-2 flex-shrink-0">
                                         <Bot className="w-5 h-5 text-white" />
                                     </div>
                                 )}
 
                                 <div className={`relative max-w-[85%] md:max-w-[70%] p-5 rounded-[24px] shadow-sm ${msg.role === 'user'
-                                    ? 'bg-[#043744] text-white rounded-tr-sm'
-                                    : 'bg-[#FAFCFC] text-[#000D0F] border border-[#E0E6E6] rounded-tl-sm pr-20'
+                                    ? 'bg-[#1B5E20] text-white rounded-tr-sm'
+                                    : 'bg-[#FAFCFC] text-[#002105] border border-[#E0E6E6] rounded-tl-sm pr-20'
                                     }`}>
 
                                     {/* Message Actions (TTS & PDF) - Only for Assistant */}
@@ -578,7 +579,7 @@ const Chatbot: React.FC = () => {
                                             {/* TTS Button */}
                                             <button
                                                 onClick={() => handleTextToSpeech(msg.content, idx)}
-                                                className="p-1.5 text-stone-400 hover:text-[#043744] hover:bg-stone-100 rounded-full transition-all"
+                                                className="p-1.5 text-stone-400 hover:text-[#1B5E20] hover:bg-stone-100 rounded-full transition-all"
                                                 title="Listen to response"
                                             >
                                                 {playingMessageId === idx ? <Square className="w-4 h-4 text-red-500 fill-current" /> : <Volume2 className="w-4 h-4" />}
@@ -588,11 +589,11 @@ const Chatbot: React.FC = () => {
                                             <button
                                                 onClick={handleDownloadPDF}
                                                 disabled={isGeneratingPDF}
-                                                className="p-1.5 text-stone-400 hover:text-[#043744] hover:bg-stone-100 rounded-full transition-all disabled:opacity-50"
+                                                className="p-1.5 text-stone-400 hover:text-[#1B5E20] hover:bg-stone-100 rounded-full transition-all disabled:opacity-50"
                                                 title="Download PDF"
                                             >
                                                 {isGeneratingPDF ? (
-                                                    <div className="w-4 h-4 border-2 border-stone-300 border-t-[#043744] rounded-full animate-spin"></div>
+                                                    <div className="w-4 h-4 border-2 border-stone-300 border-t-[#1B5E20] rounded-full animate-spin"></div>
                                                 ) : (
                                                     <FileDown className="w-4 h-4" />
                                                 )}
@@ -604,7 +605,7 @@ const Chatbot: React.FC = () => {
                                         <ReactMarkdown
                                             remarkPlugins={[remarkGfm, remarkBreaks]}
                                             components={{
-                                                strong: ({ node, ...props }) => <span className={`font-bold ${msg.role === 'user' ? 'text-white' : 'text-[#043744]'}`} {...props} />,
+                                                strong: ({ node, ...props }) => <span className={`font-bold ${msg.role === 'user' ? 'text-white' : 'text-[#1B5E20]'}`} {...props} />,
                                                 ul: ({ node, ...props }) => <ul className="list-disc pl-5 my-2 space-y-1" {...props} />,
                                                 ol: ({ node, ...props }) => <ol className="list-decimal pl-5 my-2 space-y-1" {...props} />,
                                                 li: ({ node, ...props }) => <li className="mb-1" {...props} />,
@@ -619,8 +620,8 @@ const Chatbot: React.FC = () => {
                                 </div>
 
                                 {msg.role === 'user' && (
-                                    <div className="w-8 h-8 rounded-full bg-[#E8F5F5] flex items-center justify-center mt-2 flex-shrink-0">
-                                        <User className="w-5 h-5 text-[#043744]" />
+                                    <div className="w-8 h-8 rounded-full bg-[#E8F5E9] flex items-center justify-center mt-2 flex-shrink-0">
+                                        <User className="w-5 h-5 text-[#1B5E20]" />
                                     </div>
                                 )}
                             </div>
@@ -630,24 +631,24 @@ const Chatbot: React.FC = () => {
                 </div>
 
                 {/* Input Area */}
-                <div className="p-4 md:p-6 bg-white/80 backdrop-blur-md border-t border-[#E0E6E6]">
+                <div className="p-4 md:p-6 bg-white border-t-2 border-deep-green/10">
                     <div className="max-w-4xl mx-auto relative flex items-center gap-3">
                         <input
                             value={input}
                             onChange={(e) => setInput(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSend()}
                             placeholder={t.chatPlaceholder}
-                            className="w-full p-4 pr-14 bg-[#FAFCFC] border border-[#E0E6E6] rounded-[24px] focus:outline-none focus:border-[#043744] focus:ring-4 focus:ring-[#043744]/5 transition-all font-medium placeholder:text-stone-400 text-[#000D0F]"
+                            className="w-full p-4 pr-14 bg-[#FAFCFC] border-2 border-[#E0E6E6] focus:outline-none focus:border-deep-green focus:ring-0 transition-all font-medium placeholder:text-stone-400 text-[#002105]"
                         />
 
                         {/* Mic Button */}
-                        <div className="absolute right-16 top-1/2 -translate-y-1/2 z-10">
+                        <div className="absolute right-20 top-1/2 -translate-y-1/2 z-10 border-r border-gray-300 pr-2">
                             <button
                                 onClick={isRecording ? stopRecording : startRecording}
                                 disabled={isLoading}
-                                className={`p-2 rounded-full transition-all ${isRecording
-                                    ? 'bg-red-500 text-white animate-pulse shadow-red-200 shadow-lg'
-                                    : 'text-stone-400 hover:text-[#043744] hover:bg-stone-100'
+                                className={`p-2 transition-all ${isRecording
+                                    ? 'text-red-600 animate-pulse'
+                                    : 'text-stone-400 hover:text-deep-green'
                                     }`}
                                 title={isRecording ? "Stop Recording" : "Voice Input"}
                             >
@@ -658,7 +659,7 @@ const Chatbot: React.FC = () => {
                         <button
                             onClick={() => handleSend()}
                             disabled={!input.trim() || isLoading}
-                            className="absolute right-2 p-2 bg-[#043744] text-white rounded-2xl hover:bg-[#000D0F] disabled:opacity-50 disabled:bg-stone-300 transition-all shadow-md"
+                            className="p-4 bg-deep-green text-white hover:bg-deep-green/90 disabled:opacity-50 disabled:bg-stone-300 transition-all shadow-md min-w-[3.5rem] flex items-center justify-center"
                         >
                             <Send className="w-5 h-5" />
                         </button>

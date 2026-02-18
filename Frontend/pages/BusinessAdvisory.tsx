@@ -218,8 +218,8 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
         return (
             <div className="p-8 max-w-7xl mx-auto flex items-center justify-center min-h-[80vh]">
                 <div className="text-center py-20 px-10 bg-white rounded-[48px] border border-[#E6E6E6] shadow-xl max-w-3xl w-full">
-                    <div className="w-24 h-24 bg-[#E0E7FF] rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
-                        <Briefcase className="w-12 h-12 text-[#4F46E5]" />
+                    <div className="w-24 h-24 bg-[#E8F5E9] rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
+                        <Briefcase className="w-12 h-12 text-[#1B5E20]" />
                     </div>
                     <h1 className="text-4xl font-extrabold text-[#1E1E1E] mb-4">{t.businessAdvisorTitle}</h1>
                     <p className="text-[#555555] font-medium text-lg max-w-xl mx-auto mb-10">
@@ -227,7 +227,7 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                     </p>
                     <button
                         onClick={() => setStep(1)}
-                        className="px-8 py-4 bg-[#043744] text-white rounded-2xl font-bold text-xl hover:bg-[#000D0F] transition-all shadow-lg hover:scale-105 flex items-center justify-center gap-3 mx-auto"
+                        className="px-8 py-4 bg-[#1B5E20] text-white rounded-2xl font-bold text-xl hover:bg-[#000D0F] transition-all shadow-lg hover:scale-105 flex items-center justify-center gap-3 mx-auto"
                     >
                         {t.startAssessment} <ArrowRight className="w-6 h-6" />
                     </button>
@@ -240,7 +240,7 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
     if (step === 1) {
         return (
             <div className="p-4 md:p-8 max-w-4xl mx-auto">
-                <button onClick={() => setStep(0)} className="flex items-center gap-2 text-[#555555] font-bold mb-6 hover:text-[#043744] transition-colors">
+                <button onClick={() => setStep(0)} className="flex items-center gap-2 text-[#555555] font-bold mb-6 hover:text-[#1B5E20] transition-colors">
                     <ArrowLeft className="w-5 h-5" /> {t.back}
                 </button>
 
@@ -256,7 +256,7 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                             <input
                                 type="number"
                                 placeholder="Enter your total budget (₹)"
-                                className="w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] placeholder-gray-400 font-medium transition-all"
+                                className="w-full p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] placeholder-gray-400 font-medium transition-all"
                                 value={formData.budget}
                                 onChange={e => setFormData({ ...formData, budget: e.target.value })}
                             />
@@ -265,10 +265,10 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                         <div>
                             <div className="flex justify-between items-end mb-2 ml-2">
                                 <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#555555]">
-                                    <Ruler className="w-4 h-4 text-[#3B82F6]" /> {t.businessLandLabel}
+                                    <Ruler className="w-4 h-4 text-[#1B5E20]" /> {t.businessLandLabel}
                                 </label>
                                 {formData.totalLand && parseFloat(formData.totalLand) > 0 && (
-                                    <span className="text-xs font-bold text-[#043744] bg-[#E6F4EA] px-2 py-1 rounded-lg">
+                                    <span className="text-xs font-bold text-[#1B5E20] bg-[#E6F4EA] px-2 py-1 rounded-lg">
                                         {t.totalAcre}: {formData.totalLand}
                                     </span>
                                 )}
@@ -276,9 +276,9 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                             <input
                                 type="number"
                                 placeholder="Land to be used for business"
-                                className={`w-full p-4 bg-[#FAFAF7] border rounded-2xl focus:outline-none placeholder-gray-400 font-medium transition-all ${(parseFloat(formData.businessLand) > parseFloat(formData.totalLand))
+                                className={`w-full p-4 bg-[#E8F5E9] border rounded-2xl focus:outline-none placeholder-gray-400 font-medium transition-all ${(parseFloat(formData.businessLand) > parseFloat(formData.totalLand))
                                     ? 'border-red-500 focus:border-red-500 ring-1 ring-red-500'
-                                    : 'border-[#E6E6E6] focus:border-[#043744]'
+                                    : 'border-[#E6E6E6] focus:border-[#1B5E20]'
                                     }`}
                                 value={formData.businessLand}
                                 onChange={e => setFormData({ ...formData, businessLand: e.target.value })}
@@ -290,10 +290,10 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
 
                         <div>
                             <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#555555] mb-2 ml-2">
-                                <Droplets className="w-4 h-4 text-[#06B6D4]" /> {t.waterAvailability}
+                                <Droplets className="w-4 h-4 text-[#1B5E20]" /> {t.waterAvailability}
                             </label>
                             <select
-                                className={`w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] font-medium transition-all ${!formData.waterSource ? 'text-gray-400' : 'text-[#1E1E1E]'}`}
+                                className={`w-full p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] font-medium transition-all ${!formData.waterSource ? 'text-gray-400' : 'text-[#1E1E1E]'}`}
                                 value={formData.waterSource}
                                 onChange={e => setFormData({ ...formData, waterSource: e.target.value })}
                             >
@@ -306,12 +306,12 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                         </div>
                         <div>
                             <label className="flex items-center gap-2 text-xs font-bold uppercase tracking-widest text-[#555555] mb-2 ml-2">
-                                <User className="w-4 h-4 text-[#A855F7]" /> {t.experienceYears}
+                                <User className="w-4 h-4 text-[#1B5E20]" /> {t.experienceYears}
                             </label>
                             <input
                                 type="number"
                                 placeholder="Years of farming/business experience"
-                                className="w-full p-4 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#043744] placeholder-gray-400 font-medium transition-all"
+                                className="w-full p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] placeholder-gray-400 font-medium transition-all"
                                 value={formData.experience}
                                 onChange={e => setFormData({ ...formData, experience: e.target.value })}
                             />
@@ -327,11 +327,11 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                     key={interest}
                                     onClick={() => handleInterestToggle(interest)}
                                     className={`p-4 rounded-2xl border text-sm font-bold transition-all ${formData.interests.includes(interest)
-                                        ? 'bg-white border-[#043744] shadow-md ring-1 ring-[#043744] text-[#043744]'
+                                        ? 'bg-white border-[#1B5E20] shadow-md ring-1 ring-[#1B5E20] text-[#1B5E20]'
                                         : 'bg-white border-[#E6E6E6] text-[#555555] hover:bg-stone-50'
                                         }`}
                                 >
-                                    <div className={`w-4 h-4 rounded-full border mb-2 mx-auto transition-colors ${formData.interests.includes(interest) ? 'bg-[#043744] border-[#043744]' : 'border-gray-300'
+                                    <div className={`w-4 h-4 rounded-full border mb-2 mx-auto transition-colors ${formData.interests.includes(interest) ? 'bg-[#1B5E20] border-[#1B5E20]' : 'border-gray-300'
                                         }`}
                                     />
                                     {interest}
@@ -350,14 +350,14 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                 <label className="block text-sm font-bold text-[#555555] mb-3">How close are you to a market or buyers?</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {['Village only', 'Small town within 10 km', 'City within 30 km', 'Direct buyers already available'].map(opt => (
-                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.marketAccess === opt ? 'border-[#043744] ring-1 ring-[#043744]' : 'border-[#E6E6E6] hover:border-gray-400'}`}>
+                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.marketAccess === opt ? 'border-[#1B5E20] ring-1 ring-[#1B5E20]' : 'border-[#E6E6E6] hover:border-gray-400'}`}>
                                             <input
                                                 type="radio"
                                                 name="marketAccess"
                                                 value={opt}
                                                 checked={formData.marketAccess === opt}
                                                 onChange={e => setFormData({ ...formData, marketAccess: e.target.value })}
-                                                className="w-4 h-4 text-[#043744] focus:ring-[#043744] accent-[#043744]"
+                                                className="w-4 h-4 text-[#1B5E20] focus:ring-[#1B5E20] accent-[#1B5E20]"
                                             />
                                             <span className="ml-3 text-sm font-medium text-gray-700">{opt}</span>
                                         </label>
@@ -370,14 +370,14 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                 <label className="block text-sm font-bold text-[#555555] mb-3">Are you willing to sell directly to customers (B2C)?</label>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                     {['Yes, I can handle customers', 'Maybe, with guidance', 'No, I prefer bulk buyers only'].map(opt => (
-                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.sellingPreference === opt ? 'border-[#043744] ring-1 ring-[#043744]' : 'border-[#E6E6E6]'}`}>
+                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.sellingPreference === opt ? 'border-[#1B5E20] ring-1 ring-[#1B5E20]' : 'border-[#E6E6E6]'}`}>
                                             <input
                                                 type="radio"
                                                 name="sellingPreference"
                                                 value={opt}
                                                 checked={formData.sellingPreference === opt}
                                                 onChange={e => setFormData({ ...formData, sellingPreference: e.target.value })}
-                                                className="w-4 h-4 text-[#043744] accent-[#043744]"
+                                                className="w-4 h-4 text-[#1B5E20] accent-[#1B5E20]"
                                             />
                                             <span className="ml-3 text-sm font-medium text-gray-700">{opt}</span>
                                         </label>
@@ -390,14 +390,14 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                 <label className="block text-sm font-bold text-[#555555] mb-3">If income fluctuates month to month, how comfortable are you?</label>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
                                     {['Very comfortable', 'Somewhat okay', 'Not comfortable at all'].map(opt => (
-                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.incomeComfort === opt ? 'border-[#043744] ring-1 ring-[#043744]' : 'border-[#E6E6E6]'}`}>
+                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.incomeComfort === opt ? 'border-[#1B5E20] ring-1 ring-[#1B5E20]' : 'border-[#E6E6E6]'}`}>
                                             <input
                                                 type="radio"
                                                 name="incomeComfort"
                                                 value={opt}
                                                 checked={formData.incomeComfort === opt}
                                                 onChange={e => setFormData({ ...formData, incomeComfort: e.target.value })}
-                                                className="w-4 h-4 text-[#043744] accent-[#043744]"
+                                                className="w-4 h-4 text-[#1B5E20] accent-[#1B5E20]"
                                             />
                                             <span className="ml-3 text-sm font-medium text-gray-700">{opt}</span>
                                         </label>
@@ -410,14 +410,14 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                 <label className="block text-sm font-bold text-[#555555] mb-3">How long can you wait to recover your investment?</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-3">
                                     {['Less than 1 year', '1-2 years', '2-3 years', 'I can wait longer'].map(opt => (
-                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.investmentRecovery === opt ? 'border-[#043744] ring-1 ring-[#043744]' : 'border-[#E6E6E6]'}`}>
+                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.investmentRecovery === opt ? 'border-[#1B5E20] ring-1 ring-[#1B5E20]' : 'border-[#E6E6E6]'}`}>
                                             <input
                                                 type="radio"
                                                 name="investmentRecovery"
                                                 value={opt}
                                                 checked={formData.investmentRecovery === opt}
                                                 onChange={e => setFormData({ ...formData, investmentRecovery: e.target.value })}
-                                                className="w-4 h-4 text-[#043744] accent-[#043744]"
+                                                className="w-4 h-4 text-[#1B5E20] accent-[#1B5E20]"
                                             />
                                             <span className="ml-3 text-sm font-medium text-gray-700">{opt}</span>
                                         </label>
@@ -430,14 +430,14 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                 <label className="block text-sm font-bold text-[#555555] mb-3">What is your attitude toward losses in the first year?</label>
                                 <div className="space-y-2">
                                     {['I understand initial losses are possible', 'Small losses acceptable', 'I cannot afford losses'].map(opt => (
-                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.lossAttitude === opt ? 'border-[#043744] ring-1 ring-[#043744]' : 'border-[#E6E6E6]'}`}>
+                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.lossAttitude === opt ? 'border-[#1B5E20] ring-1 ring-[#1B5E20]' : 'border-[#E6E6E6]'}`}>
                                             <input
                                                 type="radio"
                                                 name="lossAttitude"
                                                 value={opt}
                                                 checked={formData.lossAttitude === opt}
                                                 onChange={e => setFormData({ ...formData, lossAttitude: e.target.value })}
-                                                className="w-4 h-4 text-[#043744] accent-[#043744]"
+                                                className="w-4 h-4 text-[#1B5E20] accent-[#1B5E20]"
                                             />
                                             <span className="ml-3 text-sm font-medium text-gray-700">{opt}</span>
                                         </label>
@@ -450,14 +450,14 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                 <label className="block text-sm font-bold text-[#555555] mb-3">If given two options, what would you choose?</label>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                     {['Safe income, lower profit', 'Higher profit, higher risk'].map(opt => (
-                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.riskPreference === opt ? 'border-[#043744] ring-1 ring-[#043744]' : 'border-[#E6E6E6]'}`}>
+                                        <label key={opt} className={`flex items-center p-3 bg-white rounded-xl border cursor-pointer transition-all ${formData.riskPreference === opt ? 'border-[#1B5E20] ring-1 ring-[#1B5E20]' : 'border-[#E6E6E6]'}`}>
                                             <input
                                                 type="radio"
                                                 name="riskPreference"
                                                 value={opt}
                                                 checked={formData.riskPreference === opt}
                                                 onChange={e => setFormData({ ...formData, riskPreference: e.target.value })}
-                                                className="w-4 h-4 text-[#043744] accent-[#043744]"
+                                                className="w-4 h-4 text-[#1B5E20] accent-[#1B5E20]"
                                             />
                                             <span className="ml-3 text-sm font-medium text-gray-700">{opt}</span>
                                         </label>
@@ -481,7 +481,7 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                     </div>
 
                     {/* Agreement & Analyze */}
-                    <div className="bg-[#FAFAF7] rounded-2xl p-6 border border-[#E6E6E6]">
+                    <div className="bg-[#E8F5E9] rounded-2xl p-6 border border-[#E6E6E6]">
                         <label className="flex items-start gap-3 cursor-pointer mb-6 group">
                             <input
                                 type="checkbox"
@@ -497,7 +497,7 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                         <button
                             onClick={handleAnalyze}
                             disabled={loading || parseFloat(formData.businessLand) > parseFloat(formData.totalLand)}
-                            className={`w-full py-4 bg-[#043744] text-white rounded-xl font-bold text-xl transition-all shadow-md hover:scale-[1.01] flex items-center justify-center gap-2 ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-[#000D0F]'}`}
+                            className={`w-full py-4 bg-[#1B5E20] text-white rounded-xl font-bold text-xl transition-all shadow-md hover:scale-[1.01] flex items-center justify-center gap-2 ${loading ? 'opacity-75 cursor-not-allowed' : 'hover:bg-[#000D0F]'}`}
                         >
                             {loading ? <><Loader2 className="animate-spin" /> {t.analyzingBtn}</> : t.analyze}
                         </button>
@@ -512,10 +512,10 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
         return (
             <div className="p-4 md:p-8 max-w-7xl mx-auto">
                 <div className="flex items-center justify-between mb-8">
-                    <button onClick={() => setStep(1)} className="flex items-center gap-2 text-[#555555] font-bold hover:text-[#043744] transition-colors">
+                    <button onClick={() => setStep(1)} className="flex items-center gap-2 text-[#555555] font-bold hover:text-[#1B5E20] transition-colors">
                         <ArrowLeft className="w-5 h-5" /> {t.back}
                     </button>
-                    <button onClick={() => setStep(1)} className="text-[#043744] font-bold hover:underline">
+                    <button onClick={() => setStep(1)} className="text-[#1B5E20] font-bold hover:underline">
                         {t.retakeAssessment}
                     </button>
                 </div>
@@ -526,7 +526,7 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                     {recommendations.map((rec) => (
                         <div key={rec.id} className="bg-white rounded-[32px] border border-[#E6E6E6] overflow-hidden flex flex-col hover:shadow-2xl transition-all duration-300 group">
                             {/* Card Header */}
-                            <div className="bg-[#043744] p-6 relative overflow-hidden">
+                            <div className="bg-[#1B5E20] p-6 relative overflow-hidden">
                                 <div className="absolute top-0 right-0 p-6 opacity-20">
                                     <Briefcase className="w-16 h-16 text-white" />
                                 </div>
@@ -550,8 +550,8 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                         <p className="text-[#1E1E1E] font-bold text-sm">{rec.estimated_cost}</p>
                                     </div>
                                     <div>
-                                        <p className="text-[10px] font-bold text-[#043744] uppercase tracking-widest mb-1">{t.profitLabel}</p>
-                                        <p className="text-[#0A5F73] font-bold text-sm">{rec.profit_potential}</p>
+                                        <p className="text-[10px] font-bold text-[#1B5E20] uppercase tracking-widest mb-1">{t.profitLabel}</p>
+                                        <p className="text-[#2E7D32] font-bold text-sm">{rec.profit_potential}</p>
                                     </div>
                                 </div>
 
@@ -559,7 +559,7 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{t.requirementsLabel}</p>
                                     <div className="flex flex-wrap gap-2">
                                         {rec.requirements.map((req, i) => (
-                                            <span key={i} className="px-2 py-1 bg-[#FAFAF7] border border-[#E6E6E6] rounded-lg text-xs text-[#555555] font-medium">
+                                            <span key={i} className="px-2 py-1 bg-[#E8F5E9] border border-[#E6E6E6] rounded-lg text-xs text-[#555555] font-medium">
                                                 {req}
                                             </span>
                                         ))}
@@ -579,7 +579,7 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                                 }
                                             }
                                         })}
-                                        className="w-full py-4 bg-[#043744] text-white rounded-xl font-bold text-lg hover:bg-[#000D0F] transition-all shadow-lg flex items-center justify-center gap-2 transform hover:scale-[1.02]"
+                                        className="w-full py-4 bg-[#1B5E20] text-white rounded-xl font-bold text-lg hover:bg-[#000D0F] transition-all shadow-lg flex items-center justify-center gap-2 transform hover:scale-[1.02]"
                                     >
                                         <TrendingUp className="w-5 h-5" /> {t.simulateBtn}
                                     </button>
@@ -587,7 +587,7 @@ const BusinessAdvisory: React.FC<{ lang: Language; user: UserProfile | null }> =
                                     <div className="flex gap-3">
                                         <button
                                             onClick={() => handleAskChatbot(rec.title)}
-                                            className="flex-1 py-3 bg-white border border-[#043744] text-[#043744] rounded-xl font-bold text-sm hover:bg-[#E8F5F5] transition-colors flex items-center justify-center gap-2"
+                                            className="flex-1 py-3 bg-white border border-[#1B5E20] text-[#1B5E20] rounded-xl font-bold text-sm hover:bg-[#E8F5F5] transition-colors flex items-center justify-center gap-2"
                                         >
                                             <MessageCircle className="w-4 h-4" /> {t.askChatbotBtn}
                                         </button>

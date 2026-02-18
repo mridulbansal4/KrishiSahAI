@@ -25,43 +25,60 @@ const ArticleDetail: React.FC = () => {
                 const modules = import.meta.glob('/src/articles/*/index.json', { eager: true });
                 const imageModules = import.meta.glob('/src/articles/*/*.{png,jpg,jpeg,svg,webp}', { eager: true });
 
-                const articleModuleEntry = Object.entries(modules).find(([path]) => path.includes(`/${slug}/`));
+                // Find the article that matches the slug
+                let articleModuleEntry = Object.entries(modules).find(([path, mod]: [string, any]) => {
+                    const data = mod.default || mod;
+                    const parts = path.split('/');
+                    const folderName = parts[parts.length - 2];
+
+                    // Match against folder name OR the explicit slug in JSON
+                    return folderName === slug || data.slug === slug;
+                });
 
                 if (!articleModuleEntry) {
                     throw new Error('Article not found');
                 }
 
-                const data = (articleModuleEntry[1] as any).default || articleModuleEntry[1];
+                const [path, mod] = articleModuleEntry;
+                const data = (mod as any).default || mod;
+                const parts = path.split('/');
+                const folderName = parts[parts.length - 2];
 
-                // Resolve heroImage
+                // Resolve Hero Image
                 let heroImage = data.heroImage;
-                const expectedPath = `/src/articles/${slug}/${heroImage}`;
-                const imageMod = imageModules[expectedPath] as any;
-
-                if (imageMod) {
-                    heroImage = imageMod.default || imageMod;
-                } else {
-                    const anyImageEntry = Object.entries(imageModules).find(([k]) => k.includes(`/src/articles/${slug}/`));
-                    if (anyImageEntry) {
-                        heroImage = (anyImageEntry[1] as any).default || anyImageEntry[1];
+                if (heroImage) {
+                    const exactPath = `/src/articles/${folderName}/${heroImage}`;
+                    if (imageModules[exactPath]) {
+                        heroImage = (imageModules[exactPath] as any).default || imageModules[exactPath];
+                    } else {
+                        // Fallback: search for the image file name within the article's folder
+                        const relativeImageEntry = Object.entries(imageModules).find(([imgPath]) =>
+                            imgPath.includes(`/${folderName}/`) && imgPath.endsWith(data.heroImage)
+                        );
+                        if (relativeImageEntry) {
+                            heroImage = (relativeImageEntry[1] as any).default || relativeImageEntry[1];
+                        }
                     }
                 }
+
+                // Resolve Gallery Images
+                let resolvedGallery = data.galleryImages || [];
+                resolvedGallery = resolvedGallery.map((img: string) => {
+                    const exactPath = `/src/articles/${folderName}/${img}`;
+                    if (imageModules[exactPath]) {
+                        return (imageModules[exactPath] as any).default || imageModules[exactPath];
+                    }
+                    const relativeImageEntry = Object.entries(imageModules).find(([imgPath]) =>
+                        imgPath.includes(`/${folderName}/`) && imgPath.endsWith(img)
+                    );
+                    return relativeImageEntry ? ((relativeImageEntry[1] as any).default || relativeImageEntry[1]) : img;
+                });
 
                 setArticle({
                     ...data,
                     heroImage,
                     slug
                 });
-
-                // Resolve Gallery Images (last two images)
-                const resolvedGallery = (data.galleryImages || [])
-                    .map((filename: string) => {
-                        const path = `/src/articles/${slug}/${filename}`;
-                        const mod = imageModules[path] as any;
-                        return mod ? (mod.default || mod) : null;
-                    })
-                    .filter(Boolean);
-
                 setGalleryImages(resolvedGallery);
 
             } catch (err) {
@@ -73,7 +90,7 @@ const ArticleDetail: React.FC = () => {
         };
 
         loadArticle();
-    }, [slug]);
+    }, [slug, language]);
 
     if (loading) return (
         <div className="min-h-screen flex items-center justify-center bg-[#FAFAF7]">
@@ -108,7 +125,7 @@ const ArticleDetail: React.FC = () => {
                 <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-transparent to-black/10" />
                 <Link
                     to="/hub"
-                    className="absolute top-8 left-4 md:left-8 text-white bg-black/40 backdrop-blur-md p-3 rounded-full hover:bg-black/60 transition-all transform hover:scale-105"
+                    className="absolute top-8 left-4 md:left-8 text-white bg-deep-green/80 backdrop-blur-md p-3 rounded-full hover:bg-deep-green transition-all transform hover:scale-105"
                     aria-label="Back to Knowledge Hub"
                 >
                     <ArrowLeft size={24} />
@@ -128,13 +145,13 @@ const ArticleDetail: React.FC = () => {
                         <div className="flex flex-wrap items-center justify-center text-gray-500 text-sm gap-6">
                             {article.author && (
                                 <div className="flex items-center">
-                                    <User size={16} className="mr-2 text-green-600" />
+                                    <User size={16} className="mr-2 text-deep-green" />
                                     <span>{article.author}</span>
                                 </div>
                             )}
                             {article.date && (
                                 <div className="flex items-center">
-                                    <Calendar size={16} className="mr-2 text-green-600" />
+                                    <Calendar size={16} className="mr-2 text-deep-green" />
                                     <span>{article.date}</span>
                                 </div>
                             )}
@@ -143,7 +160,7 @@ const ArticleDetail: React.FC = () => {
 
                     {/* Divider */}
                     <div className="flex items-center justify-center mb-10">
-                        <div className="h-1 w-20 bg-green-200 rounded-full"></div>
+                        <div className="h-1 w-20 bg-deep-green/20 rounded-full"></div>
                     </div>
 
                     {/* Full Raw Markdown Content Rendering */}
@@ -153,10 +170,10 @@ const ArticleDetail: React.FC = () => {
                             components={{
                                 img: () => null, // Never render inline images
                                 h2: ({ node, ...props }) => (
-                                    <h2 {...props} className="text-3xl font-bold text-green-900 mt-12 mb-6 font-display" />
+                                    <h2 {...props} className="text-3xl font-bold text-deep-green mt-12 mb-6 font-display" />
                                 ),
                                 h3: ({ node, ...props }) => (
-                                    <h3 {...props} className="text-2xl font-semibold text-green-800 mt-8 mb-4 font-display" />
+                                    <h3 {...props} className="text-2xl font-semibold text-deep-green/90 mt-8 mb-4 font-display" />
                                 ),
                                 p: ({ node, ...props }) => (
                                     <p {...props} className="mb-6 text-gray-700 text-lg leading-8" />
@@ -165,7 +182,7 @@ const ArticleDetail: React.FC = () => {
                                     <ul {...props} className="list-disc list-outside ml-6 mb-6 space-y-2 text-gray-700" />
                                 ),
                                 strong: ({ node, ...props }) => (
-                                    <strong {...props} className="font-bold text-green-900" />
+                                    <strong {...props} className="font-bold text-deep-green" />
                                 )
                             }}
                         >

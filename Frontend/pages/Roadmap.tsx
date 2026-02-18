@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { api } from '../services/api';
-import { ArrowLeft, Download, CheckCircle, AlertTriangle, TrendingUp, Users, Calendar, Shield, Loader2 } from 'lucide-react';
+import { ArrowLeft, Download, CheckCircle, AlertTriangle, TrendingUp, Users, Calendar, Shield, Loader2, Share2 } from 'lucide-react';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
 import { Language } from '../types';
@@ -17,7 +17,8 @@ interface Quarter {
 }
 
 interface Phase {
-    phase: string;
+    phase_name: string;
+    description: string;
     timeframe: string;
     focus: string;
     quarters: Quarter[];
@@ -127,7 +128,7 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-screen">
-                <Loader2 className="w-16 h-16 text-[#043744] animate-spin mb-4" />
+                <Loader2 className="w-16 h-16 text-[#1B5E20] animate-spin mb-4" />
                 <h2 className="text-2xl font-bold text-[#1E1E1E]">{t.generatingRoadmap}</h2>
                 <p className="text-[#555555] mt-2">{t.analyzingRoadmap}</p>
             </div>
@@ -142,7 +143,7 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
                 <p className="text-red-500 mb-6 text-center max-w-md">{error}</p>
                 <button
                     onClick={() => navigate('/advisory')}
-                    className="px-6 py-3 bg-[#043744] text-white rounded-xl font-bold hover:bg-[#000D0F] transition-all"
+                    className="px-6 py-3 bg-[#1B5E20] text-white rounded-xl font-bold hover:bg-[#000D0F] transition-all"
                 >
                     {t.returnToAdvisory}
                 </button>
@@ -159,16 +160,18 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
                 <div className="flex items-center justify-between mb-8 no-print">
                     <button
                         onClick={() => navigate('/advisory')}
-                        className="flex items-center gap-2 text-[#555555] font-bold hover:text-[#043744] transition-colors"
+                        className="flex items-center gap-2 px-6 py-3 bg-deep-green text-white font-bold hover:bg-deep-green/90 transition-all shadow-md uppercase tracking-wider"
                     >
-                        <ArrowLeft className="w-5 h-5" /> {t.backToOptions}
+                        <ArrowLeft className="w-5 h-5" /> {t.backToAdvisory}
                     </button>
-                    <button
-                        onClick={handleDownloadPDF}
-                        className="flex items-center gap-2 px-6 py-3 bg-[#043744] text-white rounded-xl font-bold hover:bg-[#000D0F] transition-all shadow-md"
-                    >
-                        <Download className="w-5 h-5" /> {t.downloadPDF}
-                    </button>
+                    <div className="flex gap-4">
+                        <button className="flex items-center gap-2 px-6 py-3 bg-white border-2 border-deep-green text-deep-green font-bold hover:bg-deep-green hover:text-white transition-all shadow-sm uppercase tracking-wider">
+                            <Download className="w-5 h-5" /> {t.exportPlan}
+                        </button>
+                        <button className="flex items-center gap-2 px-6 py-3 bg-deep-green text-white font-bold hover:bg-deep-green/90 transition-all shadow-md uppercase tracking-wider">
+                            <Share2 className="w-5 h-5" /> {t.sharePlan}
+                        </button>
+                    </div>
                 </div>
 
                 {/* Printable Content */}
@@ -177,7 +180,7 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
                     {/* Title Section */}
                     <div className="mb-10 text-center border-b border-gray-100 pb-8">
                         <div className="inline-flex items-center justify-center p-3 bg-[#E6F4EA] rounded-full mb-4">
-                            <TrendingUp className="w-8 h-8 text-[#043744]" />
+                            <TrendingUp className="w-8 h-8 text-[#1B5E20]" />
                         </div>
                         <h1 className="text-3xl md:text-4xl font-extrabold text-[#1E1E1E] mb-4">{roadmap.title}</h1>
                         <div className="text-[#555555] text-lg max-w-3xl mx-auto leading-relaxed">
@@ -195,8 +198,8 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
                     </div>
 
                     {/* Verdict Banner */}
-                    <div className="mb-10 bg-[#FAFAF7] border-l-4 border-[#043744] p-6 rounded-r-xl">
-                        <h3 className="text-sm font-bold text-[#043744] uppercase tracking-widest mb-2">{t.strategicVerdict}</h3>
+                    <div className="mb-10 bg-[#E8F5E9] border-l-4 border-[#1B5E20] p-6 rounded-r-xl">
+                        <h3 className="text-sm font-bold text-[#1B5E20] uppercase tracking-widest mb-2">{t.strategicVerdict}</h3>
                         <p className="text-xl font-bold text-[#1E1E1E]">{roadmap.final_verdict}</p>
                     </div>
 
@@ -237,26 +240,30 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
                 {/* 3-Phase Timeline with Quarterly Breakdown */}
                 <div className="mb-12">
                     <div className="flex items-center gap-3 mb-8">
-                        <Calendar className="w-6 h-6 text-[#043744]" />
+                        <Calendar className="w-6 h-6 text-[#1B5E20]" />
                         <h2 className="text-2xl font-bold text-[#1E1E1E]">{t.strategicTimeline}</h2>
                     </div>
 
                     <div className="space-y-10">
                         {roadmap.phases.map((phase, phaseIndex) => (
-                            <div key={phaseIndex} className="bg-gradient-to-br from-white to-[#FAFAF7] rounded-3xl border-2 border-[#E6E6E6] p-8 shadow-lg">
-                                {/* Phase Header */}
-                                <div className="mb-6 border-b border-[#E6E6E6] pb-4">
-                                    <div className="flex items-center gap-3 mb-2">
-                                        <div className="flex items-center justify-center w-12 h-12 rounded-full bg-[#043744] text-white shadow-md">
-                                            <span className="font-bold text-lg">{phaseIndex + 1}</span>
-                                        </div>
-                                        <div className="flex-1">
-                                            <h3 className="text-2xl font-bold text-[#1E1E1E]">{phase.phase}</h3>
-                                            <p className="text-sm text-[#555555] font-medium">{phase.timeframe}</p>
+                            <div key={phaseIndex} className="bg-white border-2 border-[#E6E6E6] p-8 shadow-sm relative overflow-hidden group hover:border-deep-green transition-colors">
+                                <div className="absolute top-0 left-0 w-2 h-full bg-deep-green"></div>
+                                <div className="flex items-start gap-6">
+                                    <div className="flex-shrink-0">
+                                        <div className="flex items-center justify-center w-12 h-12 bg-deep-green text-white shadow-md font-bold text-xl">
+                                            {phaseIndex + 1}
                                         </div>
                                     </div>
+                                    <div className="flex-grow">
+                                        <h3 className="text-2xl font-extrabold text-deep-green mb-2 uppercase tracking-tight">
+                                            {phase.phase_name}
+                                        </h3>
+                                        <p className="text-text-secondary leading-relaxed mb-6 font-medium">
+                                            {phase.description}
+                                        </p>
+                                    </div>
                                     {/* Profit Margin Card - Detailed & Centered */}
-                                    <div className="mt-6 bg-[#FAFAF7] border border-[#E6E6E6] rounded-2xl p-6 flex flex-col items-center text-center shadow-sm">
+                                    <div className="mt-6 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl p-6 flex flex-col items-center text-center shadow-sm">
                                         <div className="p-3 bg-white rounded-xl shadow-sm mb-3">
                                             <TrendingUp className="w-6 h-6 text-[#1F5F4A]" />
                                         </div>
@@ -269,13 +276,13 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
                                         </p>
                                     </div>
 
-                                    <div className="text-base font-semibold text-[#043744] mt-6 prose prose-sm max-w-none">
+                                    <div className="text-base font-semibold text-[#1B5E20] mt-6 prose prose-sm max-w-none">
                                         <span className="font-bold mr-2 text-lg">{t.focus}:</span>
                                         <div className="mt-2 text-[#555555] leading-relaxed">
                                             <ReactMarkdown
                                                 remarkPlugins={[remarkGfm]}
                                                 components={{
-                                                    strong: ({ node, ...props }) => <span className="font-extrabold text-[#043744]" {...props} />,
+                                                    strong: ({ node, ...props }) => <span className="font-extrabold text-[#1B5E20]" {...props} />,
                                                     p: ({ node, ...props }) => <div className="mb-2" {...props} />
                                                 }}
                                             >
@@ -292,7 +299,7 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
                                             <div key={qIndex} className="bg-white rounded-2xl border border-[#E6E6E6] p-6 shadow-sm hover:shadow-md transition-shadow">
                                                 <div className="flex justify-between items-start mb-4">
                                                     <h4 className="text-lg font-bold text-[#1E1E1E]">{quarter.period}</h4>
-                                                    <span className="text-xs font-bold text-white bg-[#043744] px-3 py-1 rounded-full">
+                                                    <span className="text-xs font-bold text-white bg-[#1B5E20] px-3 py-1 rounded-full">
                                                         {quarter.financial_target}
                                                     </span>
                                                 </div>
@@ -303,7 +310,7 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
                                                     <ul className="space-y-2">
                                                         {quarter.actions.map((action, aIndex) => (
                                                             <li key={aIndex} className="flex items-start gap-2 text-sm text-[#555555]">
-                                                                <CheckCircle className="w-4 h-4 text-[#043744] mt-0.5 flex-shrink-0" />
+                                                                <CheckCircle className="w-4 h-4 text-[#1B5E20] mt-0.5 flex-shrink-0" />
                                                                 <span>{action}</span>
                                                             </li>
                                                         ))}
@@ -316,7 +323,7 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
                                                     <div className="space-y-2">
                                                         {quarter.milestones.map((milestone, mIndex) => (
                                                             <div key={mIndex} className="flex items-start gap-2 text-sm text-[#1E1E1E] bg-[#E6F4EA] px-3 py-2 rounded-lg">
-                                                                <TrendingUp className="w-4 h-4 text-[#043744] mt-0.5 flex-shrink-0" />
+                                                                <TrendingUp className="w-4 h-4 text-[#1B5E20] mt-0.5 flex-shrink-0" />
                                                                 <span className="font-medium">{milestone}</span>
                                                             </div>
                                                         ))}
@@ -393,7 +400,7 @@ const Roadmap: React.FC<{ lang: Language }> = ({ lang }) => {
                                 const recText = typeof rec === 'string' ? rec : ((rec as any)?.recommendation || JSON.stringify(rec));
                                 return (
                                     <div key={i} className="flex items-start gap-3 bg-white p-4 rounded-xl border border-slate-200">
-                                        <div className="p-2 bg-blue-50 rounded-lg text-blue-600">
+                                        <div className="p-2 bg-[#E8F5E9] rounded-lg text-[#1B5E20]">
                                             <TrendingUp className="w-4 h-4" />
                                         </div>
                                         <p className="text-sm font-medium text-[#555555]">{recText}</p>

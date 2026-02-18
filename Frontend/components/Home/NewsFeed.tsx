@@ -1,105 +1,95 @@
-import React, { useState, useEffect } from 'react';
-import { useLanguage } from '../../src/context/LanguageContext';
+import React from 'react';
 import { translations } from '../../src/i18n/translations';
-import { ExternalLink } from 'lucide-react';
+import { Language } from '../../types';
+import { Link } from 'react-router-dom';
+import { ArrowRight, Clock } from 'lucide-react';
 
-interface NewsArticle {
-    headline: string;
-    source: string;
+interface NewsItem {
+    title: string;
+    description: string;
+    image: string;
+    category: string;
+    date: string;
     url: string;
-    image?: string;
-    published_at: string;
+    source: string;
 }
 
-const NewsFeed: React.FC = () => {
-    const { language } = useLanguage();
-    const t = translations[language];
-    const [news, setNews] = useState<NewsArticle[]>([]);
-    const [loading, setLoading] = useState(true);
+const NewsFeed: React.FC<{ lang: Language }> = ({ lang }) => {
+    const t = translations[lang];
 
-    useEffect(() => {
-        const fetchNews = async () => {
-            try {
-                // Fetching general news to show on Home Page
-                const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/news/general`);
-                const data = await response.json();
-                if (data.success && data.news) {
-                    setNews(data.news.slice(0, 5)); // Show top 5 news
-                }
-            } catch (error) {
-                console.error("Failed to fetch news", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchNews();
-    }, []);
-
-    if (loading) {
-        return (
-            <div className="h-full flex items-center justify-center">
-                <div className="animate-spin w-8 h-8 border-2 border-[#3A2E25] border-t-transparent rounded-full"></div>
-            </div>
-        );
-    }
+    const newsItems: NewsItem[] = [
+        {
+            title: "Sustainable Farming: The Future of Agriculture",
+            description: "How modern techniques are shaping the future of farming.",
+            image: "https://images.unsplash.com/photo-1625246333195-003581202711?auto=format&fit=crop&q=80&w=600",
+            category: "Innovation",
+            date: "2 Hours ago",
+            url: "#",
+            source: "AgriTech"
+        },
+        {
+            title: "New Irrigation Methods Save Water",
+            description: "Farmers are adopting new efficient irrigation systems.",
+            image: "https://images.unsplash.com/photo-1563514227146-23429dd94186?auto=format&fit=crop&q=80&w=600",
+            category: "Technology",
+            date: "5 Hours ago",
+            url: "#",
+            source: "EcoFarm"
+        },
+        {
+            title: "Crop Yields Increase by 20% this Season",
+            description: "Favorable weather and better seeds contribute to high yields.",
+            image: "https://images.unsplash.com/photo-1523348837708-15d4a09cfac2?auto=format&fit=crop&q=80&w=600",
+            category: "Market",
+            date: "1 Day ago",
+            url: "#",
+            source: "DailyAgri"
+        }
+    ];
 
     return (
-        <div className="h-full flex flex-col">
-            <h3 className="text-xl font-bold text-[#3A2E25] mb-4 flex items-center gap-2">
-                📰 {t.newsTitle || "Latest Agri News"}
-            </h3>
+        <div className="w-full bg-white border-t border-deep-green/10 pt-12 pb-8">
+            <div className="max-w-7xl mx-auto px-4 md:px-8">
+                <div className="flex items-center justify-between mb-8">
+                    <h2 className="text-3xl font-extrabold text-deep-green tracking-tight uppercase">
+                        {t.latestNews}
+                    </h2>
+                    <Link to="/news" className="text-sm font-bold text-deep-green hover:text-deep-blue uppercase tracking-widest border-b-2 border-deep-green hover:border-deep-blue transition-all">
+                        {t.viewAll}
+                    </Link>
+                </div>
 
-            <div className="flex-1 overflow-y-auto pr-2 space-y-3 custom-scrollbar">
-                {news.length === 0 ? (
-                    <p className="text-[#5A4638] text-sm">No news available at the moment.</p>
-                ) : (
-                    news.map((item, index) => (
-                        <a
-                            key={index}
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="block p-4 bg-[#FAF4E8] rounded-xl border border-[#D4C5A9] hover:shadow-md hover:border-[#8B5E3C] transition-all group"
-                        >
-                            <div className="flex gap-4">
-                                {item.image && (
-                                    <div className="w-16 h-16 flex-shrink-0 rounded-lg overflow-hidden">
-                                        <img src={item.image} alt="" className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                    </div>
-                                )}
-                                <div className="flex-1">
-                                    <h4 className="text-sm font-bold text-[#3A2E25] line-clamp-2 leading-tight group-hover:text-[#8B5E3C] transition-colors">
-                                        {item.headline}
-                                    </h4>
-                                    <div className="flex items-center justify-between mt-2">
-                                        <span className="text-[10px] uppercase font-bold text-[#8C7B65] bg-[#EAD8BD] px-2 py-0.5 rounded-full">
-                                            {item.source}
-                                        </span>
-                                        <ExternalLink className="w-3 h-3 text-[#5A4638] opacity-0 group-hover:opacity-100 transition-opacity" />
-                                    </div>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    {newsItems.map((news, index) => (
+                        <div key={index} className="group bg-white border-2 border-[#E0E6E6] hover:border-deep-green transition-all hover:shadow-lg relative overflow-hidden">
+                            <div className="h-48 overflow-hidden relative">
+                                <img
+                                    src={news.image}
+                                    alt={news.title}
+                                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                                />
+                                <div className="absolute top-0 right-0 bg-deep-green text-white text-xs font-bold px-3 py-1 uppercase tracking-wider">
+                                    {news.category}
                                 </div>
                             </div>
-                        </a>
-                    ))
-                )}
+                            <div className="p-6">
+                                <p className="text-xs font-bold text-gray-400 mb-2 uppercase tracking-wide">
+                                    {news.date}
+                                </p>
+                                <h3 className="text-xl font-bold text-deep-green mb-3 leading-tight group-hover:text-deep-blue transition-colors">
+                                    {news.title}
+                                </h3>
+                                <p className="text-sm text-text-secondary line-clamp-2 mb-4">
+                                    {news.description}
+                                </p>
+                                <button className="text-sm font-bold text-deep-green uppercase tracking-wider flex items-center gap-2 group-hover:gap-3 transition-all">
+                                    {t.readMore} <ArrowRight className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
-
-            <style>{`
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 4px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: transparent;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: #D4C5A9;
-                    border-radius: 10px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: #8B5E3C;
-                }
-            `}</style>
         </div>
     );
 };

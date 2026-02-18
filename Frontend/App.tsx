@@ -4,6 +4,8 @@ import Home from './pages/Home';
 import Chatbot from './pages/Chatbot';
 import BusinessAdvisory from './pages/BusinessAdvisory';
 import CropCare from './pages/CropCare';
+import DiseaseDetector from './pages/DiseaseDetector';
+import PestDetector from './pages/PestDetector';
 import WasteToValue from './pages/WasteToValue';
 import KnowledgeHub from './pages/KnowledgeHub';
 import BusinessDetail from './pages/BusinessDetail';
@@ -15,7 +17,7 @@ import { Leaf } from 'lucide-react';
 import { Language, UserProfile } from './types';
 import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from './firebase';
 import { onSnapshot, doc, setDoc } from 'firebase/firestore';
-import { RefreshCw, LogOut, Settings } from 'lucide-react';
+import { RefreshCw, LogOut, Settings, Menu, X } from 'lucide-react';
 import { api } from './services/api';
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './src/context/LanguageContext';
@@ -45,6 +47,7 @@ const Header: React.FC<{
   const location = useLocation();
   const { language, setLanguage, t } = useLanguage();
   const { theme, toggleTheme } = useTheme();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const navItems = [
     { label: t.navHome, path: '/' },
@@ -61,17 +64,19 @@ const Header: React.FC<{
   };
 
   return (
-    <header className="sticky top-5 z-50 mx-4 md:mx-8">
-      <div className="max-w-7xl mx-auto bg-[#EAD8BD] rounded-[20px] shadow-[0_8px_24px_rgba(0,0,0,0.08)] border border-[#D4C5A9] px-4 md:px-8">
-        <div className="flex items-center justify-between h-[73px]">
+    <header className="sticky top-0 z-50 w-full bg-[#1B5E20] border-b-4 border-[#2E7D32] shadow-md">
+      <div className="max-w-7xl mx-auto px-4">
+        <div className="flex items-center justify-between h-[64px]">
           {/* Brand */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <div className="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-sm group-hover:shadow-md transition-all duration-300 overflow-hidden p-1">
-              <img src={logo} alt="Logo" className="w-full h-full object-contain" />
+          <Link to="/" className="flex items-center gap-3 group mr-8">
+            <div className="flex items-center justify-center">
+              <img src={logo} alt="Logo" className="h-[50px] w-auto object-contain brightness-0 invert" />
             </div>
-            <span className="text-2xl font-bold text-[#3A2E25]">
-              {t.brandName}
-            </span>
+            <div className="hidden md:flex flex-col justify-center h-full">
+              <span className="text-xl font-bold text-white tracking-tight leading-none">
+                {t.brandName}
+              </span>
+            </div>
           </Link>
 
           {/* Desktop Navigation */}
@@ -81,7 +86,7 @@ const Header: React.FC<{
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${location.pathname === item.path ? 'text-[#3A2E25] font-bold bg-[#E8F5F5]' : 'text-[#6B7878] hover:text-[#3A2E25] hover:bg-[#FAFCFC]'}`}
+                  className={`px-6 py-3 text-sm font-bold uppercase tracking-wide transition-all duration-200 border-b-4 whitespace-nowrap rounded-lg ${location.pathname === item.path ? 'text-white border-white bg-white/10' : 'text-white/70 border-transparent hover:text-white hover:bg-white/5'}`}
                 >
                   {item.label}
                 </Link>
@@ -91,19 +96,28 @@ const Header: React.FC<{
 
           {/* Right Side */}
           <div className="flex items-center gap-4">
+            {/* Mobile Menu Button */}
             {user && (
-              <div className={`flex items-center gap-1 bg-[#FAFAF7] border border-[#E6E6E6] rounded-full px-1 py-0.5 transition-all group ${weatherLoading ? 'opacity-80' : ''}`}>
+              <button
+                className="lg:hidden p-2 text-white hover:bg-white/10 rounded-lg transition-colors"
+                onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              >
+                {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+              </button>
+            )}
+            {user && (
+              <div className={`flex items-center gap-0 bg-deep-green border border-white/20 transition-all rounded-lg overflow-hidden ${weatherLoading ? 'opacity-80' : ''}`}>
                 <button
                   onClick={toggleWeather}
-                  className="flex items-center gap-2 px-3 py-1.5 bg-transparent rounded-full text-[13px] font-bold text-[#3A2E25] hover:bg-[#E8F5E9] transition-all"
+                  className="flex items-center gap-3 px-4 py-2 bg-transparent text-xs font-bold text-white hover:bg-white/10 transition-all border-r border-white/20"
                   title="View Weather Details"
                 >
-                  <span className="group-hover:scale-110 transition-transform">☁</span>
-                  <span className="line-clamp-1 max-w-[150px]">{getDisplayLocation(user)}: {getWeatherDisplay()}</span>
+                  <span className="text-lg">☁</span>
+                  <span className="uppercase tracking-wider">{getDisplayLocation(user)}: {getWeatherDisplay()}</span>
                 </button>
                 <button
                   onClick={refreshWeather}
-                  className={`p-1.5 rounded-full hover:bg-[#E8F5E9] text-[#3A2E25] transition-all ${weatherLoading ? 'animate-spin' : 'hover:scale-110'}`}
+                  className={`p-2 hover:bg-white/10 text-white transition-all ${weatherLoading ? 'animate-spin' : 'hover:rotate-180'}`}
                   title="Refresh Weather"
                 >
                   <RefreshCw size={14} />
@@ -112,12 +126,12 @@ const Header: React.FC<{
             )}
 
             {/* Language Switcher */}
-            <div className="hidden sm:flex bg-[#FAFAF7] border border-[#E6E6E6] rounded-xl p-1 gap-1">
+            <div className="hidden sm:flex bg-deep-green border border-white/20 p-0 gap-0 rounded-lg overflow-hidden min-w-[120px]">
               {[{ code: 'EN', label: 'EN' }, { code: 'HI', label: 'HI' }, { code: 'MR', label: 'MR' }].map((l) => (
                 <button
                   key={l.code}
                   onClick={() => setLanguage(l.code as Language)}
-                  className={`px-3 py-1.5 text-[12px] font-bold rounded-lg transition-all ${language === l.code ? 'bg-[#3A2E25] text-white shadow-md' : 'text-stone-400 hover:text-[#3A2E25]'}`}
+                  className={`flex-1 px-2 py-1.5 text-[11px] font-bold transition-all border-r border-white/20 last:border-r-0 ${language === l.code ? 'bg-white text-deep-green' : 'text-white hover:bg-white/10'}`}
                 >
                   {l.label}
                 </button>
@@ -126,35 +140,34 @@ const Header: React.FC<{
 
             {user ? (
               <div className="relative group">
-                <button className="flex items-center gap-2 bg-[#FAFAF7] border border-[#E6E6E6] px-3 py-1.5 rounded-xl hover:bg-stone-100 transition-colors">
-                  <div className="w-8 h-8 rounded-full bg-[#3A2E25] flex items-center justify-center text-white font-bold text-sm">
+                <button className="flex items-center gap-3 bg-white/5 border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors rounded-xl">
+                  <div className="w-8 h-8 bg-white flex items-center justify-center text-deep-green font-bold text-sm rounded-full">
                     {user.name && user.name.charAt(0).toUpperCase()}
                   </div>
                   <div className="hidden md:block text-left">
-                    <p className="text-xs font-bold text-[#1E1E1E] leading-tight">{user.name}</p>
-                    <p className="text-[10px] text-[#555555] capitalize">{user.occupation}</p>
+                    <p className="text-xs font-bold text-white leading-tight uppercase">{user.name}</p>
+                    <p className="text-[10px] text-white/60 uppercase tracking-wider">{user.occupation}</p>
                   </div>
                 </button>
 
-                <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-[#E6E6E6] rounded-xl shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
-                  <Link to="/profile/edit" className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[#555555] hover:bg-[#FAFAF7] hover:text-[#3A2E25] transition-colors">
+                <div className="absolute right-0 top-full mt-2 w-56 bg-white border-2 border-deep-green shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 rounded-xl overflow-hidden">
+                  <Link to="/profile/edit" className="flex items-center gap-3 w-full px-5 py-4 text-sm font-bold text-deep-green hover:bg-light-green transition-colors border-b border-gray-100">
                     <Settings size={16} /> Edit Profile
                   </Link>
-                  <div className="h-px bg-[#E6E6E6]"></div>
                   <button
                     onClick={logout}
-                    className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-red-500 hover:bg-red-50 transition-colors"
+                    className="flex items-center gap-3 w-full px-5 py-4 text-sm font-bold text-red-600 hover:bg-red-50 transition-colors"
                   >
                     <LogOut size={16} /> {t.logout}
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center gap-4">
-                <Link to="/login" className="text-sm font-bold text-[#3A2E25] hover:text-[#8B5E3C]">
+              <div className="flex items-center gap-0">
+                <Link to="/login" className="px-6 py-2.5 text-sm font-bold text-white uppercase hover:bg-white/10 transition-colors rounded-lg">
                   {t.login}
                 </Link>
-                <Link to="/signup" className="px-5 py-2.5 bg-[#3A2E25] text-white rounded-xl text-sm font-bold hover:bg-[#2C221C] transition-all shadow-md hover:shadow-lg">
+                <Link to="/signup" className="px-6 py-2.5 bg-white text-deep-green text-sm font-bold uppercase hover:bg-gray-100 transition-all border-2 border-white rounded-lg">
                   {t.signup}
                 </Link>
               </div>
@@ -162,6 +175,43 @@ const Header: React.FC<{
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu Dropdown */}
+      {isMobileMenuOpen && user && (
+        <div className="lg:hidden bg-[#1B5E20] border-t border-[#2E7D32] absolute w-full left-0 top-[64px] shadow-xl animate-in slide-in-from-top-2 z-40">
+          <nav className="flex flex-col p-4 space-y-2">
+            {navItems.map((item) => (
+              <Link
+                key={item.path}
+                to={item.path}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className={`px-4 py-3 text-sm font-bold uppercase tracking-wide rounded-lg transition-colors ${location.pathname === item.path ? 'bg-white/20 text-white' : 'text-white/80 hover:bg-white/10 hover:text-white'}`}
+              >
+                {item.label}
+              </Link>
+            ))}
+            {/* Mobile Profile & Logout */}
+            <div className="pt-4 mt-2 border-t border-white/10">
+              <Link
+                to="/profile/edit"
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-white/80 hover:bg-white/10 rounded-lg"
+              >
+                <Settings size={18} /> Edit Profile
+              </Link>
+              <button
+                onClick={() => {
+                  logout();
+                  setIsMobileMenuOpen(false);
+                }}
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-red-300 hover:bg-red-900/20 rounded-lg transition-colors"
+              >
+                <LogOut size={18} /> {t.logout}
+              </button>
+            </div>
+          </nav>
+        </div>
+      )}
     </header>
   );
 };
@@ -186,79 +236,84 @@ const LoginFlow: React.FC<{ onLogin: (e: string, p: string) => void; onSwitch: (
   };
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
+    <div className="h-screen w-screen overflow-hidden flex flex-col md:flex-row">
       {/* Left Section - Login Form (Light Section) */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 order-2 md:order-1">
-        <div className="w-full max-w-[480px] bg-white rounded-[20px] shadow-sm p-8 md:p-10">
-          <div className="mb-8">
-            <h1 className="text-[32px] font-bold text-[#2C221C] mb-2">{t.login}</h1>
-            <p className="text-[#3A2E25] font-medium">{t.loginTitle}</p>
+      <div className="w-full md:w-1/2 h-full overflow-y-auto bg-[#F1F8E9]">
+        <div className="min-h-full flex items-center justify-center p-6 md:p-12">
+          <div className="w-full max-w-[480px] bg-white rounded-2xl shadow-lg p-8 md:p-10 border border-green-100">
+            <div className="mb-8">
+              <h1 className="text-[32px] font-bold text-deep-green mb-2">{t.login}</h1>
+              <p className="text-gray-600 font-medium">{t.loginTitle}</p>
+            </div>
+
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {error && (
+                <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-bold text-center">
+                  {error}
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-bold text-deep-green mb-2 ml-1">{t.email} / {t.phoneNumber}</label>
+                  <input
+                    required
+                    type="text"
+                    placeholder="name@example.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full p-4 bg-white border-2 border-gray-200 text-gray-900 rounded-xl focus:outline-none focus:border-deep-green focus:ring-4 focus:ring-green-500/10 transition-all"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-bold text-deep-green mb-2 ml-1">{t.password}</label>
+                  <input
+                    required
+                    type="password"
+                    placeholder="••••••••"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    className="w-full p-4 bg-white border-2 border-gray-200 text-gray-900 rounded-xl focus:outline-none focus:border-deep-green focus:ring-4 focus:ring-green-500/10 transition-all"
+                  />
+                </div>
+
+                <div className="flex items-center justify-between py-2">
+                  <label className="flex items-center gap-2 cursor-pointer group">
+                    <input type="checkbox" className="w-4 h-4 rounded border-gray-300 text-deep-green focus:ring-deep-green" />
+                    <span className="text-sm font-medium text-gray-600 group-hover:text-deep-green transition-colors">{t.rememberMe}</span>
+                  </label>
+                  <button type="button" className="text-sm font-bold text-deep-green hover:underline">
+                    {t.forgotPassword}
+                  </button>
+                </div>
+              </div>
+
+              <button
+                type="submit"
+                disabled={loading}
+                className="w-full py-4 bg-deep-green text-white rounded-xl font-bold text-lg hover:bg-green-800 transition-all shadow-md hover:shadow-lg disabled:opacity-50 active:scale-[0.98]"
+              >
+                {loading ? t.loggingIn : t.login}
+              </button>
+
+              <div className="text-center mt-6">
+                <p className="text-gray-600 text-sm">
+                  {t.dontHaveAccount} <button type="button" onClick={onSwitch} className="text-deep-green font-bold hover:underline">{t.signup}</button>
+                </p>
+              </div>
+            </form>
           </div>
-
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-bold text-center">
-                {error}
-              </div>
-            )}
-
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-bold text-[#2C221C] mb-2 ml-1">{t.email} / {t.phoneNumber}</label>
-                <input
-                  required
-                  type="text"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  className="w-full p-4 bg-white border border-[#E0E6E6] text-[#2C221C] rounded-[12px] focus:outline-none focus:border-[#3A2E25] focus:shadow-[0_0_0_4px_rgba(4,55,68,0.05)] transition-all"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-bold text-[#2C221C] mb-2 ml-1">{t.password}</label>
-                <input
-                  required
-                  type="password"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  className="w-full p-4 bg-white border border-[#E0E6E6] text-[#2C221C] rounded-[12px] focus:outline-none focus:border-[#3A2E25] focus:shadow-[0_0_0_4px_rgba(4,55,68,0.05)] transition-all"
-                />
-              </div>
-
-              <div className="flex items-center justify-between py-2">
-                <label className="flex items-center gap-2 cursor-pointer group">
-                  <input type="checkbox" className="w-4 h-4 rounded border-[#E0E6E6] text-[#3A2E25] focus:ring-[#3A2E25]" />
-                  <span className="text-sm font-medium text-[#3A2E25]/70 group-hover:text-[#2C221C] transition-colors">{t.rememberMe}</span>
-                </label>
-                <button type="button" className="text-sm font-bold text-[#3A2E25] hover:underline">
-                  {t.forgotPassword}
-                </button>
-              </div>
-            </div>
-
-            <button
-              type="submit"
-              disabled={loading}
-              className="w-full py-4 bg-[#3A2E25] text-white rounded-[12px] font-bold text-lg hover:bg-[#2C221C] transition-all shadow-sm disabled:opacity-50"
-            >
-              {loading ? t.loggingIn : t.login}
-            </button>
-
-            <div className="text-center mt-6">
-              <p className="text-[#3A2E25]/70 text-sm">
-                {t.dontHaveAccount} <button type="button" onClick={onSwitch} className="text-[#3A2E25] font-bold hover:underline">{t.signup}</button>
-              </p>
-            </div>
-          </form>
         </div>
       </div>
 
-      {/* Right Section - Logo (Dark Section) */}
-      <div className="w-full md:w-1/2 bg-gradient-to-br from-[#3A2E25] via-[#5A4638] to-[#8B5E3C] flex flex-col items-center justify-center p-12 text-center order-1 md:order-2 min-h-[300px] md:min-h-screen">
-        <img src={logo} alt="KrishiSahAI Logo" className="h-40 md:h-56 w-auto object-contain mb-8 filter brightness-0 invert opacity-90" />
-        <h2 className="text-white text-4xl md:text-5xl font-extrabold mb-4">{t.brandName}</h2>
-        <p className="text-white/80 text-lg md:text-xl font-medium tracking-wide">{t.tagline}</p>
+      {/* Right Section - Logo (Green Gradient) */}
+      <div className="hidden md:flex w-full md:w-1/2 h-full bg-gradient-to-br from-deep-green to-deep-blue flex-col items-center justify-center p-12 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <img src={logo} alt="KrishiSahAI Logo" className="h-40 md:h-56 w-auto object-contain mb-8 filter brightness-0 invert drop-shadow-xl" />
+          <h2 className="text-white text-4xl md:text-5xl font-extrabold mb-4">{t.brandName}</h2>
+          <p className="text-white/90 text-lg md:text-xl font-medium tracking-wide">{t.tagline}</p>
+        </div>
       </div>
     </div>
   );
@@ -313,137 +368,142 @@ const SignupFlow: React.FC<{ onSignup: (p: any, pass: string) => void; onSwitch:
     }
   };
 
-  const inputClasses = "w-full p-4 bg-white border border-[#E0E6E6] text-[#2C221C] rounded-[12px] focus:outline-none focus:border-[#3A2E25] focus:shadow-[0_0_0_4px_rgba(4,55,68,0.05)] transition-all";
-  const labelClasses = "block text-sm font-bold text-[#2C221C] mb-2 ml-1";
-  const sectionTitleClasses = "text-xl font-bold text-[#2C221C] mb-6";
+  const inputClasses = "w-full p-4 bg-white border-2 border-gray-200 text-gray-900 rounded-xl focus:outline-none focus:border-deep-green focus:ring-4 focus:ring-green-500/10 transition-all";
+  const labelClasses = "block text-sm font-bold text-deep-green mb-2 ml-1";
+  const sectionTitleClasses = "text-xl font-bold text-deep-green mb-6";
 
   return (
-    <div className="min-h-screen flex flex-col md:flex-row">
-      {/* Left Section - Logo (Dark Section) */}
-      <div className="w-full md:w-1/2 bg-gradient-to-br from-[#3A2E25] via-[#5A4638] to-[#8B5E3C] flex flex-col items-center justify-center p-12 text-center min-h-[300px] md:min-h-screen">
-        <img src={logo} alt="KrishiSahAI Logo" className="h-40 md:h-56 w-auto object-contain mb-8 filter brightness-0 invert opacity-90" />
-        <h2 className="text-white text-4xl md:text-5xl font-extrabold mb-4">{t.brandName}</h2>
-        <p className="text-white/80 text-lg md:text-xl font-medium tracking-wide">{t.tagline}</p>
+    <div className="h-screen w-screen overflow-hidden flex flex-col md:flex-row">
+      {/* Left Section - Logo (Green Gradient) - Fixed */}
+      <div className="hidden md:flex w-full md:w-1/2 h-full bg-gradient-to-br from-deep-green to-deep-blue flex-col items-center justify-center p-12 text-center relative overflow-hidden">
+        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
+        <div className="relative z-10 flex flex-col items-center justify-center">
+          <img src={logo} alt="KrishiSahAI Logo" className="h-40 md:h-56 w-auto object-contain mb-8 filter brightness-0 invert drop-shadow-xl" />
+          <h2 className="text-white text-4xl md:text-5xl font-extrabold mb-4">{t.brandName}</h2>
+          <p className="text-white/90 text-lg md:text-xl font-medium tracking-wide">{t.tagline}</p>
+        </div>
       </div>
 
-      {/* Right Section - Signup Form (Light Section) */}
-      <div className="w-full md:w-1/2 flex items-center justify-center p-6 md:p-12 overflow-y-auto">
-        <div className="w-full max-w-[480px] bg-white rounded-[20px] shadow-sm p-8 md:p-10 my-8">
-          <div className="mb-10">
-            <h1 className="text-[32px] font-bold text-[#2C221C] mb-2">{t.signup}</h1>
-            <p className="text-[#3A2E25]/70 font-medium">{t.signupTitle}</p>
-          </div>
+      {/* Right Section - Signup Form (Light Section) - Scrollable */}
+      <div className="w-full md:w-1/2 h-full overflow-y-auto bg-[#F1F8E9]">
+        <div className="min-h-full flex items-center justify-center p-6 md:p-12">
+          <div className="w-full max-w-[480px] bg-white rounded-2xl shadow-lg p-8 md:p-10 border border-green-100 my-8">
+            <div className="mb-10">
+              <h1 className="text-[32px] font-bold text-deep-green mb-2">{t.signup}</h1>
+              <p className="text-gray-600 font-medium">{t.signupTitle}</p>
+            </div>
 
-          <div className="flex gap-2 mb-8">
-            {[1, 2, 3].map(s => (
-              <div key={s} className={`h-1 flex-1 rounded-full ${step >= s ? 'bg-[#3A2E25]' : 'bg-[#E0E6E6]'}`} />
-            ))}
-          </div>
+            <div className="flex gap-2 mb-8">
+              {[1, 2, 3].map(s => (
+                <div key={s} className={`h-1 flex-1 rounded-full transition-all duration-300 ${step >= s ? 'bg-deep-green' : 'bg-gray-200'}`} />
+              ))}
+            </div>
 
-          <form className="space-y-6" onSubmit={handleSubmit}>
-            {error && (
-              <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-bold text-center">
-                {error}
-              </div>
-            )}
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {error && (
+                <div className="p-4 bg-red-50 border border-red-100 text-red-600 rounded-xl text-sm font-bold text-center">
+                  {error}
+                </div>
+              )}
 
-            {step === 1 && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
-                <h3 className={sectionTitleClasses}>{t.sectionPersonal}</h3>
-                <div>
-                  <label className={labelClasses}>{t.fullName} *</label>
-                  <input required placeholder={t.enterName} className={inputClasses} value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
-                </div>
-                <div>
-                  <label className={labelClasses}>{t.phoneNumber} *</label>
-                  <input required placeholder={t.enterphone} className={inputClasses} value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
-                </div>
-                <div>
-                  <label className={labelClasses}>{t.email} *</label>
-                  <input required type="email" placeholder="name@example.com" className={inputClasses} value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
-                </div>
-                <div>
-                  <label className={labelClasses}>{t.password} *</label>
-                  <input required type="password" placeholder="••••••••" className={inputClasses} value={password} onChange={e => setPassword(e.target.value)} />
-                </div>
-                <div>
-                  <label className={labelClasses}>{t.confirmPassword} *</label>
-                  <input required type="password" placeholder="••••••••" className={inputClasses} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
-                </div>
-              </div>
-            )}
-
-            {step === 2 && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
-                <h3 className={sectionTitleClasses}>{t.sectionLand}</h3>
-                <div className="grid grid-cols-2 gap-4">
+              {step === 1 && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
+                  <h3 className={sectionTitleClasses}>{t.sectionPersonal}</h3>
                   <div>
-                    <label className={labelClasses}>{t.landArea} *</label>
-                    <input required type="number" step="0.1" placeholder="0.0" className={inputClasses} value={formData.landSize} onChange={e => setFormData({ ...formData, landSize: e.target.value })} />
+                    <label className={labelClasses}>{t.fullName} *</label>
+                    <input required placeholder={t.enterName} className={inputClasses} value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                   </div>
                   <div>
-                    <label className={labelClasses}>&nbsp;</label>
-                    <select className={inputClasses} value={formData.landUnit} onChange={e => setFormData({ ...formData, landUnit: e.target.value })}>
-                      <option value="acre">{t.unitAcre}</option>
-                      <option value="hectare">{t.unitHectare}</option>
+                    <label className={labelClasses}>{t.phoneNumber} *</label>
+                    <input required placeholder={t.enterphone} className={inputClasses} value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className={labelClasses}>{t.email} *</label>
+                    <input required type="email" placeholder="name@example.com" className={inputClasses} value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className={labelClasses}>{t.password} *</label>
+                    <input required type="password" placeholder="••••••••" className={inputClasses} value={password} onChange={e => setPassword(e.target.value)} />
+                  </div>
+                  <div>
+                    <label className={labelClasses}>{t.confirmPassword} *</label>
+                    <input required type="password" placeholder="••••••••" className={inputClasses} value={confirmPassword} onChange={e => setConfirmPassword(e.target.value)} />
+                  </div>
+                </div>
+              )}
+
+              {step === 2 && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
+                  <h3 className={sectionTitleClasses}>{t.sectionLand}</h3>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <label className={labelClasses}>{t.landArea} *</label>
+                      <input required type="number" step="0.1" placeholder="0.0" className={inputClasses} value={formData.landSize} onChange={e => setFormData({ ...formData, landSize: e.target.value })} />
+                    </div>
+                    <div>
+                      <label className={labelClasses}>&nbsp;</label>
+                      <select className={inputClasses} value={formData.landUnit} onChange={e => setFormData({ ...formData, landUnit: e.target.value })}>
+                        <option value="acre">{t.unitAcre}</option>
+                        <option value="hectare">{t.unitHectare}</option>
+                      </select>
+                    </div>
+                  </div>
+                  <div>
+                    <label className={labelClasses}>{t.landType} *</label>
+                    <select className={inputClasses} value={formData.landType} onChange={e => setFormData({ ...formData, landType: e.target.value })}>
+                      <option value="Irrigated">{t.irrigated}</option>
+                      <option value="Rainfed">{t.rainfed}</option>
+                      <option value="Mixed">{t.mixed}</option>
                     </select>
                   </div>
                 </div>
-                <div>
-                  <label className={labelClasses}>{t.landType} *</label>
-                  <select className={inputClasses} value={formData.landType} onChange={e => setFormData({ ...formData, landType: e.target.value })}>
-                    <option value="Irrigated">{t.irrigated}</option>
-                    <option value="Rainfed">{t.rainfed}</option>
-                    <option value="Mixed">{t.mixed}</option>
-                  </select>
-                </div>
-              </div>
-            )}
+              )}
 
-            {step === 3 && (
-              <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
-                <h3 className={sectionTitleClasses}>{t.sectionLocation}</h3>
-                <div>
-                  <label className={labelClasses}>{t.state} *</label>
-                  <select className={inputClasses} value={formData.state} onChange={e => setFormData({ ...formData, state: e.target.value })}>
-                    <option value="">{t.selectState}</option>
-                    <option>Maharashtra</option><option>Karnataka</option><option>Punjab</option><option>Uttar Pradesh</option>
-                  </select>
+              {step === 3 && (
+                <div className="space-y-4 animate-in fade-in slide-in-from-right-4 duration-500">
+                  <h3 className={sectionTitleClasses}>{t.sectionLocation}</h3>
+                  <div>
+                    <label className={labelClasses}>{t.state} *</label>
+                    <select className={inputClasses} value={formData.state} onChange={e => setFormData({ ...formData, state: e.target.value })}>
+                      <option value="">{t.selectState}</option>
+                      <option>Maharashtra</option><option>Karnataka</option><option>Punjab</option><option>Uttar Pradesh</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label className={labelClasses}>{t.district} *</label>
+                    <input required placeholder={t.enterDistrict} className={inputClasses} value={formData.district} onChange={e => setFormData({ ...formData, district: e.target.value })} />
+                  </div>
+                  <div>
+                    <label className={labelClasses}>{t.village} *</label>
+                    <input required placeholder={t.enterVillage} className={inputClasses} value={formData.village} onChange={e => setFormData({ ...formData, village: e.target.value })} />
+                  </div>
                 </div>
-                <div>
-                  <label className={labelClasses}>{t.district} *</label>
-                  <input required placeholder={t.enterDistrict} className={inputClasses} value={formData.district} onChange={e => setFormData({ ...formData, district: e.target.value })} />
-                </div>
-                <div>
-                  <label className={labelClasses}>{t.village} *</label>
-                  <input required placeholder={t.enterVillage} className={inputClasses} value={formData.village} onChange={e => setFormData({ ...formData, village: e.target.value })} />
-                </div>
-              </div>
-            )}
+              )}
 
-            <div className="flex flex-col gap-4 pt-4">
-              <div className="flex gap-4">
-                {step > 1 && (
-                  <button type="button" onClick={handleBack} className="flex-1 py-4 bg-white border border-[#E0E6E6] text-[#3A2E25] rounded-[12px] font-bold hover:bg-[#F5F8F8] transition-all">
-                    {t.back}
+              <div className="flex flex-col gap-4 pt-4">
+                <div className="flex gap-4">
+                  {step > 1 && (
+                    <button type="button" onClick={handleBack} className="flex-1 py-4 bg-white border-2 border-gray-200 text-gray-700 rounded-xl font-bold hover:bg-gray-50 transition-all">
+                      {t.back}
+                    </button>
+                  )}
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex-[2] py-4 bg-deep-green text-white rounded-xl font-bold hover:bg-green-800 transition-all shadow-md active:scale-[0.98] disabled:opacity-50"
+                  >
+                    {loading ? t.loading : (step === 3 ? t.submit : t.next)}
                   </button>
-                )}
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="flex-[2] py-4 bg-[#3A2E25] text-white rounded-[12px] font-bold hover:bg-[#2C221C] transition-all shadow-sm disabled:opacity-50"
-                >
-                  {loading ? t.loading : (step === 3 ? t.submit : t.next)}
-                </button>
-              </div>
+                </div>
 
-              <div className="text-center mt-4">
-                <p className="text-[#3A2E25]/70 text-sm font-medium">
-                  {t.alreadyHaveAccount} <button type="button" onClick={onSwitch} className="text-[#3A2E25] font-bold hover:underline">{t.login}</button>
-                </p>
+                <div className="text-center mt-4">
+                  <p className="text-gray-600 text-sm font-medium">
+                    {t.alreadyHaveAccount} <button type="button" onClick={onSwitch} className="text-deep-green font-bold hover:underline">{t.login}</button>
+                  </p>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
     </div>
@@ -576,6 +636,8 @@ const AppContent: React.FC = () => {
               <Route path="/advisory" element={<BusinessAdvisory lang={lang} user={user} />} />
               <Route path="/news" element={<NewsPage lang={lang} user={user} />} />
               <Route path="/crop-care" element={<CropCare lang={lang} />} />
+              <Route path="/crop-care/disease" element={<DiseaseDetector lang={lang} />} />
+              <Route path="/crop-care/pest" element={<PestDetector lang={lang} />} />
               <Route path="/waste-to-value" element={<WasteToValue lang={lang} />} />
               <Route path="/hub" element={<KnowledgeHub />} />
               <Route path="/knowledge/:slug" element={<ArticleDetail />} />

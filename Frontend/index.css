@@ -9,54 +9,45 @@
 :root {
   --font-sans: 'Inter', 'sans-serif';
 
-  /* Beige/Brown Theme Colors */
-  --color-primary: #3A2E25;
-  /* Dark accent (text/buttons) */
-  --color-primary-dark: #2C221C;
-  /* Darker shade for hover/active */
-  --color-primary-light: #EAD8BD;
-  /* Secondary soft beige */
-  --color-primary-hover: #5A4638;
-  /* Muted brown hover */
+  /* Professional Agri Theme (Sharp & Clean) */
+  --color-primary: #2E7D32;
+  /* Medium Green */
+  --color-primary-dark: #1B5E20;
+  /* Deep Green */
+  --color-primary-light: #E8F5E9;
+  /* Light Green Tint */
 
-  /* Accent Colors */
-  --color-accent: #8B5E3C;
-  /* Warm brown accent */
-  --color-accent-dark: #5A4638;
-  --color-accent-light: #F3E4CF;
-  /* Primary background */
+  --color-secondary: #0D47A1;
+  /* Deep Blue */
+  --color-accent: #1565C0;
+  /* Muted Blue */
 
-  /* Theme Backgrounds */
-  --bg-primary: #F3E4CF;
-  /* Main Background */
-  --bg-secondary: #EAD8BD;
-  /* Cards / Sections */
-  --bg-tertiary: #FAF4E8;
-  /* Lightest beige */
+  /* Backgrounds */
+  --bg-primary: #F1F8E9;
+  /* Very faint green/white */
+  --bg-secondary: #FFFFFF;
+  /* Pure White */
+  --bg-panel: #E8F5E9;
+  /* Panel Background */
 
-  --border-color: #D4C5A9;
-  /* Soft border */
+  --border-color: #1B5E20;
+  /* Strong Borders */
 
   /* Text Colors */
-  --text-primary: #3A2E25;
-  /* Main text */
-  --text-secondary: #5A4638;
-  /* Secondary text */
-  --text-tertiary: #8C7B65;
-  /* Muted text */
+  --text-primary: #002105;
+  --text-secondary: #1B5E20;
+  --text-light: #FFFFFF;
 }
 
 :root {
-  /* Shadows */
-  --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-  --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1);
-  --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1);
-  --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+  /* Shadows - Minimal/None for sharp look */
+  --shadow-sm: none;
+  --shadow-md: 0 2px 4px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 4px 8px rgba(0, 0, 0, 0.15);
 
   /* Transitions */
-  --transition-fast: 150ms ease-in-out;
-  --transition-normal: 300ms ease-in-out;
-  --transition-slow: 500ms ease-in-out;
+  --transition-fast: 150ms ease-out;
+  --transition-normal: 250ms ease-out;
 }
 
 * {
@@ -68,36 +59,17 @@
 body {
   margin: 0;
   padding: 0;
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-image: url('/bg_image.jpg');
-  background-size: cover;
-  background-position: center center;
-  background-repeat: no-repeat;
-  background-attachment: fixed;
   background-color: var(--bg-primary);
-  /* Fallback */
   color: var(--text-primary);
-  transition: background-color var(--transition-normal), color var(--transition-normal);
-  position: relative;
+  /* No background image, solid professional color */
 }
 
-/* Global Background Overlay */
+/* Remove old overlay */
 body::before {
-  content: "";
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  z-index: -1;
-  background-color: rgba(243, 228, 207, 0.15);
-  /* Much lower opacity to keep image bright/original */
-  opacity: 1;
-  /* Remove the subtle dot opacity */
-  pointer-events: none;
+  display: none;
 }
 
 /* Devanagari Font Support */

@@ -53,11 +53,8 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                     </div>
 
                     <button
-                        onClick={() => {
-                            onNewChat();
-                            onClose(); // Close on mobile after parsing
-                        }}
-                        className="w-full py-3 px-4 bg-[#043744] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#000D0F] transition-all shadow-sm"
+                        onClick={onNewChat}
+                        className="w-full py-3 px-4 bg-[#1B5E20] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#144919] transition-all shadow-sm"
                     >
                         <Plus className="w-5 h-5" />
                         New Chat
@@ -78,7 +75,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                                 className={`
                         relative w-full text-left p-3 rounded-xl transition-all group
                         ${activeChatId === chat.id
-                                        ? 'bg-[#E8F5E9] text-[#043744] font-bold border border-[#043744]/10'
+                                        ? 'bg-[#E8F5E9] text-[#1B5E20] font-bold border border-[#1B5E20]/10'
                                         : 'text-[#555555] hover:bg-white hover:shadow-sm border border-transparent'}
                     `}
                             >
@@ -90,7 +87,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                                     className="w-full text-left"
                                 >
                                     <div className="flex items-center gap-3 pr-8">
-                                        <MessageSquare className={`w-4 h-4 flex-shrink-0 ${activeChatId === chat.id ? 'text-[#043744]' : 'text-stone-400'}`} />
+                                        <MessageSquare className={`w-4 h-4 flex-shrink-0 ${activeChatId === chat.id ? 'text-[#1B5E20]' : 'text-stone-400'}`} />
                                         <div className="flex-1 overflow-hidden">
                                             <p className="truncate text-sm">{chat.title || "New Chat"}</p>
                                             {chat.updatedAt && (

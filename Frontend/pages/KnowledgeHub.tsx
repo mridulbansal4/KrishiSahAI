@@ -9,29 +9,32 @@ const KnowledgeHub: React.FC = () => {
 
     useEffect(() => {
         const loadArticles = async () => {
-            // Dynamically import all index.json files from src/articles
             const modules = import.meta.glob('/src/articles/*/index.json', { eager: true });
-
-            // Dynamically import all images to resolve paths
             const imageModules = import.meta.glob('/src/articles/*/*.{png,jpg,jpeg,svg,webp}', { eager: true });
 
             const loadedArticles: Article[] = Object.entries(modules).map(([path, mod]: [string, any]) => {
                 const data = mod.default || mod;
                 const parts = path.split('/');
-                const slug = parts[parts.length - 2];
+                const folderName = parts[parts.length - 2];
+                // Prioritize the slug from the JSON data, fallback to folder name
+                const slug = data.slug || folderName;
 
                 let heroImage = data.heroImage;
 
-                // Resolve heroImage path
-                const expectedPath = `/src/articles/${slug}/${heroImage}`;
-                const imageMod = imageModules[expectedPath] as any;
-
-                if (imageMod) {
-                    heroImage = imageMod.default || imageMod;
-                } else {
-                    const anyImageEntry = Object.entries(imageModules).find(([k]) => k.includes(`/src/articles/${slug}/`));
-                    if (anyImageEntry) {
-                        heroImage = (anyImageEntry[1] as any).default || anyImageEntry[1];
+                // Robust image path resolution
+                if (heroImage) {
+                    // Try exact path first
+                    const exactPath = `/src/articles/${folderName}/${heroImage}`;
+                    if (imageModules[exactPath]) {
+                        heroImage = (imageModules[exactPath] as any).default || imageModules[exactPath];
+                    } else {
+                        // Fallback: search for the image file name within the article's folder
+                        const relativeImageEntry = Object.entries(imageModules).find(([imgPath]) =>
+                            imgPath.includes(`/${folderName}/`) && imgPath.endsWith(heroImage)
+                        );
+                        if (relativeImageEntry) {
+                            heroImage = (relativeImageEntry[1] as any).default || relativeImageEntry[1];
+                        }
                     }
                 }
 
@@ -41,7 +44,6 @@ const KnowledgeHub: React.FC = () => {
                     slug: slug
                 };
             });
-
 
             setArticles(loadedArticles);
         };
@@ -61,10 +63,10 @@ const KnowledgeHub: React.FC = () => {
         <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
             <div className="max-w-7xl mx-auto">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold text-green-900 mb-4 font-display">
+                    <h1 className="text-4xl md:text-5xl font-bold text-deep-green mb-4 font-display">
                         {currentHeader.title}
                     </h1>
-                    <p className="text-xl text-gray-600 max-w-2xl mx-auto">
+                    <p className="text-xl text-deep-green/80 max-w-2xl mx-auto">
                         {currentHeader.subtitle}
                     </p>
                 </div>

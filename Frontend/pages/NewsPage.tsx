@@ -79,10 +79,10 @@ const NewsPage: React.FC<NewsPageProps> = ({ lang, user }) => {
         <div className="max-w-7xl mx-auto px-6 py-10">
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
                 <div>
-                    <h1 className="text-4xl font-extrabold text-[#000D0F] tracking-tight mb-3">
+                    <h1 className="text-4xl font-extrabold text-[#002105] tracking-tight mb-3">
                         {t.newsTitle}
                     </h1>
-                    <p className="text-lg text-[#043744] font-medium">
+                    <p className="text-lg text-[#1B5E20] font-medium">
                         {newsMode === 'personalized'
                             ? t.newsSubtitlePersonalized
                             : t.newsSubtitleGeneral
@@ -94,7 +94,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ lang, user }) => {
                 <button
                     onClick={handleRefresh}
                     disabled={loading}
-                    className="flex items-center gap-2 px-5 py-3 bg-white border-2 border-[#043744] text-[#043744] rounded-xl font-bold hover:bg-[#043744] hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="flex items-center gap-2 px-5 py-3 bg-white border-2 border-[#1B5E20] text-[#1B5E20] rounded-xl font-bold hover:bg-[#1B5E20] hover:text-white transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={loading ? 'animate-spin' : ''}>
                         <path d="M21.5 2v6h-6M2.5 22v-6h6M2 11.5a10 10 0 0 1 18.8-4.3M22 12.5a10 10 0 0 1-18.8 4.2" />
@@ -108,8 +108,8 @@ const NewsPage: React.FC<NewsPageProps> = ({ lang, user }) => {
                 <button
                     onClick={() => handleModeChange('personalized')}
                     className={`flex-1 py-4 px-6 rounded-2xl font-bold text-lg transition-all duration-300 ${newsMode === 'personalized'
-                        ? 'bg-[#043744] text-white shadow-lg'
-                        : 'bg-white text-[#6B7878] border-2 border-[#E0E6E6] hover:border-[#043744]'
+                        ? 'bg-[#1B5E20] text-white shadow-lg'
+                        : 'bg-white text-[#6B7878] border-2 border-[#E0E6E6] hover:border-[#1B5E20]'
                         }`}
                 >
                     {t.personalizedNews}
@@ -117,8 +117,8 @@ const NewsPage: React.FC<NewsPageProps> = ({ lang, user }) => {
                 <button
                     onClick={() => handleModeChange('general')}
                     className={`flex-1 py-4 px-6 rounded-2xl font-bold text-lg transition-all duration-300 ${newsMode === 'general'
-                        ? 'bg-[#043744] text-white shadow-lg'
-                        : 'bg-white text-[#6B7878] border-2 border-[#E0E6E6] hover:border-[#043744]'
+                        ? 'bg-[#1B5E20] text-white shadow-lg'
+                        : 'bg-white text-[#6B7878] border-2 border-[#E0E6E6] hover:border-[#1B5E20]'
                         }`}
                 >
                     {t.generalNews}
@@ -127,7 +127,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ lang, user }) => {
 
             {loading ? (
                 <div className="flex items-center justify-center h-64">
-                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#043744]"></div>
+                    <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#1B5E20]"></div>
                 </div>
             ) : error ? (
                 <div className="bg-red-50 border border-red-200 text-red-600 p-6 rounded-2xl text-center">
@@ -151,24 +151,24 @@ const NewsPage: React.FC<NewsPageProps> = ({ lang, user }) => {
                             )}
                             <div className="p-6 flex flex-col flex-grow">
                                 <div className="flex items-center justify-between mb-4">
-                                    <span className="text-xs font-bold uppercase tracking-widest text-[#043744] bg-[#E8F5F5] px-3 py-1 rounded-full">
+                                    <span className="text-xs font-bold uppercase tracking-widest text-[#1B5E20] bg-[#E8F5E9] px-3 py-1 rounded-full">
                                         {item.source}
                                     </span>
                                     <span className="text-xs text-[#6B7878] font-medium">
                                         {new Date(item.published_at).toLocaleDateString()}
                                     </span>
                                 </div>
-                                <h3 className="text-xl font-bold text-[#000D0F] mb-3 leading-tight group-hover:text-[#043744] transition-colors">
+                                <h3 className="text-xl font-bold text-[#002105] mb-3 leading-tight group-hover:text-[#1B5E20] transition-colors">
                                     {item.headline}
                                 </h3>
-                                <p className="text-[#043744] text-sm leading-relaxed mb-6 flex-grow">
+                                <p className="text-[#1B5E20] text-sm leading-relaxed mb-6 flex-grow">
                                     {item.summary}
                                 </p>
                                 <a
                                     href={item.url}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 text-[#043744] font-bold hover:underline mt-auto"
+                                    className="inline-flex items-center gap-2 text-[#1B5E20] font-bold hover:underline mt-auto"
                                 >
                                     {t.readFullArticle}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14m-7-7l7 7-7 7" /></svg>
