@@ -1,8 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { Language, UserProfile } from '../types';
+<<<<<<< HEAD
 import { translations } from '../src/i18n/translations';
 import { api } from '../services/api';
 import { auth } from '../firebase';
+=======
+import { translations } from '../translations';
+import { api } from '../src/services/api';
+import { auth } from '../src/firebase';
+>>>>>>> 655364a (i have add notification servie)
 
 interface NewsArticle {
     headline: string;

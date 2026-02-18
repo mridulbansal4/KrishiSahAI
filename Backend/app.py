@@ -6,6 +6,11 @@ from dotenv import load_dotenv
 import os
 import sys
 from pathlib import Path
+
+# Ensure the Backend directory is in the Python path before local imports
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+
+from notification_service.notification_service import get_demo_notifications
 from werkzeug.utils import secure_filename
 import pandas as pd
 import json
@@ -53,7 +58,6 @@ CORS(app, resources={r"/api/*": {
 
 # Configuration
 BASE_DIR = Path(__file__).resolve().parent
-sys.path.append(str(BASE_DIR)) # Ensure backend is in path
 UPLOAD_FOLDER = str(BASE_DIR / 'uploads')
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif', 'bmp'}
 MAX_FILE_SIZE = 16 * 1024 * 1024  # 16MB
@@ -815,6 +819,23 @@ def get_current_weather():
         print(f"[WEATHER] Error: {e}")
         return jsonify({'error': str(e)}), 500
 
+# --- Notification Routes (Demo) ---
+@app.route('/api/notifications', methods=['GET'])
+@require_auth
+def get_notifications():
+    try:
+        if os.getenv("ENABLE_NOTIFICATIONS", "false").lower() != "true":
+            return {"success": True, "notifications": []}
+
+        user_id = request.user.get("id")
+        notifications = get_demo_notifications(user_id)
+
+        return {
+            "success": True,
+            "notifications": notifications
+        }
+    except Exception:
+        return {"success": True, "notifications": []}
 
 
 if __name__ == '__main__':

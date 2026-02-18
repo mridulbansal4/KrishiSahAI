@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import ReactMarkdown from 'react-markdown';
-import { api } from '../services/api';
-import { auth } from '../firebase';
+import { api } from '../src/services/api';
+import { auth } from '../src/firebase';
 import { Language, ChatMessage } from '../types';
 import { translations } from '../src/i18n/translations';
 import {

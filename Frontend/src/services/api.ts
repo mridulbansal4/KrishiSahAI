@@ -1,4 +1,4 @@
-import { auth } from '../firebase';
+import { auth } from "../firebase";
 
 // Use environment variable or default to localhost
 const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
@@ -158,5 +158,16 @@ export const api = {
             throw new Error(errData.error || `HTTP Error ${res.status}`);
         }
         return res.json();
+    },
+
+    getNotifications: async () => {
+        try {
+            const headers = await getHeaders();
+            const res = await fetch(`${BASE_URL}/notifications`, { headers });
+            if (!res.ok) return { success: false, notifications: [] };
+            return res.json();
+        } catch {
+            return { success: false, notifications: [] };
+        }
     }
 };

@@ -1,6 +1,6 @@
 import React from 'react';
 import { Plus, MessageSquare, Menu, X, Trash2 } from 'lucide-react';
-import { ChatSession } from '../services/chatService';
+import { ChatSession } from '../src/services/chatService';
 
 interface ChatSidebarProps {
     chats: ChatSession[];

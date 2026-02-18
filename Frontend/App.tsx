@@ -13,14 +13,33 @@ import EditProfile from './pages/EditProfile';
 import ArticleDetail from './pages/ArticleDetail';
 import { Leaf } from 'lucide-react';
 import { Language, UserProfile } from './types';
+<<<<<<< HEAD
 import { auth, db, onAuthStateChanged, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut } from './firebase';
 import { onSnapshot, doc, setDoc } from 'firebase/firestore';
 import { RefreshCw, LogOut, Settings } from 'lucide-react';
 import { api } from './services/api';
+=======
+import { translations } from './translations';
+import { auth, db } from './src/firebase';
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut
+} from 'firebase/auth';
+
+import { onSnapshot, doc, setDoc, getDoc } from 'firebase/firestore';
+import { RefreshCw, Sun, Moon, User, LogOut, Settings } from 'lucide-react';
+import { api } from './src/services/api';
+>>>>>>> 655364a (i have add notification servie)
 import { ThemeProvider, useTheme } from './contexts/ThemeContext';
 import { LanguageProvider, useLanguage } from './src/context/LanguageContext';
 import logo from './src/assets/logo.png';
+<<<<<<< HEAD
 import WeatherModal from './components/WeatherModal';
+=======
+import NotificationBell from './components/NotificationBell';
+>>>>>>> 655364a (i have add notification servie)
 
 const getBestLocation = (u: UserProfile | null) => {
   if (!u) return "";
@@ -89,10 +108,47 @@ const Header: React.FC<{
             </nav>
           )}
 
+<<<<<<< HEAD
           {/* Right Side */}
           <div className="flex items-center gap-4">
             {user && (
               <div className={`flex items-center gap-1 bg-[#FAFAF7] border border-[#E6E6E6] rounded-full px-1 py-0.5 transition-all group ${weatherLoading ? 'opacity-80' : ''}`}>
+=======
+          {user && <NotificationBell />}
+
+          <div className="flex bg-[#FAFAF7] border border-[#E6E6E6] rounded-xl p-1 gap-1">
+            {[{ code: 'EN', label: 'ENG' }, { code: 'HI', label: 'हिंदी' }, { code: 'MR', label: 'मराठी' }].map((l) => (
+              <button
+                key={l.code}
+                onClick={() => setLang(l.code as Language)}
+                className={`px-3 py-1.5 text-[12px] font-bold rounded-lg transition-all ${lang === l.code ? 'bg-[#043744] text-white shadow-md' : 'text-stone-400 hover:text-[#043744]'} ${l.code !== 'EN' ? 'devanagari' : ''}`}
+              >
+                {l.label}
+              </button>
+            ))}
+          </div>
+
+
+
+          {user && (
+            <div className="relative group">
+              <button className="flex items-center gap-2 bg-[#FAFAF7] border border-[#E6E6E6] px-3 py-1.5 rounded-xl hover:bg-stone-100 transition-colors">
+                <div className="w-8 h-8 rounded-full bg-[#043744] flex items-center justify-center text-white font-bold text-sm">
+                  {user.name && user.name.charAt(0).toUpperCase()}
+                </div>
+                <div className="hidden md:block text-left">
+                  <p className="text-xs font-bold text-[#1E1E1E] leading-tight">{user.name}</p>
+                  <p className="text-[10px] text-[#555555] capitalize">{user.occupation}</p>
+                </div>
+              </button>
+
+              {/* Dropdown Menu */}
+              <div className="absolute right-0 top-full mt-2 w-48 bg-white border border-[#E6E6E6] rounded-xl shadow-xl overflow-hidden opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50">
+                <Link to="/profile/edit" className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-[#555555] hover:bg-[#FAFAF7] hover:text-[#043744] transition-colors">
+                  <Settings size={16} /> Edit Profile
+                </Link>
+                <div className="h-px bg-[#E6E6E6]"></div>
+>>>>>>> 655364a (i have add notification servie)
                 <button
                   onClick={toggleWeather}
                   className="flex items-center gap-2 px-3 py-1.5 bg-transparent rounded-full text-[13px] font-bold text-[#3A2E25] hover:bg-[#E8F5E9] transition-all"

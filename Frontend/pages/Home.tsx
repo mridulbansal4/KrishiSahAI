@@ -1,10 +1,17 @@
 import React from 'react';
 import { useLanguage } from '../src/context/LanguageContext';
 import { Link } from 'react-router-dom';
+<<<<<<< HEAD
 import { ArrowRight, Sparkles } from 'lucide-react';
 import PhaseZero from '../components/Home/PhaseZero';
 import NewsFeed from '../components/Home/NewsFeed';
 import logo from '../src/assets/logo.png'; // Assuming logo is available
+=======
+import { Briefcase, Sprout, Recycle, ArrowRight, BookOpen, ChevronDown } from 'lucide-react';
+import { api } from '../src/services/api';
+import { auth } from '../src/firebase';
+import { getUserProfile } from '../src/services/firebase_db';
+>>>>>>> 655364a (i have add notification servie)
 
 const Home: React.FC = () => {
     const { t } = useLanguage();
