@@ -1,5 +1,6 @@
 {
   "hosting": {
+    "site": "krishisahai-advisory",
     "public": "Frontend/dist",
     "ignore": [
       "firebase.json",
