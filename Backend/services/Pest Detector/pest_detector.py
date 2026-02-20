@@ -17,23 +17,26 @@ def init_model():
     
     if _model is not None:
         return _model
-    
-    try:
-        # EXACT PATHS AS REQUESTED BY USER
-        # Path to the best trained weights
-        model_path = r'C:\Users\mridu\Downloads\Yolo-Pest-main\Yolo-Pest-main\runs\train\exp16\weights\best.pt'
+  try:
+        # Get the exact folder where this pest_detector.py script currently lives
+        current_folder = Path(__file__).parent.resolve()
+
+        # 1. Point to the weights file sitting right next to this script
+        model_path = current_folder / 'krishisahai_yolo_final.pt'
         
-        # Path to the custom YOLOv5 repository containing definitions for CAC3, CNeB, etc.
-        local_yolo_repo = r'C:\Users\mridu\Downloads\Yolo-Pest-main\Yolo-Pest-main'
+        # 2. Point to the custom YOLO code folder we just pasted
+        local_yolo_repo = current_folder / 'Yolo-Pest-main'
         
-        # Validate paths
-        if not os.path.exists(model_path):
-            print(f"[CRITICAL ERROR] Model weights not found at: {model_path}")
-            return None
-            
-        if not os.path.exists(local_yolo_repo):
-            print(f"[CRITICAL ERROR] Local YOLOv5 repo not found at: {local_yolo_repo}")
-            return None
+        if not local_yolo_repo.exists():
+            raise FileNotFoundError(f"Missing custom YOLO architecture folder at: {local_yolo_repo}")
+
+        # Add to sys.path dynamically so Python finds the custom math
+        import sys
+        if str(local_yolo_repo) not in sys.path:
+            sys.path.insert(0, str(local_yolo_repo))
+
+        # Load the model
+        _model = torch.hub.load(str(local_yolo_repo), 'custom', path=str(model_path), source='local', force_reload=True, trust_repo=True)
 
         # --- ENVIRONMENT PATCHES START ---
         # These are necessary to make the local repo work in this Python environment
