@@ -28,10 +28,16 @@ from typing import Optional
 from zipfile import ZipFile, is_zipfile
 
 import cv2
-import IPython
+try:
+    import IPython  # optional: only needed in Jupyter environments
+except ImportError:
+    IPython = None  # not installed; is_notebook() will return False
 import numpy as np
 import pandas as pd
-import pkg_resources as pkg
+try:
+    import pkg_resources as pkg  # part of setuptools
+except ImportError:
+    pkg = None  # pkg_resources unavailable; check_requirements/check_version will be no-ops
 import torch
 import torchvision
 import yaml
@@ -77,6 +83,8 @@ def is_colab():
 
 def is_notebook():
     # Is environment a Jupyter notebook? Verified on Colab, Jupyterlab, Kaggle, Paperspace
+    if IPython is None:
+        return False  # IPython not installed, definitely not a notebook
     ipython_type = str(type(IPython.get_ipython()))
     return 'colab' in ipython_type or 'zmqshell' in ipython_type
 
@@ -339,6 +347,8 @@ def check_python(minimum='3.7.0'):
 
 def check_version(current='0.0.0', minimum='0.0.0', name='version ', pinned=False, hard=False, verbose=False):
     # Check version vs. required version
+    if pkg is None:
+        return True  # skip version check if pkg_resources unavailable
     current, minimum = (pkg.parse_version(x) for x in (current, minimum))
     result = (current == minimum) if pinned else (current >= minimum)  # bool
     s = f'WARNING ⚠️ {name}{minimum} is required by YOLOv5, but {name}{current} is currently installed'  # string
@@ -352,6 +362,8 @@ def check_version(current='0.0.0', minimum='0.0.0', name='version ', pinned=Fals
 @TryExcept()
 def check_requirements(requirements=ROOT / 'requirements.txt', exclude=(), install=True, cmds=''):
     # Check installed dependencies meet YOLOv5 requirements (pass *.txt file or list of packages or single package str)
+    if pkg is None:
+        return  # skip requirements check if pkg_resources unavailable
     prefix = colorstr('red', 'bold', 'requirements:')
     check_python()  # check python version
     if isinstance(requirements, Path):  # requirements.txt file

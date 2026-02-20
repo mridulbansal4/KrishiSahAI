@@ -20,7 +20,10 @@ import pandas as pd
 import requests
 import torch
 import torch.nn as nn
-from IPython.display import display
+try:
+    from IPython.display import display  # optional: only needed in Jupyter notebooks
+except ImportError:
+    display = lambda *args, **kwargs: None  # no-op when IPython is not installed
 from PIL import Image
 from torch.cuda import amp
 

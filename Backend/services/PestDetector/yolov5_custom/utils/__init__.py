@@ -60,7 +60,10 @@ def notebook_init(verbose=True):
     check_font()
 
     import psutil
-    from IPython import display  # to display images and clear console output
+    try:
+        from IPython import display  # to display images and clear console output
+    except ImportError:
+        display = type('display', (), {'clear_output': lambda *a, **kw: None})()  # no-op
 
     if is_colab():
         shutil.rmtree('/content/sample_data', ignore_errors=True)  # remove colab /sample_data directory
