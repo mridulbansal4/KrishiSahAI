@@ -7,6 +7,14 @@ from dotenv import load_dotenv
 import os
 import sys
 from pathlib import Path
+import warnings
+
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+
+# Suppress Deprecation and Future warnings in the terminal
+warnings.filterwarnings("ignore", category=FutureWarning)
+warnings.filterwarnings("ignore", category=UserWarning)
 
 # Load environment variables
 load_dotenv()

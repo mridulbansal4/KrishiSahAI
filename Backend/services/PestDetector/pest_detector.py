@@ -1,78 +1,156 @@
 """
-Pest Detection Module using YOLO
-Detects agricultural pests from uploaded images
+Pest Detection Module using YOLOv5 (PyTorch Hub) with Custom Local Repository and Weights
 """
 
 import os
+import sys
 from pathlib import Path
-import numpy as np
+import torch
 from PIL import Image
-from ultralytics import YOLO
 
 # Global model instance
 _model = None
-_classes = []
-
-def load_classes():
-    """Load pest class names from classes.txt"""
-    global _classes
-    classes_file = Path(__file__).parent / 'classes.txt'
-    
-    if not classes_file.exists():
-        print(f"Warning: classes.txt not found at {classes_file}")
-        return []
-    
-    with open(classes_file, 'r', encoding='utf-8') as f:
-        lines = f.readlines()
-    
-    # Parse the format: "1  rice leaf roller"
-    classes = []
-    for line in lines:
-        line = line.strip()
-        if line:
-            # Split by whitespace and take everything after the first number
-            parts = line.split(None, 1)
-            if len(parts) >= 2:
-                classes.append(parts[1].strip())
-    
-    _classes = classes
-    print(f"Loaded {len(_classes)} pest classes")
-    return _classes
 
 def init_model():
-    """Initialize the YOLO model"""
-    global _model, _classes
+    """Initialize the YOLOv5 model using custom local repository and weights"""
+    global _model
     
     if _model is not None:
         return _model
-    
     try:
-        model_path = Path(__file__).parent / 'krishisahai_yolo_final.pt'
+        current_folder = Path(__file__).parent.resolve()
+        model_path = current_folder / 'krishisahai_yolo_final.pt'
+        local_yolo_repo = current_folder / 'yolov5_custom'
         
-        if not model_path.exists():
-            raise FileNotFoundError(f"Model file not found: {model_path}")
+        if not local_yolo_repo.exists():
+            raise FileNotFoundError(f"Missing custom YOLO architecture folder at: {local_yolo_repo}")
+
+        import sys
+        if str(local_yolo_repo) not in sys.path:
+            sys.path.insert(0, str(local_yolo_repo))
+
+        # --- 1. ENVIRONMENT PATCHES MUST GO FIRST ---
+        try:
+            import IPython
+        except ImportError:
+            from unittest.mock import MagicMock
+            mock_ipython = MagicMock()
+            mock_ipython.version_info = (8, 0, 0, '') 
+            sys.modules["IPython"] = mock_ipython
+            sys.modules["IPython.display"] = MagicMock()
+
+        try:
+            import pkg_resources
+        except ImportError:
+            from unittest.mock import MagicMock
+            class MockPkgResources:
+                def parse_version(self, v): return v 
+                def get_distribution(self, n): return MagicMock() 
+            sys.modules["pkg_resources"] = MockPkgResources()
+        # --------------------------------------------
+            
+        print(f"Loading custom model from: {model_path}")
+
+        # Patch torch.load for PyTorch 2.6+ security fixes
+        _original_load = torch.load
+        def _unsafe_load(*args, **kwargs):
+            if 'weights_only' not in kwargs:
+                kwargs['weights_only'] = False
+            return _original_load(*args, **kwargs)
+            
+        torch.load = _unsafe_load
         
-        print(f"Loading YOLO pest detection model from {model_path}")
+        try:
+            # --- 2. LOAD MODEL AFTER PATCHES ARE APPLIED ---
+            _model = torch.hub.load(str(local_yolo_repo), 'custom', path=str(model_path), source='local', force_reload=True, trust_repo=True)
+            print("Pest detection model loaded successfully")
+        except Exception as e:
+            print(f"Error during hub load: {e}")
+            _model = None
+        finally:
+            torch.load = _original_load 
         
-        # Use ultralytics YOLO for more robust loading
-        _model = YOLO(str(model_path))
-        
-        # Load class names
-        if not _classes:
-            load_classes()
-        
-        print("Pest detection model loaded successfully")
         return _model
         
     except Exception as e:
-        print(f"Error loading pest detection model: {e}")
+        print(f"Error initializing pest detection model: {e}")
+        return None
+
+        # ENVIRONMENT PATCHES START ---
+        # These are necessary to make the local repo work in this Python environment
+        
+        # 1. Mock IPython (used by models/common.py but not needed for inference)
+        try:
+            import IPython
+        except ImportError:
+            from unittest.mock import MagicMock
+            mock_ipython = MagicMock()
+            mock_ipython.version_info = (8, 0, 0, '') # Tuple required for comparison
+            sys.modules["IPython"] = mock_ipython
+            sys.modules["IPython.display"] = MagicMock()
+            # print("Mocked IPython for compatibility")
+
+        # 2. Mock pkg_resources (used by utils/general.py for version checking)
+        try:
+            import pkg_resources
+        except ImportError:
+            class MockPkgResources:
+                def parse_version(self, v):
+                    return v # Return string for simple comparison
+                def get_distribution(self, n):
+                    return MagicMock() 
+            sys.modules["pkg_resources"] = MockPkgResources()
+            # print("Mocked pkg_resources for compatibility")
+
+        # --- ENVIRONMENT PATCHES END ---
+
+        # Insert local repo path at the front of sys.path so Python finds the custom models.common.py
+        if local_yolo_repo not in sys.path:
+            sys.path.insert(0, local_yolo_repo)
+            
+        print(f"Loading custom model from: {model_path}")
+        print(f"Using repo source: {local_yolo_repo}")
+
+        # Patch torch.load to set weights_only=False (PyTorch 2.6+ security fix breaks legacy weights)
+        _original_load = torch.load
+        def _unsafe_load(*args, **kwargs):
+            if 'weights_only' not in kwargs:
+                kwargs['weights_only'] = False
+            return _original_load(*args, **kwargs)
+            
+        torch.load = _unsafe_load
+        
+        try:
+            # Load custom YOLOv5 model using local source
+            # trust_repo=True is required for loading from github/hub
+            # force_reload=True ensures we use the code in local_yolo_repo, not cached standard repo
+            _model = torch.hub.load(local_yolo_repo, 'custom', path=model_path, source='local', force_reload=True, trust_repo=True)
+            print("Pest detection model loaded successfully")
+        except AttributeError as e:
+            if "Can't get attribute" in str(e):
+                print(f"\n[CRITICAL ERROR] Incompatible Model Weights: {e}")
+                _model = None
+            else:
+                raise e
+        except Exception as e:
+            print(f"Error during hub load: {e}")
+            import traceback
+            traceback.print_exc()
+            _model = None
+        finally:
+            torch.load = _original_load # Restore original load
+        
+        return _model
+        
+    except Exception as e:
+        print(f"Error initializing pest detection model: {e}")
         import traceback
         traceback.print_exc()
-        raise
+        return None
 
 def predict(image_path):
     """
-    Predict pest from image
+    Predict pest from image using YOLOv5
     
     Args:
         image_path: Path to the image file
@@ -80,21 +158,41 @@ def predict(image_path):
     Returns:
         dict with pest_name, confidence, and severity
     """
-    global _model, _classes
+    global _model
     
     try:
         # Initialize model if needed
         if _model is None:
             init_model()
+            
+        if _model is None:
+            return {
+                'pest_name': 'Service Unavailable',
+                'confidence': 0.0,
+                'severity': 'none',
+                'description': 'Pest detection model failed to load. Please check server logs.'
+            }
         
-        # Load and process image
-        img = Image.open(image_path)
+        # Load image
+        try:
+            img = Image.open(image_path)
+        except Exception as e:
+             return {
+                'pest_name': 'Error',
+                'confidence': 0.0,
+                'severity': 'unknown',
+                'description': f'Failed to open image: {str(e)}'
+            }
         
         # Run inference
-        results = _model(img, verbose=False)[0]
+        results = _model(img)
         
-        # Get predictions
-        if not results or len(results.boxes) == 0:
+        # Get predictions as pandas dataframe
+        # xyxy[0] contains detections: xmin, ymin, xmax, ymax, confidence, class, name
+        df = results.pandas().xyxy[0]
+        
+        # Check if any detections found
+        if df.empty:
             return {
                 'pest_name': 'No Pest Detected',
                 'confidence': 0.0,
@@ -102,16 +200,12 @@ def predict(image_path):
                 'description': 'No pests were detected in the image.'
             }
         
-        # Get the detection with highest confidence
-        best_detection = results.boxes[0]
-        class_id = int(best_detection.cls[0])
-        confidence = float(best_detection.conf[0])
+        # Get detection with highest confidence
+        df_sorted = df.sort_values('confidence', ascending=False)
+        best_detection = df_sorted.iloc[0]
         
-        # Map class ID to pest name
-        if 0 <= class_id < len(_classes):
-            pest_name = _classes[class_id]
-        else:
-            pest_name = f"Unknown Pest (Class {class_id})"
+        pest_name = best_detection['name']
+        confidence = float(best_detection['confidence'])
         
         # Determine severity based on confidence
         if confidence > 0.8:
