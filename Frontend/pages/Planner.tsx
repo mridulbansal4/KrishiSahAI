@@ -217,7 +217,7 @@ const Planner: React.FC = () => {
                             <Calendar className="w-8 h-8 text-[#1B5E20]" />
                         </div>
                         <h1 className="text-3xl md:text-4xl font-extrabold text-[#1E1E1E] mb-4">{roadmap.title}</h1>
-                        <div className="text-[#555555] text-lg max-w-3xl mx-auto leading-relaxed">
+                        <div className="text-[#555555] text-lg max-w-3xl mx-auto leading-relaxed text-left prose prose-lg prose-green max-w-none">
                             <ReactMarkdown remarkPlugins={[remarkGfm]}>{roadmap.overview}</ReactMarkdown>
                         </div>
                     </div>
