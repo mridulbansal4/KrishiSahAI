@@ -12,6 +12,7 @@ import BusinessDetail from './pages/BusinessDetail';
 import Roadmap from './pages/Roadmap';
 import NewsPage from './pages/NewsPage';
 import EditProfile from './pages/EditProfile';
+import FarmHealth from './pages/FarmHealth';
 import ArticleDetail from './pages/ArticleDetail';
 import { Leaf } from 'lucide-react';
 import { Language, UserProfile, Farm } from './types';
@@ -1058,6 +1059,7 @@ const AppContent: React.FC = () => {
             <Route path="/chat" element={<Chatbot />} />
             <Route path="/advisory" element={<BusinessAdvisory />} />
             <Route path="/news" element={<NewsPage />} />
+            <Route path="/health" element={<FarmHealth />} />
             <Route path="/crop-care" element={<CropCare />} />
             <Route path="/crop-care/disease" element={<DiseaseDetector />} />
             <Route path="/crop-care/pest" element={<PestDetector />} />

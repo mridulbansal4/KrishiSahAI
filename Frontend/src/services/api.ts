@@ -172,5 +172,21 @@ export const api = {
         } catch {
             return { success: false, notifications: [] };
         }
+    },
+    getMandiPrices: async (crop: string, district: string) => {
+        const headers = await getHeaders();
+        const res = await fetch(`${BASE_URL}/mandi/prices?crop=${encodeURIComponent(crop)}&district=${encodeURIComponent(district)}`, { headers });
+        if (!res.ok) throw new Error("Failed to fetch mandi prices");
+        return res.json();
+    },
+    getFertilizerAdvice: async (crop: string, soilData: any) => {
+        const headers = await getHeaders();
+        const res = await fetch(`${BASE_URL}/fertilizer/advice`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({ crop, soilData })
+        });
+        if (!res.ok) throw new Error("Failed to fetch fertilizer advice");
+        return res.json();
     }
 };
