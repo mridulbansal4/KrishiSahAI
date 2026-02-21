@@ -22,15 +22,11 @@ const EditProfile: React.FC = () => {
         age: '',
         gender: 'male',
         language: language,
-        location: {
-            state: '',
-            district: '',
-            village: ''
-        },
         farms: [
-            { nickname: 'My Farm', landType: 'Irrigated', waterResource: 'Borewell', soilType: 'Black', landSize: '', unit: 'Acre', crop: '' }
+            { nickname: 'My Farm', landType: 'Irrigated', waterResource: 'Borewell', soilType: 'black', landSize: '', unit: 'Acre', crop: '', crops: [], state: '', district: '', village: '' }
         ],
-        experience_years: '0'
+        experience_years: '0',
+        pin: ''
     });
 
     useEffect(() => {
@@ -44,19 +40,22 @@ const EditProfile: React.FC = () => {
                 const docSnap = await getDoc(docRef);
                 if (docSnap.exists()) {
                     const data = docSnap.data() as UserProfile;
-                    // Ensure farms and location are properly initialized if coming from old schema
+                    // Ensure farms are properly initialized
                     setFormData({
                         ...data,
                         language: data.language || language,
-                        location: data.location || { state: '', district: '', village: '' },
                         farms: (data.farms || []).map((f: any) => ({
                             nickname: f.nickname || '',
                             landType: f.landType || 'Irrigated',
                             waterResource: f.waterResource || 'Borewell',
-                            soilType: f.soilType || 'Black', // Added soilType here for existing profiles
+                            soilType: f.soilType || 'black',
                             landSize: f.landSize?.toString() || '',
                             unit: f.unit || 'Acre',
-                            crop: f.crop || ''
+                            crop: f.crop || '',
+                            crops: f.crops || [],
+                            state: f.state || (data as any).location?.state || '',
+                            district: f.district || (data as any).location?.district || '',
+                            village: f.village || (data as any).location?.village || ''
                         }))
                     });
                 }
@@ -85,7 +84,7 @@ const EditProfile: React.FC = () => {
     const addFarm = () => {
         setFormData(prev => ({
             ...prev,
-            farms: [...prev.farms, { nickname: `Farm ${prev.farms.length + 1}`, landType: 'Irrigated', waterResource: 'Borewell', soilType: 'Black', landSize: '', unit: 'Acre', crop: '' }]
+            farms: [...prev.farms, { nickname: `Farm ${prev.farms.length + 1}`, landType: 'Irrigated', waterResource: 'Borewell', soilType: 'black', landSize: '', unit: 'Acre', crop: '', crops: [], state: '', district: '', village: '' }]
         }));
     };
 
@@ -100,6 +99,17 @@ const EditProfile: React.FC = () => {
     const updateFarm = (index: number, field: keyof Farm, value: any) => {
         const newFarms = [...formData.farms];
         newFarms[index] = { ...newFarms[index], [field]: value };
+        setFormData(prev => ({ ...prev, farms: newFarms }));
+    };
+
+    const toggleCrop = (farmIndex: number, cropName: string) => {
+        const newFarms = [...formData.farms];
+        const currentCrops = newFarms[farmIndex].crops || [];
+        if (currentCrops.includes(cropName)) {
+            newFarms[farmIndex].crops = currentCrops.filter(c => c !== cropName);
+        } else {
+            newFarms[farmIndex].crops = [...currentCrops, cropName];
+        }
         setFormData(prev => ({ ...prev, farms: newFarms }));
     };
 
@@ -184,7 +194,7 @@ const EditProfile: React.FC = () => {
                                 </div>
                                 {t.signupFlow.personalInfo}
                             </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                 <div>
                                     <label className={labelClasses}>{t.signupFlow.age}</label>
                                     <input type="number" name="age" value={formData.age} onChange={handleChange} className={inputClasses} required />
@@ -196,6 +206,10 @@ const EditProfile: React.FC = () => {
                                         <option value="female">{t.signupFlow.options.gender.female}</option>
                                         <option value="other">{t.signupFlow.options.gender.other}</option>
                                     </select>
+                                </div>
+                                <div>
+                                    <label className={labelClasses}>{t.signupFlow.experienceYears}</label>
+                                    <input type="number" name="experience_years" value={formData.experience_years} onChange={handleChange} className={inputClasses} required />
                                 </div>
                             </div>
                         </div>
@@ -224,32 +238,7 @@ const EditProfile: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Location Details */}
-                        <div className="space-y-6">
-                            <h2 className="text-xl font-extrabold text-[#1B5E20] flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-green-50 flex items-center justify-center">
-                                    <MapPin className="w-4 h-4 text-[#1B5E20]" />
-                                </div>
-                                {t.locationDetails}
-                            </h2>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
-                                    <label className={labelClasses}>State</label>
-                                    <select name="location.state" value={formData.location.state} onChange={handleChange} className={inputClasses} required>
-                                        <option value="">Select State</option>
-                                        <option>Maharashtra</option><option>Karnataka</option><option>Punjab</option><option>Uttar Pradesh</option>
-                                    </select>
-                                </div>
-                                <div>
-                                    <label className={labelClasses}>District</label>
-                                    <input name="location.district" value={formData.location.district} onChange={handleChange} className={inputClasses} required />
-                                </div>
-                                <div>
-                                    <label className={labelClasses}>Village</label>
-                                    <input name="location.village" value={formData.location.village} onChange={handleChange} className={inputClasses} required />
-                                </div>
-                            </div>
-                        </div>
+                        {/* Note: Top-level location is now automatically updated from Farm #1 */}
 
                         {/* Farm Information */}
                         <div className="space-y-6">
@@ -282,38 +271,93 @@ const EditProfile: React.FC = () => {
                                                 <label className={labelClasses}>{t.farmNickname}</label>
                                                 <input placeholder="e.g. Home Farm" className={inputClasses} value={farm.nickname} onChange={e => updateFarm(index, 'nickname', e.target.value)} required />
                                             </div>
+
+                                            {/* Farm Location */}
+                                            <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-white/50 rounded-2xl border border-dashed border-green-100">
+                                                <div>
+                                                    <label className={labelClasses}>{t.signupFlow.state}</label>
+                                                    <select className={inputClasses} value={farm.state || ''} onChange={e => updateFarm(index, 'state', e.target.value)} required>
+                                                        <option value="">{t.selectState}</option>
+                                                        {t.signupFlow.options.states.map(s => <option key={s} value={s}>{s}</option>)}
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label className={labelClasses}>{t.district}</label>
+                                                    <input placeholder={t.signupFlow.placeholders.district} className={inputClasses} value={farm.district || ''} onChange={e => updateFarm(index, 'district', e.target.value)} required />
+                                                </div>
+                                                <div>
+                                                    <label className={labelClasses}>{t.village}</label>
+                                                    <input placeholder={t.signupFlow.placeholders.village} className={inputClasses} value={farm.village || ''} onChange={e => updateFarm(index, 'village', e.target.value)} />
+                                                </div>
+                                            </div>
+
                                             <div>
                                                 <label className={labelClasses}>{t.landType}</label>
                                                 <select className={inputClasses} value={farm.landType} onChange={e => updateFarm(index, 'landType', e.target.value)}>
                                                     <option value="Irrigated">{t.irrigated}</option>
                                                     <option value="Rainfed">{t.rainfed}</option>
-                                                    <option value="Both">{t.mixed || "Mixed"}</option>
+                                                    <option value="Semi-Irrigated">{language === 'HI' ? 'अर्द्ध-सिंचित' : language === 'MR' ? 'अर्ध-ओलिताखालील' : 'Semi-Irrigated'}</option>
+                                                    <option value="Organic Certified">{language === 'HI' ? 'जैविक प्रमाणित' : language === 'MR' ? 'सेंद्रिय प्रमाणित' : 'Organic Certified'}</option>
+                                                    <option value="Greenhouse">{language === 'HI' ? 'ग्रीनहाउस' : language === 'MR' ? 'ग्रीनहाउस' : 'Greenhouse'}</option>
+                                                    <option value="Polyhouse">{language === 'HI' ? 'पॉलीहाउस' : language === 'MR' ? 'पॉलीहाउस' : 'Polyhouse'}</option>
+                                                    <option value="Mixed">{t.mixed}</option>
                                                 </select>
                                             </div>
                                             <div>
-                                                <label className={labelClasses}>{t.waterAvailabilityTitle}</label>
+                                                <label className={labelClasses}>{t.signupFlow.waterAvailabilityTitle}</label>
                                                 <select className={inputClasses} value={farm.waterResource} onChange={e => updateFarm(index, 'waterResource', e.target.value)}>
-                                                    <option value="Borewell">{t.signupFlow.waterAvailability.borewell}</option>
-                                                    <option value="Canal">{t.signupFlow.waterAvailability.canal}</option>
-                                                    <option value="Rainfed">{t.signupFlow.waterAvailability.rainfed}</option>
-                                                    <option value="River">{t.signupFlow.waterAvailability.river}</option>
-                                                    <option value="Tank">{t.signupFlow.waterAvailability.tank}</option>
+                                                    <option value="Borewell">{t.signupFlow.options.waterAvailability.borewell}</option>
+                                                    <option value="Canal">{t.signupFlow.options.waterAvailability.canal}</option>
+                                                    <option value="River">{t.signupFlow.options.waterAvailability.river}</option>
+                                                    <option value="Rainfed">{t.signupFlow.options.waterAvailability.rainfed}</option>
+                                                    <option value="Tank">{t.signupFlow.options.waterAvailability.tank}</option>
+                                                    <option value="Drip">{t.signupFlow.options.waterAvailability.drip}</option>
+                                                    <option value="Sprinkler">{t.signupFlow.options.waterAvailability.sprinkler}</option>
                                                     <option value="Other">{t.other}</option>
                                                 </select>
                                             </div>
-                                            <div>
-                                                <label className={labelClasses}>{t.landSize}</label>
-                                                <div className="flex gap-2">
-                                                    <input type="number" step="0.1" placeholder="Size" className="flex-1 p-4 bg-[#E8F5E9] border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] font-medium" value={farm.landSize} onChange={e => updateFarm(index, 'landSize', e.target.value)} />
-                                                    <select className="w-32 p-4 bg-white border border-[#E6E6E6] rounded-2xl focus:outline-none focus:border-[#1B5E20] font-bold" value={farm.unit} onChange={e => updateFarm(index, 'unit', e.target.value)}>
-                                                        <option value="Acre">{t.unitAcre}</option>
-                                                        <option value="Hectare">{t.unitHectare}</option>
+
+                                            {/* Land Size + Soil Type */}
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className={labelClasses}>{t.landSizeAcres || 'Land Size (Acres) *'}</label>
+                                                    <input required type="number" min="0" step="0.1" placeholder="e.g. 2.5" className={inputClasses} value={farm.landSize} onChange={e => updateFarm(index, 'landSize', e.target.value)} />
+                                                </div>
+                                                <div>
+                                                    <label className={labelClasses}>{t.soilType}</label>
+                                                    <select className={inputClasses} value={farm.soilType || 'black'} onChange={e => updateFarm(index, 'soilType', e.target.value)}>
+                                                        <option value="black">{t.signupFlow.options.soilType.black}</option>
+                                                        <option value="red">{t.signupFlow.options.soilType.red}</option>
+                                                        <option value="loamy">{t.signupFlow.options.soilType.loamy}</option>
+                                                        <option value="sandy">{t.signupFlow.options.soilType.sandy}</option>
+                                                        <option value="clay">{t.signupFlow.options.soilType.clay}</option>
+                                                        <option value="alluvial">{t.signupFlow.options.soilType.alluvial}</option>
+                                                        <option value="laterite">{t.signupFlow.options.soilType.laterite}</option>
                                                     </select>
                                                 </div>
                                             </div>
-                                            <div>
+
+                                            {/* Crops */}
+                                            <div className="md:col-span-2">
                                                 <label className={labelClasses}>{t.mainCrops}</label>
-                                                <input placeholder={t.customCropPlaceholder} className={inputClasses} value={farm.crop} onChange={e => updateFarm(index, 'crop', e.target.value)} />
+                                                <div className="flex flex-wrap gap-2 mb-3">
+                                                    {t.signupFlow.options.crops.map(cropName => {
+                                                        const selected = (farm.crops || []).includes(cropName);
+                                                        return (
+                                                            <button
+                                                                key={cropName}
+                                                                type="button"
+                                                                onClick={() => toggleCrop(index, cropName)}
+                                                                className={`px-3 py-1.5 rounded-full text-xs font-bold border-2 transition-colors ${selected
+                                                                    ? 'bg-[#1B5E20] text-white border-[#1B5E20]'
+                                                                    : 'bg-white text-gray-600 border-gray-100 hover:border-[#1B5E20] hover:text-[#1B5E20]'
+                                                                    }`}
+                                                            >
+                                                                {selected ? '✓ ' : ''}{cropName}
+                                                            </button>
+                                                        );
+                                                    })}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

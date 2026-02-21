@@ -6,8 +6,13 @@ export interface Farm {
   soilType: string;
   waterResource: string;
   landSize: string;
-  unit: 'Acre' | 'Hectare';
-  crop: string;
+  unit: 'Acre' | 'Hectare'; // kept for backward compat with existing data
+  crop: string; // kept for backward compat
+  crops?: string[]; // new: multi-crop support
+  // Per-farm location (optional for backward compat)
+  state?: string;
+  district?: string;
+  village?: string;
 }
 
 export interface UserProfile {
@@ -16,12 +21,8 @@ export interface UserProfile {
   phone: string;
   email?: string;
   language: Language;
-  location: {
-    state: string;
-    district: string;
-    village: string;
-  };
   farms: Farm[];
+  pin?: string;
   // Maintain legacy compatibility if needed
   occupation?: string;
   gender?: string;

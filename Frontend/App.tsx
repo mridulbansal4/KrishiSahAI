@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { HashRouter as Router, Routes, Route, Link, useLocation } from 'react-router-dom';
 import Home from './pages/Home';
 import Chatbot from './pages/Chatbot';
@@ -28,15 +28,17 @@ import WeatherModal from './components/WeatherModal';
 import NotificationBell from './components/NotificationBell';
 
 const getBestLocation = (u: UserProfile | null) => {
-  if (!u || !u.location) return "";
-  const { district, state } = u.location;
+  if (!u || !u.farms || u.farms.length === 0) return "";
+  const primaryFarm = u.farms[0];
+  const { district, state } = primaryFarm;
   if (district && state) return `${district}, ${state}`;
   return district || state || "India";
 };
 
 const getDisplayLocation = (u: UserProfile | null) => {
-  if (!u || !u.location) return "";
-  const { district, state } = u.location;
+  if (!u || !u.farms || u.farms.length === 0) return "";
+  const primaryFarm = u.farms[0];
+  const { district, state } = primaryFarm;
   return district || state || "India";
 };
 
@@ -303,6 +305,26 @@ const LoginFlow: React.FC<{ onLogin: (phone: string, password: string) => void; 
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [pin, setPin] = useState<string[]>(Array(6).fill(''));
+  const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  const handlePinChange = (idx: number, val: string) => {
+    const digit = val.replace(/\D/g, '').slice(-1);
+    const arr = [...pin];
+    arr[idx] = digit;
+    setPin(arr);
+    setPassword(arr.join(''));
+    if (digit && idx < 5) pinRefs.current[idx + 1]?.focus();
+  };
+
+  const handlePinKeyDown = (idx: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace') {
+      const arr = [...pin];
+      if (arr[idx]) { arr[idx] = ''; setPin(arr); setPassword(arr.join('')); }
+      else if (idx > 0) pinRefs.current[idx - 1]?.focus();
+    } else if (e.key === 'ArrowLeft' && idx > 0) pinRefs.current[idx - 1]?.focus();
+    else if (e.key === 'ArrowRight' && idx < 5) pinRefs.current[idx + 1]?.focus();
+  };
 
   const inputClasses = "w-full p-4 bg-white border-2 border-gray-200 text-gray-900 rounded-xl focus:outline-none focus:border-[#1B5E20] focus:ring-4 focus:ring-green-500/10 transition-all font-bold";
   const labelClasses = "block text-sm font-black text-[#1B5E20] mb-2 ml-1";
@@ -313,13 +335,13 @@ const LoginFlow: React.FC<{ onLogin: (phone: string, password: string) => void; 
     setError('');
     try {
       if (!phone || !password) {
-        setError("Please enter both phone number and password");
+        setError(t.validation.loginBoth);
         setLoading(false);
         return;
       }
       await onLogin(phone, password);
     } catch (err: any) {
-      setError("Invalid phone number or password");
+      setError(t.validation.invalidLogin);
     } finally {
       setLoading(false);
     }
@@ -361,15 +383,23 @@ const LoginFlow: React.FC<{ onLogin: (phone: string, password: string) => void; 
                 </div>
 
                 <div className="animate-in fade-in slide-in-from-right-4 duration-500">
-                  <label className={labelClasses}>{t.password}</label>
-                  <input
-                    required
-                    type="password"
-                    placeholder="••••••••"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    className={inputClasses}
-                  />
+                  <label className={labelClasses}>{t.password} <span className="text-xs font-bold text-gray-400">{t.pinHint}</span></label>
+                  <div className="flex gap-2 justify-between">
+                    {Array(6).fill(0).map((_, i) => (
+                      <input
+                        key={i}
+                        ref={el => { pinRefs.current[i] = el; }}
+                        type="password"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={pin[i]}
+                        onChange={e => handlePinChange(i, e.target.value)}
+                        onKeyDown={e => handlePinKeyDown(i, e)}
+                        onFocus={e => e.target.select()}
+                        className="w-full aspect-square text-center text-xl font-black border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#1B5E20] focus:ring-4 focus:ring-green-500/10 bg-white text-gray-900"
+                      />
+                    ))}
+                  </div>
                   <div className="flex justify-end mt-2">
                     <button type="button" className="text-sm font-bold text-[#1B5E20] hover:underline cursor-not-allowed opacity-50">
                       {t.forgotPassword}
@@ -410,52 +440,124 @@ const LoginFlow: React.FC<{ onLogin: (phone: string, password: string) => void; 
 };
 
 const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => void; onSwitch: () => void }> = ({ onSignup, onSwitch }) => {
-  const { t, language } = useLanguage();
+  const { t, language, setLanguage } = useLanguage();
   const { setFarms, setActiveFarm } = useFarm();
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<any>({
     name: '', phone: '', email: '',
     age: '', gender: 'male',
+    language_choice: language, experience_years: '',
     state: '', district: '', village: '',
     password: '', confirmPassword: ''
   });
   const [signupFarms, setSignupFarms] = useState<Farm[]>([
-    { nickname: 'Home Farm', landType: 'Irrigated', waterResource: 'Borewell', soilType: 'Black', landSize: '', unit: 'Acre', crop: '' }
+    { nickname: 'Home Farm', landType: 'Irrigated', waterResource: 'Borewell', soilType: 'Black', landSize: '', unit: 'Acre', crop: '', crops: [], state: '', district: '', village: '' }
   ]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [customCropInputs, setCustomCropInputs] = useState<string[]>(['']);
+  const [pin, setPin] = useState<string[]>(Array(6).fill(''));
+  const [confirmPin, setConfirmPin] = useState<string[]>(Array(6).fill(''));
+  const pinRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const confirmPinRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Sync pin arrays → formData
+  const handlePinChange = (idx: number, val: string, isConfirm: boolean) => {
+    const digit = val.replace(/\D/g, '').slice(-1);
+    const arr = isConfirm ? [...confirmPin] : [...pin];
+    arr[idx] = digit;
+    if (isConfirm) {
+      setConfirmPin(arr);
+      setFormData((prev: any) => ({ ...prev, confirmPassword: arr.join('') }));
+    } else {
+      setPin(arr);
+      setFormData((prev: any) => ({ ...prev, password: arr.join('') }));
+    }
+    if (digit && idx < 5) {
+      const refs = isConfirm ? confirmPinRefs : pinRefs;
+      refs.current[idx + 1]?.focus();
+    }
+  };
+
+  const handlePinKeyDown = (idx: number, e: React.KeyboardEvent<HTMLInputElement>, isConfirm: boolean) => {
+    const refs = isConfirm ? confirmPinRefs : pinRefs;
+    if (e.key === 'Backspace') {
+      const arr = isConfirm ? [...confirmPin] : [...pin];
+      if (arr[idx]) {
+        arr[idx] = '';
+        if (isConfirm) { setConfirmPin(arr); setFormData((prev: any) => ({ ...prev, confirmPassword: arr.join('') })); }
+        else { setPin(arr); setFormData((prev: any) => ({ ...prev, password: arr.join('') })); }
+      } else if (idx > 0) {
+        refs.current[idx - 1]?.focus();
+      }
+    } else if (e.key === 'ArrowLeft' && idx > 0) {
+      refs.current[idx - 1]?.focus();
+    } else if (e.key === 'ArrowRight' && idx < 5) {
+      refs.current[idx + 1]?.focus();
+    }
+  };
 
   const handleNext = () => setStep(prev => prev + 1);
   const handleBack = () => setStep(prev => prev - 1);
 
   const addFarm = () => {
-    setSignupFarms([...signupFarms, { nickname: `Farm ${signupFarms.length + 1}`, landType: 'Irrigated', waterResource: 'Borewell', soilType: 'Black', landSize: '', unit: 'Acre', crop: '' }]);
+    setSignupFarms(prev => [...prev, { nickname: `Farm ${prev.length + 1}`, landType: 'Irrigated', waterResource: 'Borewell', soilType: 'Black', landSize: '', unit: 'Acre', crop: '', crops: [], state: '', district: '', village: '' }]);
+    setCustomCropInputs(prev => [...prev, '']);
   };
 
   const removeFarm = (index: number) => {
-    setSignupFarms(signupFarms.filter((_, i) => i !== index));
+    setSignupFarms(prev => prev.filter((_, i) => i !== index));
+    setCustomCropInputs(prev => prev.filter((_, i) => i !== index));
   };
 
   const updateFarm = (index: number, field: keyof Farm, value: any) => {
-    const newFarms = [...signupFarms];
-    newFarms[index] = { ...newFarms[index], [field]: value };
-    setSignupFarms(newFarms);
+    setSignupFarms(prev => {
+      const newFarms = [...prev];
+      newFarms[index] = { ...newFarms[index], [field]: value };
+      return newFarms;
+    });
+  };
+
+  const toggleCrop = (farmIndex: number, cropName: string) => {
+    setSignupFarms(prev => {
+      const newFarms = [...prev];
+      const current = newFarms[farmIndex].crops || [];
+      const updated = current.includes(cropName)
+        ? current.filter(c => c !== cropName)
+        : [...current, cropName];
+      newFarms[farmIndex] = { ...newFarms[farmIndex], crops: updated, crop: updated[0] || '' };
+      return newFarms;
+    });
+  };
+
+  const addCustomCrop = (farmIndex: number) => {
+    const val = (customCropInputs[farmIndex] || '').trim();
+    if (!val) return;
+    setSignupFarms(prev => {
+      const newFarms = [...prev];
+      const current = newFarms[farmIndex].crops || [];
+      if (current.includes(val)) return prev;
+      const updated = [...current, val];
+      newFarms[farmIndex] = { ...newFarms[farmIndex], crops: updated, crop: updated[0] || '' };
+      return newFarms;
+    });
+    setCustomCropInputs(prev => { const n = [...prev]; n[farmIndex] = ''; return n; });
   };
 
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (step < 2) {
-      if (!formData.name || !formData.phone || !formData.age || !formData.state || !formData.district || !formData.village || !formData.password) {
-        setError("Please fill all required fields");
+      if (!formData.name || !formData.phone || !formData.age || !formData.password) {
+        setError(t.validation.fillAll);
         return;
       }
-      if (formData.password.length < 6) {
-        setError("Password must be at least 6 characters");
+      if (formData.password.length !== 6 || !/^\d{6}$/.test(formData.password)) {
+        setError(t.validation.pinLength);
         return;
       }
       if (formData.password !== formData.confirmPassword) {
-        setError("Passwords do not match");
+        setError(t.validation.pinMismatch);
         return;
       }
       handleNext();
@@ -467,7 +569,7 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
     // Check if nicknames are provided for all added farms
     const invalidFarms = signupFarms.some(f => !f.nickname.trim());
     if (invalidFarms) {
-      setError("Please provide a nickname for all farms");
+      setError(t.validation.farmNickname);
       setLoading(false);
       return;
     }
@@ -484,13 +586,9 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
         phone: formData.phone,
         email: formData.email,
         language: language,
-        location: {
-          state: formData.state,
-          district: formData.district,
-          village: formData.village
-        },
         farms: finalFarms,
-        experience_years: '0'
+        pin: formData.password,
+        experience_years: formData.experience_years || '0'
       };
 
       await onSignup(profile, formData.password);
@@ -548,7 +646,7 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                       <div className="grid grid-cols-2 gap-4">
                         <div>
                           <label className={labelClasses}>{t.signupFlow.age} *</label>
-                          <input required type="number" placeholder={t.signupFlow.placeholders.age} className={inputClasses} value={formData.age} onChange={e => setFormData({ ...formData, age: e.target.value })} />
+                          <input required type="number" min={18} max={100} placeholder="18–100" className={inputClasses} value={formData.age} onChange={e => setFormData({ ...formData, age: e.target.value })} />
                         </div>
                         <div>
                           <label className={labelClasses}>{t.signupFlow.gender} *</label>
@@ -565,38 +663,64 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                       </div>
                       <div className="grid grid-cols-2 gap-4">
                         <div>
-                          <label className={labelClasses}>{t.signupFlow.password} *</label>
-                          <input required type="password" placeholder="••••••••" className={inputClasses} value={formData.password} onChange={e => setFormData({ ...formData, password: e.target.value })} />
+                          <label className={labelClasses}>{t.signupFlow.language} *</label>
+                          <select required className={inputClasses} value={formData.language_choice} onChange={e => {
+                            const newLang = e.target.value as any;
+                            setFormData({ ...formData, language_choice: newLang });
+                            setLanguage(newLang);
+                          }}>
+                            <option value="EN">English</option>
+                            <option value="HI">हिन्दी (Hindi)</option>
+                            <option value="MR">मराठी (Marathi)</option>
+                          </select>
                         </div>
                         <div>
-                          <label className={labelClasses}>{t.signupFlow.confirmPassword} *</label>
-                          <input required type="password" placeholder="••••••••" className={inputClasses} value={formData.confirmPassword} onChange={e => setFormData({ ...formData, confirmPassword: e.target.value })} />
+                          <label className={labelClasses}>{t.signupFlow.experienceYears} *</label>
+                          <input required type="number" min="0" placeholder="0" className={inputClasses} value={formData.experience_years} onChange={e => setFormData({ ...formData, experience_years: e.target.value })} />
+                        </div>
+                      </div>
+                      {/* 6-Box PIN */}
+                      <div>
+                        <label className={labelClasses}>{t.signupFlow.password} * <span className="text-xs font-bold text-gray-400">{t.pinHint}</span></label>
+                        <div className="flex gap-2 justify-between">
+                          {Array(6).fill(0).map((_, i) => (
+                            <input
+                              key={i}
+                              ref={el => { pinRefs.current[i] = el; }}
+                              type="password"
+                              inputMode="numeric"
+                              maxLength={1}
+                              value={pin[i]}
+                              onChange={e => handlePinChange(i, e.target.value, false)}
+                              onKeyDown={e => handlePinKeyDown(i, e, false)}
+                              onFocus={e => e.target.select()}
+                              className="w-full aspect-square text-center text-xl font-black border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#1B5E20] focus:ring-4 focus:ring-green-500/10 bg-white text-gray-900"
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <div>
+                        <label className={labelClasses}>{t.signupFlow.confirmPassword} *</label>
+                        <div className="flex gap-2 justify-between">
+                          {Array(6).fill(0).map((_, i) => (
+                            <input
+                              key={i}
+                              ref={el => { confirmPinRefs.current[i] = el; }}
+                              type="password"
+                              inputMode="numeric"
+                              maxLength={1}
+                              value={confirmPin[i]}
+                              onChange={e => handlePinChange(i, e.target.value, true)}
+                              onKeyDown={e => handlePinKeyDown(i, e, true)}
+                              onFocus={e => e.target.select()}
+                              className="w-full aspect-square text-center text-xl font-black border-2 border-gray-200 rounded-xl focus:outline-none focus:border-[#1B5E20] focus:ring-4 focus:ring-green-500/10 bg-white text-gray-900"
+                            />
+                          ))}
                         </div>
                       </div>
                       <div>
                         <label className={labelClasses}>{t.signupFlow.email} ({t.other})</label>
                         <input type="email" placeholder={t.signupFlow.placeholders.email} className={inputClasses} value={formData.email} onChange={e => setFormData({ ...formData, email: e.target.value })} />
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <h3 className={sectionTitleClasses}>{t.signupFlow.locationDetails}</h3>
-                    <div className="space-y-4">
-                      <div>
-                        <label className={labelClasses}>{t.signupFlow.state} *</label>
-                        <select required className={inputClasses} value={formData.state} onChange={e => setFormData({ ...formData, state: e.target.value })}>
-                          <option value="">{t.selectState}</option>
-                          {t.signupFlow.states.map(s => <option key={s} value={s}>{s}</option>)}
-                        </select>
-                      </div>
-                      <div>
-                        <label className={labelClasses}>{t.district} *</label>
-                        <input required placeholder={t.signupFlow.placeholders.district} className={inputClasses} value={formData.district} onChange={e => setFormData({ ...formData, district: e.target.value })} />
-                      </div>
-                      <div>
-                        <label className={labelClasses}>{t.village} *</label>
-                        <input required placeholder={t.signupFlow.placeholders.village} className={inputClasses} value={formData.village} onChange={e => setFormData({ ...formData, village: e.target.value })} />
                       </div>
                     </div>
                   </div>
@@ -621,68 +745,127 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                       )}
 
                       <div className="space-y-4">
+                        {/* Farm Nickname */}
                         <div>
                           <label className={labelClasses}>{t.farmNickname} *</label>
                           <input required placeholder="e.g. Home Farm" className={inputClasses} value={farm.nickname} onChange={e => updateFarm(index, 'nickname', e.target.value)} />
                         </div>
 
+                        {/* Location Details per farm */}
+                        <div className="pt-2 border-t border-gray-100">
+                          <p className="text-sm font-black text-[#1B5E20] mb-3">{t.signupFlow.locationDetails}</p>
+                          <div className="space-y-3">
+                            <div>
+                              <label className={labelClasses}>{t.signupFlow.state} *</label>
+                              <select required className={inputClasses} value={farm.state || ''} onChange={e => updateFarm(index, 'state', e.target.value)}>
+                                <option value="">{t.selectState}</option>
+                                {t.signupFlow.options.states.map(s => <option key={s} value={s}>{s}</option>)}
+                              </select>
+                            </div>
+                            <div className="grid grid-cols-2 gap-3">
+                              <div>
+                                <label className={labelClasses}>{t.district} *</label>
+                                <input required placeholder={t.signupFlow.placeholders.district} className={inputClasses} value={farm.district || ''} onChange={e => updateFarm(index, 'district', e.target.value)} />
+                              </div>
+                              <div>
+                                <label className={labelClasses}>{t.village}</label>
+                                <input placeholder={t.signupFlow.placeholders.village} className={inputClasses} value={farm.village || ''} onChange={e => updateFarm(index, 'village', e.target.value)} />
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Land & Water */}
+                        <div className="pt-2 border-t border-gray-100">
+                          <div className="grid grid-cols-2 gap-4">
+                            <div>
+                              <label className={labelClasses}>{t.landType}</label>
+                              <select className={inputClasses} value={farm.landType} onChange={e => updateFarm(index, 'landType', e.target.value)}>
+                                <option value="Irrigated">{t.irrigated}</option>
+                                <option value="Rainfed">{t.rainfed}</option>
+                                <option value="Semi-Irrigated">{language === 'HI' ? 'अर्द्ध-सिंचित' : language === 'MR' ? 'अर्ध-ओलिताखालील' : 'Semi-Irrigated'}</option>
+                                <option value="Organic Certified">{language === 'HI' ? 'जैविक प्रमाणित' : language === 'MR' ? 'सेंद्रिय प्रमाणित' : 'Organic Certified'}</option>
+                                <option value="Greenhouse">{language === 'HI' ? 'ग्रीनहाउस' : language === 'MR' ? 'ग्रीनहाउस' : 'Greenhouse'}</option>
+                                <option value="Polyhouse">{language === 'HI' ? 'पॉलीहाउस' : language === 'MR' ? 'पॉलीहाउस' : 'Polyhouse'}</option>
+                                <option value="Mixed">{t.mixed}</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label className={labelClasses}>{t.signupFlow.waterAvailabilityTitle}</label>
+                              <select className={inputClasses} value={farm.waterResource} onChange={e => updateFarm(index, 'waterResource', e.target.value)}>
+                                <option value="Borewell">{t.signupFlow.options.waterAvailability.borewell}</option>
+                                <option value="Canal">{t.signupFlow.options.waterAvailability.canal}</option>
+                                <option value="River">{t.signupFlow.options.waterAvailability.river}</option>
+                                <option value="Rainfed">{t.signupFlow.options.waterAvailability.rainfed}</option>
+                                <option value="Tank">{t.signupFlow.options.waterAvailability.tank}</option>
+                                <option value="Drip">{t.signupFlow.options.waterAvailability.drip}</option>
+                                <option value="Sprinkler">{t.signupFlow.options.waterAvailability.sprinkler}</option>
+                                <option value="Other">{t.other}</option>
+                              </select>
+                            </div>
+                          </div>
+                        </div>
+
+                        {/* Land Size + Soil Type */}
                         <div className="grid grid-cols-2 gap-4">
                           <div>
-                            <label className={labelClasses}>{t.landType}</label>
-                            <select className={inputClasses} value={farm.landType} onChange={e => updateFarm(index, 'landType', e.target.value)}>
-                              <option value="Irrigated">{t.irrigated}</option>
-                              <option value="Rainfed">{t.rainfed}</option>
-                              <option value="Semi-Irrigated">Semi-Irrigated</option>
-                              <option value="Organic Certified">Organic Certified</option>
-                              <option value="Greenhouse">Greenhouse</option>
-                              <option value="Polyhouse">Polyhouse</option>
-                              <option value="Mixed">{t.mixed}</option>
-                            </select>
+                            <label className={labelClasses}>{t.landSizeAcres || 'Land Size (Acres) *'}</label>
+                            <input required type="number" min="0" step="0.1" placeholder="e.g. 2.5" className={inputClasses} value={farm.landSize} onChange={e => updateFarm(index, 'landSize', e.target.value)} />
                           </div>
                           <div>
-                            <label className={labelClasses}>{t.signupFlow.waterAvailabilityTitle}</label> {/* Label for water availability */}
-                            <select className={inputClasses} value={farm.waterResource} onChange={e => updateFarm(index, 'waterResource', e.target.value)}>
-                              <option value="Borewell">{t.signupFlow.waterAvailability.borewell}</option>
-                              <option value="Canal">{t.signupFlow.waterAvailability.canal}</option>
-                              <option value="River">{t.signupFlow.waterAvailability.river}</option>
-                              <option value="Rainfed">{t.signupFlow.waterAvailability.rainfed}</option>
-                              <option value="Tank">Tank</option>
-                              <option value="Drip">Drip</option>
-                              <option value="Sprinkler">Sprinkler</option>
-                              <option value="Other">{t.other}</option>
+                            <label className={labelClasses}>{t.soilType}</label>
+                            <select className={inputClasses} value={farm.soilType || 'black'} onChange={e => updateFarm(index, 'soilType', e.target.value)}>
+                              <option value="black">{t.signupFlow.options.soilType.black}</option>
+                              <option value="red">{t.signupFlow.options.soilType.red}</option>
+                              <option value="loamy">{t.signupFlow.options.soilType.loamy}</option>
+                              <option value="sandy">{t.signupFlow.options.soilType.sandy}</option>
+                              <option value="clay">{t.signupFlow.options.soilType.clay}</option>
+                              <option value="alluvial">{t.signupFlow.options.soilType.alluvial}</option>
+                              <option value="laterite">{t.signupFlow.options.soilType.laterite}</option>
                             </select>
                           </div>
                         </div>
 
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
-                            <label className={labelClasses}>{t.signupFlow.landSize}</label>
-                            <input required type="number" placeholder="0.0" className={inputClasses} value={farm.landSize} onChange={e => updateFarm(index, 'landSize', e.target.value)} />
-                          </div>
-                          <div>
-                            <label className={labelClasses}>{t.landSizeUnit}</label>
-                            <select className={inputClasses} value={farm.unit} onChange={e => updateFarm(index, 'unit', e.target.value)}>
-                              <option value="Acre">{t.unitAcre}</option>
-                              <option value="Hectare">{t.unitHectare}</option>
-                            </select>
-                          </div>
-                        </div>
-
+                        {/* Main Crops — prebuilt chips + custom add */}
                         <div>
                           <label className={labelClasses}>{t.mainCrops}</label>
-                          <div className="flex gap-2">
-                            <select className={inputClasses} value={farm.crop} onChange={e => updateFarm(index, 'crop', e.target.value)}>
-                              <option value="">Select Crop</option>
-                              <option value="No Crop Currently">{t.noCropCurrently}</option>
-                              {t.signupFlow.crops.map(c => <option key={c} value={c}>{c}</option>)}
-                            </select>
-                            <button type="button" onClick={() => {
-                              const crop = prompt(t.customCropPlaceholder);
-                              if (crop) updateFarm(index, 'crop', crop);
-                            }} className="p-4 bg-green-50 text-[#1B5E20] border-2 border-[#1B5E20] rounded-xl font-black">
-                              +
-                            </button>
+                          <div className="flex flex-wrap gap-2 mb-3">
+                            {t.signupFlow.options.crops.map(cropName => {
+                              const selected = (farm.crops || []).includes(cropName);
+                              return (
+                                <button
+                                  key={cropName}
+                                  type="button"
+                                  onClick={() => toggleCrop(index, cropName)}
+                                  className={`px-3 py-1.5 rounded-full text-sm font-bold border-2 transition-colors ${selected
+                                    ? 'bg-[#1B5E20] text-white border-[#1B5E20]'
+                                    : 'bg-white text-gray-600 border-gray-200 hover:border-[#1B5E20] hover:text-[#1B5E20]'
+                                    }`}
+                                >
+                                  {selected ? '✓ ' : ''}{cropName}
+                                </button>
+                              );
+                            })}
                           </div>
+                          {/* Custom crop input */}
+                          <div className="flex gap-2 mt-2">
+                            <input
+                              type="text"
+                              placeholder="Add custom crop..."
+                              className={`${inputClasses} text-sm py-2`}
+                              value={customCropInputs[index] || ''}
+                              onChange={e => setCustomCropInputs(prev => { const n = [...prev]; n[index] = e.target.value; return n; })}
+                              onKeyDown={e => { if (e.key === 'Enter') { e.preventDefault(); addCustomCrop(index); } }}
+                            />
+                            <button
+                              type="button"
+                              onClick={() => addCustomCrop(index)}
+                              className="px-4 py-2 bg-[#1B5E20] text-white rounded-xl font-black text-lg hover:bg-[#2E7D32] transition-colors flex-shrink-0"
+                            >+</button>
+                          </div>
+                          {(farm.crops && farm.crops.length > 0) && (
+                            <p className="text-xs text-gray-500 mt-2 font-bold">Selected: {farm.crops.join(', ')}</p>
+                          )}
                         </div>
                       </div>
                     </div>
