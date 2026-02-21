@@ -725,6 +725,9 @@ def chat_health_stream():
 from services.FiveToTenYear.roadmap_service import SustainabilityRoadmapGenerator
 roadmap_generator = SustainabilityRoadmapGenerator()
 
+from services.Planner.planner_service import CropPlannerGenerator
+crop_planner_generator = CropPlannerGenerator()
+
 @app.route('/api/generate-roadmap', methods=['POST'])
 @require_auth
 def generate_roadmap():
@@ -773,7 +776,7 @@ def generate_crop_roadmap():
             
         print(f"[CROP-ROADMAP] Generating for User: {user_id}, Crop: {crop_name}, Language: {language}")
         
-        roadmap = roadmap_generator.generate_crop_roadmap(user_id, crop_name, language)
+        roadmap = crop_planner_generator.generate_crop_roadmap(user_id, crop_name, language)
         
         return jsonify({'success': True, 'roadmap': roadmap})
 
