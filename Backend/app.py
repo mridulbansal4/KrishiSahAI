@@ -111,8 +111,8 @@ if str(DISEASE_DETECTOR_DIR) not in sys.path:
 
 from disease_detector import predict as detector_predict, init_model as detector_init
 
-# Warm up the model on server start
-detector_init()
+# We will lazy-load the model to speed up server boot
+_disease_model_loaded = False
 
 MODEL_FILE = DISEASE_DETECTOR_DIR / 'plant_disease_model.h5'
 CSV_PATH = DISEASE_DETECTOR_DIR / 'crop_disease_data.csv'
@@ -137,11 +137,10 @@ if str(PEST_DETECTOR_DIR) not in sys.path:
 
 try:
     from pest_detector import predict as pest_predict, init_model as pest_init
-    # Warm up the pest detection model
-    pest_init()
-    print("Pest detection model initialized successfully")
+    # We will lazy load the pest detection model
+    _pest_model_loaded = False
 except Exception as e:
-    print(f"Warning: Pest detection model failed to initialize: {e}")
+    print(f"Warning: Pest detection model imports failed: {e}")
     print("   The /api/pest/detect endpoint will return errors until dependencies are available.")
     pest_predict = None
 
@@ -169,6 +168,20 @@ except Exception as e:
     print("   The /api/waste-to-value endpoints will return errors until Ollama is available.")
     import traceback
     traceback.print_exc()
+
+# --- Farm Health AI Setup ---
+FARM_HEALTH_DIR = Path(__file__).resolve().parent / 'services' / 'FarmHealth' / 'src'
+if str(FARM_HEALTH_DIR) not in sys.path:
+    sys.path.append(str(FARM_HEALTH_DIR))
+
+health_engine = None
+try:
+    from health_service import FarmHealthEngine
+    print("Initializing Farm Health AI Engine...")
+    health_engine = FarmHealthEngine()
+    print("Farm Health AI Engine initialized successfully")
+except Exception as e:
+    print(f"Warning: Farm Health AI Engine failed to initialize: {e}")
 
 # --- VoiceText Setup ---
 from services.VoiceText.voice_service import voice_service, AUDIO_FOLDER
@@ -199,7 +212,12 @@ def get_disease_info(crop_name, disease_name):
     return None
 
 def predict_disease(image_path):
+    global _disease_model_loaded
     try:
+        if not _disease_model_loaded:
+            print("Lazy loading Disease Detection model...")
+            detector_init()
+            _disease_model_loaded = True
         return detector_predict(image_path)
     except Exception as e:
         print(f"Error in prediction: {e}")
@@ -308,6 +326,12 @@ def detect_disease():
 @require_auth
 def detect_pest():
     try:
+        global _pest_model_loaded
+        if not _pest_model_loaded and pest_predict is not None:
+            print("Lazy loading Pest Detection model...")
+            pest_init()
+            _pest_model_loaded = True
+
         if pest_predict is None:
             return jsonify({'error': 'Pest detection service is currently unavailable'}), 503
             
@@ -630,6 +654,70 @@ def chat_waste_stream():
         return response
     except Exception as e:
         print(f"[WASTE] Stream Chat Error: {e}")
+        return jsonify({'error': str(e)}), 500
+
+# --- Farm Health AI Routes ---
+@app.route('/api/farm-health/analyze', methods=['POST'])
+@require_auth
+def analyze_farm_health():
+    try:
+        data = request.json
+        crop = data.get('crop')
+        soil_data = data.get('soil_data', {})
+        language = data.get('language', 'English')
+        location = data.get('location', 'Unknown Region, India')
+        soil_type = data.get('soil_type', 'Unknown Soil Type')
+        
+        print(f"[FARM_HEALTH] Analyze -> Crop: {crop}, Loc: {location}, Soil: {soil_type}, Lang: {language}")
+        
+        if not crop:
+            return jsonify({'error': 'Crop name is required'}), 400
+            
+        if health_engine is None:
+            return jsonify({'error': 'Farm Health AI Engine is currently unavailable.'}), 503
+            
+        result = health_engine.analyze_health(crop, soil_data, location, soil_type, language)
+        print(f"[FARM_HEALTH] Success -> recommendation generated")
+        
+        return jsonify({'success': True, 'result': result})
+    except Exception as e:
+        print(f"[FARM_HEALTH] Analyze Error: {e}")
+        import traceback
+        traceback.print_exc()
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/api/farm-health/chat/stream', methods=['POST'])
+@require_auth
+def chat_health_stream():
+    try:
+        data = request.json
+        context = data.get('context')
+        question = data.get('question')
+        language = data.get('language', 'English')
+        
+        print(f"[FARM_HEALTH] Stream Chat -> Question: \"{question[:50]}...\"")
+        
+        if not context or not question:
+            return jsonify({'error': 'Context and question are required'}), 400
+            
+        if health_engine is None:
+            return jsonify({'error': 'Farm Health AI service is currently unavailable.'}), 503
+            
+        def generate():
+            try:
+                for chunk in health_engine.stream_chat_health(context, question, language):
+                    yield f"data: {json.dumps({'chunk': chunk})}\n\n"
+            except Exception as e:
+                print(f"[FARM_HEALTH] Generator Error: {e}")
+                yield f"data: {json.dumps({'error': str(e)})}\n\n"
+                
+        response = Response(generate(), mimetype='text/event-stream')
+        response.headers['Cache-Control'] = 'no-cache'
+        response.headers['X-Accel-Buffering'] = 'no'
+        response.headers['Connection'] = 'keep-alive'
+        return response
+    except Exception as e:
+        print(f"[FARM_HEALTH] Stream Chat Error: {e}")
         return jsonify({'error': str(e)}), 500
 
 # --- 5-10 Year Roadmap Routes ---
