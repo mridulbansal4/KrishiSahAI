@@ -1,6 +1,7 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useMemo } from 'react';
 import { useLanguage } from '../src/context/LanguageContext';
 import { useFarm } from '../src/context/FarmContext';
+import { useNavigate } from 'react-router-dom';
 import {
     Cloud,
     TrendingUp,
@@ -37,20 +38,25 @@ interface AIResult {
 const FarmHealth: React.FC = () => {
     const { t } = useLanguage();
     const { farms } = useFarm();
+    const navigate = useNavigate();
 
     // AI Integration States
-    const [aiResults, setAiResults] = useState<Record<string, AIResult>>({});
+    const initialAiResults = useMemo(() => {
+        const saved = sessionStorage.getItem('farmHealthResults');
+        if (saved) {
+            try { return JSON.parse(saved); } catch (e) { return {}; }
+        }
+        return {};
+    }, []);
+
+    const [aiResults, setAiResults] = useState<Record<string, AIResult>>(initialAiResults);
     const [analyzing, setAnalyzing] = useState<Record<string, boolean>>({});
 
-    // Chat Modal States
-    const [chatModalOpen, setChatModalOpen] = useState(false);
-    const [chatContext, setChatContext] = useState<any>(null);
-    const [chatCrop, setChatCrop] = useState('');
-    const [messages, setMessages] = useState<{ role: 'user' | 'assistant', text: string }[]>([]);
-    const [chatInput, setChatInput] = useState('');
-    const [isStreaming, setIsStreaming] = useState(false);
-    const messagesEndRef = useRef<HTMLDivElement>(null);
-    const initialLoadTriggered = useRef<Set<string>>(new Set());
+    useEffect(() => {
+        sessionStorage.setItem('farmHealthResults', JSON.stringify(aiResults));
+    }, [aiResults]);
+
+    const initialLoadTriggered = useRef<Set<string>>(new Set(Object.keys(initialAiResults)));
 
 
 
@@ -85,79 +91,10 @@ const FarmHealth: React.FC = () => {
     };
 
     const openDeepDive = (result: AIResult, crop: string) => {
-        setChatContext(result);
-        setChatCrop(crop);
-        setMessages([{
-            role: 'assistant',
-            text: `Hi! I am your AI Agronomist.I've analyzed your ${crop}. Ask me anything about my recommendations! `
-        }]);
-        setChatModalOpen(true);
+        const fertilizers = result.fertilizer_options?.map(opt => opt.name || opt.action).filter(Boolean).join(', ') || '';
+        const prompt = `Please provide an expert consultation on the fertilizer recommendations for ${crop}, specifically focusing on the use of ${fertilizers}. I require a detailed explanation of the rationale behind this selection, its impact on the growth cycle, and best practices for sustainable application.`;
+        navigate('/chat', { state: { initialMessage: prompt, fromFarmHealth: true } });
     };
-
-    const sendChatMessage = async () => {
-        if (!chatInput.trim() || isStreaming) return;
-
-        const userMsg = chatInput;
-        setMessages(prev => [...prev, { role: 'user', text: userMsg }]);
-        setChatInput('');
-        setIsStreaming(true);
-        setMessages(prev => [...prev, { role: 'assistant', text: '' }]); // Placeholder
-
-        try {
-            const token = localStorage.getItem('token');
-            const res = await fetch('http://localhost:5000/api/farm-health/chat/stream', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
-                body: JSON.stringify({ context: chatContext, question: userMsg })
-            });
-
-            if (!res.body) throw new Error("No response body");
-            const reader = res.body.getReader();
-            const decoder = new TextDecoder();
-
-            while (true) {
-                const { done, value } = await reader.read();
-                if (done) break;
-
-                const chunkStr = decoder.decode(value);
-                const lines = chunkStr.split('\n');
-
-                for (const line of lines) {
-                    if (line.startsWith('data: ')) {
-                        try {
-                            const data = JSON.parse(line.slice(6));
-                            if (data.chunk) {
-                                setMessages(prev => {
-                                    const newMsgs = [...prev];
-                                    newMsgs[newMsgs.length - 1].text += data.chunk;
-                                    return newMsgs;
-                                });
-                            }
-                        } catch (e) {
-                            // ignore parse error on incomplete chunks
-                        }
-                    }
-                }
-            }
-        } catch (error) {
-            console.error(error);
-            setMessages(prev => {
-                const newMsgs = [...prev];
-                newMsgs[newMsgs.length - 1].text = "Sorry, I encountered an error connecting to the AI.";
-                return newMsgs;
-            });
-        } finally {
-            setIsStreaming(false);
-        }
-    };
-
-    // Auto-scroll chat
-    useEffect(() => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }, [messages]);
 
     // Auto-load analysis
     useEffect(() => {
@@ -323,76 +260,6 @@ const FarmHealth: React.FC = () => {
                     ))
                 )}
             </div>
-
-            {/* Deep Dive Modal */}
-            {chatModalOpen && (
-                <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
-                    <div className="bg-white rounded-3xl w-full max-w-2xl max-h-[80vh] flex flex-col shadow-2xl animate-in zoom-in-95 duration-200">
-                        {/* Header */}
-                        <div className="p-6 border-b border-gray-100 flex justify-between items-center bg-[#1B5E20] text-white rounded-t-3xl">
-                            <div>
-                                <h3 className="text-xl font-black uppercase tracking-widest flex items-center gap-2">
-                                    <Sparkles className="w-5 h-5 text-green-300" /> Deep Dive: {chatCrop}
-                                </h3>
-                                <p className="text-xs text-green-100/70 font-bold uppercase tracking-widest mt-1">AI Agronomist Assistant</p>
-                            </div>
-                            <button onClick={() => setChatModalOpen(false)} className="bg-white/10 p-2 rounded-full hover:bg-white/20 transition">
-                                <X className="w-5 h-5" />
-                            </button>
-                        </div>
-
-                        {/* Chat Messages */}
-                        <div className="flex-1 overflow-y-auto p-6 space-y-4 bg-[#FBFBFA]">
-                            {messages.map((msg, i) => (
-                                <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                                    <div className={`max-w-[80%] p-4 rounded-2xl text-sm ${msg.role === 'user'
-                                        ? 'bg-[#1B5E20] text-white rounded-br-sm'
-                                        : 'bg-white border text-gray-800 border-gray-200 rounded-bl-sm shadow-sm'
-                                        }`}>
-                                        <div
-                                            // Make bold text work via basic replacement
-                                            dangerouslySetInnerHTML={{ __html: msg.text.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>') }}
-                                            className="whitespace-pre-wrap leading-relaxed"
-                                        />
-                                        {msg.role === 'assistant' && msg.text === '' && (
-                                            <div className="flex gap-1 items-center h-4">
-                                                <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-bounce" />
-                                                <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-bounce delay-100" />
-                                                <div className="w-1.5 h-1.5 bg-green-500 rounded-full animate-bounce delay-200" />
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            ))}
-                            <div ref={messagesEndRef} />
-                        </div>
-
-                        {/* Input Area */}
-                        <div className="p-4 border-t border-gray-100 bg-white rounded-b-3xl">
-                            <form
-                                onSubmit={(e) => { e.preventDefault(); sendChatMessage(); }}
-                                className="flex gap-3"
-                            >
-                                <input
-                                    type="text"
-                                    value={chatInput}
-                                    onChange={e => setChatInput(e.target.value)}
-                                    placeholder="Ask about fertilizer, market, or timing..."
-                                    className="flex-1 border-2 border-gray-100 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-[#1B5E20] font-medium"
-                                    disabled={isStreaming}
-                                />
-                                <button
-                                    type="submit"
-                                    disabled={isStreaming || !chatInput.trim()}
-                                    className="bg-[#1B5E20] text-white p-3 rounded-xl hover:bg-[#004D40] disabled:opacity-50 transition"
-                                >
-                                    {isStreaming ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-5 h-5" />}
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-                </div>
-            )}
         </div>
     );
 };

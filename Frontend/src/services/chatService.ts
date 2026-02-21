@@ -105,16 +105,27 @@ export const chatService = {
     getUserChats: async (userId: string, limitCount: number = 20, type?: 'advisor' | 'waste'): Promise<ChatSession[]> => {
         try {
             const chatsRef = collection(db, USERS_COLLECTION, userId, CHATS_COLLECTION);
-            let q = query(chatsRef, orderBy('updatedAt', 'desc'), limit(limitCount));
-            if (type) {
-                q = query(chatsRef, where('type', '==', type), orderBy('updatedAt', 'desc'), limit(limitCount));
-            }
+
+            // Query all chats ordered by latest first, we'll filter on client to avoid composite index requirements
+            // and handle legacy chats without a 'type' field.
+            let q = query(chatsRef, orderBy('updatedAt', 'desc'));
+
             const snapshot = await getDocs(q);
 
-            return snapshot.docs.map(doc => ({
+            let chats = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             } as ChatSession));
+
+            if (type) {
+                if (type === 'waste') {
+                    chats = chats.filter(c => c.type === 'waste');
+                } else if (type === 'advisor') {
+                    chats = chats.filter(c => c.type === 'advisor' || !c.type);
+                }
+            }
+
+            return chats.slice(0, limitCount);
         } catch (error) {
             console.error("Error fetching chats:", error);
             return [];
@@ -126,18 +137,29 @@ export const chatService = {
      */
     subscribeToUserChats: (userId: string, callback: (chats: ChatSession[]) => void, type?: 'advisor' | 'waste') => {
         const chatsRef = collection(db, USERS_COLLECTION, userId, CHATS_COLLECTION);
-        let q = query(chatsRef, orderBy('updatedAt', 'desc'), limit(50));
-        if (type) {
-            q = query(chatsRef, where('type', '==', type), orderBy('updatedAt', 'desc'), limit(50));
-        }
-
+        // By bypassing index requirement and missing 'type' field issue for legacy chats
+        let q = query(chatsRef, orderBy('updatedAt', 'desc'));
 
         return onSnapshot(q, (snapshot) => {
-            const chats = snapshot.docs.map(doc => ({
+            let chats = snapshot.docs.map(doc => ({
                 id: doc.id,
                 ...doc.data()
             } as ChatSession));
+
+            if (type) {
+                if (type === 'waste') {
+                    chats = chats.filter(c => c.type === 'waste');
+                } else if (type === 'advisor') {
+                    chats = chats.filter(c => c.type === 'advisor' || !c.type);
+                }
+            }
+
+            // Limit back to max 50 after filtering to keep UI clean
+            chats = chats.slice(0, 50);
+
             callback(chats);
+        }, (error) => {
+            console.error("onSnapshot error:", error);
         });
     },
 

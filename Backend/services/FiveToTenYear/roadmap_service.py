@@ -163,20 +163,22 @@ Guidelines:
 2. For each year, explain WHY these actions are chosen and HOW they lead to the profit goals.
 3. STRICTLY NO EMOJIS. Use professional Markdown formatting.
 4. Ensure the 10-year timeline shows clear progression (Scale-up, Diversification, Automation).
-5. Output the response in {context['language_name']}.
+5. All assumptions, costs, and market details MUST reflect the Indian agricultural economy.
+6. All financial values MUST be in Indian Rupees (₹). Do NOT use dollars ($).
+7. Output the response in {context['language_name']}.
 
 Structure (Use these exact Headers in {context['language_name']}):
 
 # {cfg['headers'][0]}
-[A comprehensive 3-5 sentence summary in {context['language_name']}. Analyze how {context['business_name']} integrated with current farm resources and the farmer's experience can lead to long-term success.]
+[A comprehensive 3-5 sentence summary in {context['language_name']}. Analyze how {context['business_name']} integrated with current farm resources and the farmer's experience can lead to long-term success in the Indian context.]
 
 # {cfg['headers'][1]}
 [Provide a meticulous Year-wise breakdown ({cfg['year_term']} 1 to {cfg['year_term']} 10). Each year must be a clear block:]
 
 ## {cfg['year_term']} 1: [{cfg['milestone']}]
 - **{cfg['focus']}**: [Detailed objective for the year]
-- **{cfg['actions']}**: [3-5 highly specific, numbered steps in {context['language_name']}.]
-- **{cfg['profit']}**: ₹[Amount]
+- **{cfg['actions']}**: [3-5 highly specific, numbered steps in {context['language_name']}. Mention Indian equipment or methods where applicable.]
+- **{cfg['profit']}**: ₹[Amount in Indian Rupees]
 
 ... (Repeat for {cfg['year_term']} 2 through 10, showing scale-up and reinvestment) ...
 
@@ -299,20 +301,22 @@ Guidelines:
 2. Break the timeline into logical phases (e.g., Sowing, Vegetative, Flowering, Fruiting, Harvest).
 3. For each phase, provide specific actions regarding irrigation, fertilization, and pest control.
 4. STRICTLY NO EMOJIS. Use professional Markdown formatting.
-5. Output the response in {context['language_name']}.
+5. All strategies, pricing, and recommendations MUST be tailored to the Indian agricultural market context.
+6. ALL financial values, costs, or profits MUST be in Indian Rupees (₹). DO NOT use dollars ($).
+7. Output the response in {context['language_name']}.
 
 Structure (Use these exact Headers in {context['language_name']}):
 
 # {cfg['headers'][0]}
-[A 3-5 sentence summary of the {context['crop_name']} lifecycle on this specific farm.]
+[A 3-5 sentence summary of the {context['crop_name']} lifecycle on this specific farm, with an Indian market focus.]
 
 # {cfg['headers'][1]}
 [Provide a meticulous Phase-wise breakdown. Each phase must be a clear block:]
 
 ## Phase 1: [{cfg['milestone']}]
 - **{cfg['focus']}**: [Detailed objective for this phase]
-- **{cfg['actions']}**: [3-5 highly specific, numbered steps in {context['language_name']}.]
-- **{cfg['profit']}**: [Expected weight or value]
+- **{cfg['actions']}**: [3-5 highly specific, numbered steps in {context['language_name']}. Mention locally available inputs where applicable.]
+- **{cfg['profit']}**: [Expected yield weight and estimated value in ₹ (Indian Rupees)]
 
 ... (Repeat for all phases until harvest) ...
 

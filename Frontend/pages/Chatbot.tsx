@@ -294,8 +294,9 @@ const Chatbot: React.FC = () => {
                 setBackendSessionId(stateSessionId);
             }
 
-            // Clear state to prevent loop
-            window.history.replaceState({}, document.title);
+            // Clear initial message from state to prevent loop, but keep other flags
+            const newState = { ...location.state, initialMessage: undefined };
+            window.history.replaceState(newState, document.title);
             handleSend(initMsg);
         }
     }, [location.state, user, activeChatId, isLoading, backendSessionId]);
@@ -580,14 +581,16 @@ const Chatbot: React.FC = () => {
     return (
         <div className="h-[calc(100vh-80px)] md:h-[calc(100vh-100px)] max-w-7xl mx-auto md:p-6 p-0">
             <ChatLayout sidebar={Sidebar}>
-                {/* Header for Back Navigation (if from Advisory OR CropCare) - Visible on both Mobile & Desktop */}
-                {(location.state?.fromAdvisory || location.state?.fromCropCare || location.state?.isRoadmapPlanner) && (
+                {/* Header for Back Navigation (if from Advisory OR CropCare OR FarmHealth) - Visible on both Mobile & Desktop */}
+                {(location.state?.fromAdvisory || location.state?.fromCropCare || location.state?.fromFarmHealth || location.state?.isRoadmapPlanner) && (
                     <div className="flex items-center justify-between p-4 border-b border-[#E0E6E6] bg-white/80 backdrop-blur-md sticky top-0 z-30">
                         <button
                             onClick={() => {
                                 // Navigate back to source with restored state
                                 if (location.state?.isRoadmapPlanner) {
                                     navigate(`/roadmap/${location.state.businessName}`, { state: location.state.previousState });
+                                } else if (location.state?.fromFarmHealth) {
+                                    navigate('/health', { state: location.state.previousState });
                                 } else {
                                     const targetPath = location.state?.fromAdvisory ? '/advisory' : '/crop-care';
                                     navigate(targetPath, { state: location.state.previousState });
@@ -596,7 +599,7 @@ const Chatbot: React.FC = () => {
                             className="flex items-center gap-2 text-[#6B7878] font-bold hover:text-[#1B5E20] transition-colors"
                         >
                             <ArrowLeft className="w-5 h-5" />
-                            {t.back} to {location.state?.isRoadmapPlanner ? 'Strategy Planner' : (location.state?.fromAdvisory ? 'Recommendations' : 'Assessment')}
+                            {t.back} to {location.state?.isRoadmapPlanner ? 'Strategy Planner' : (location.state?.fromFarmHealth ? 'Farm Health' : (location.state?.fromAdvisory ? 'Recommendations' : 'Assessment'))}
                         </button>
 
 
@@ -610,7 +613,7 @@ const Chatbot: React.FC = () => {
                     OR modify it. 
                     Simple approach: If fromAdvisory, showing the back button bar above is fine. 
                 */}
-                {!location.state?.fromAdvisory && !location.state?.fromCropCare && (
+                {!location.state?.fromAdvisory && !location.state?.fromCropCare && !location.state?.fromFarmHealth && (
                     <div className="md:hidden flex items-center p-4 border-b border-[#E0E6E6] bg-white/80 backdrop-blur-md sticky top-0 z-10">
                         <button onClick={() => setIsSidebarOpen(true)} className="p-2 mr-2">
                             <Menu className="w-6 h-6 text-[#002105]" />

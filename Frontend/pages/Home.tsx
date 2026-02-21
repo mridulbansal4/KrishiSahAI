@@ -19,39 +19,39 @@ const Home: React.FC = () => {
             subtitle: t.featurePlannerSub,
             link: '/planner',
             icon: <Target className="w-8 h-8 md:w-12 md:h-12" />,
-            bgColor: 'bg-[#2E7D32]', // Medium Green
-            hoverColor: 'hover:bg-[#1B5E20]'
+            bgColor: 'bg-[#1B5E20]', // Green 900
+            hoverColor: 'hover:bg-[#0D3B12]'
         },
         {
             title: t.featureHealthTitle,
             subtitle: t.featureHealthSub,
             link: '/health',
             icon: <Activity className="w-8 h-8 md:w-12 md:h-12" />,
-            bgColor: 'bg-[#00695C]', // Blue-Green (Teal)
-            hoverColor: 'hover:bg-[#004D40]'
+            bgColor: 'bg-[#2E7D32]', // Green 800
+            hoverColor: 'hover:bg-[#1B5E20]'
         },
         {
             title: t.featureCropCareTitle,
             subtitle: t.featureCropCareSub,
             link: '/crop-care',
             icon: <ShieldCheck className="w-8 h-8 md:w-12 md:h-12" />,
-            bgColor: 'bg-[#1B5E20]', // Dark Green
-            hoverColor: 'hover:bg-[#0D3B12]'
+            bgColor: 'bg-[#388E3C]', // Green 700
+            hoverColor: 'hover:bg-[#2E7D32]'
         },
         {
             title: t.featureWasteTitle,
             subtitle: t.featureWasteSub,
             link: '/waste-to-value',
             icon: <Recycle className="w-8 h-8 md:w-12 md:h-12" />,
-            bgColor: 'bg-[#2E7D32]', // Medium Green
-            hoverColor: 'hover:bg-[#1B5E20]'
+            bgColor: 'bg-[#43A047]', // Green 600
+            hoverColor: 'hover:bg-[#388E3C]'
         },
         {
             title: t.featureBusinessTitle,
             subtitle: t.featureBusinessSub,
             link: '/advisory',
             icon: <Briefcase className="w-8 h-8 md:w-12 md:h-12" />,
-            bgColor: 'bg-[#00695C]', // Blue-Green (Teal)
+            bgColor: 'bg-[#00695C]', // Teal 800
             hoverColor: 'hover:bg-[#004D40]'
         },
         {
@@ -59,8 +59,8 @@ const Home: React.FC = () => {
             subtitle: t.featureKnowledgeSub,
             link: '/hub',
             icon: <BookOpen className="w-8 h-8 md:w-12 md:h-12" />,
-            bgColor: 'bg-[#1565C0]', // Blue
-            hoverColor: 'hover:bg-[#0D47A1]'
+            bgColor: 'bg-[#00796B]', // Teal 700
+            hoverColor: 'hover:bg-[#00695C]'
         }
     ];
 
