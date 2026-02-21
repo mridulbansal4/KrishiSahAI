@@ -41,6 +41,8 @@ def init_model():
             mock_ipython.version_info = (8, 0, 0, '')
             sys.modules["IPython"] = mock_ipython
             sys.modules["IPython.display"] = MagicMock()
+            sys.modules["IPython.core"] = MagicMock()
+            sys.modules["IPython.core.pylabtools"] = MagicMock()
 
         # --- PATCH 2: Mock pkg_resources if not available (only used for version checks) ---
         try:
