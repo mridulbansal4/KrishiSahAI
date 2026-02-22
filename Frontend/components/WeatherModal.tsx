@@ -1,4 +1,5 @@
 import React from 'react';
+import { useLanguage } from '../src/context/LanguageContext';
 
 interface WeatherData {
     temperature: number;
@@ -19,6 +20,7 @@ interface WeatherModalProps {
 }
 
 const WeatherModal: React.FC<WeatherModalProps> = ({ isOpen, onClose, data, loading, location }) => {
+    const { t } = useLanguage();
     if (!isOpen) return null;
 
     return (
@@ -31,7 +33,7 @@ const WeatherModal: React.FC<WeatherModalProps> = ({ isOpen, onClose, data, load
                         <h2 className="text-2xl font-bold flex items-center gap-2 text-[var(--color-primary)]">
                             <span className="text-3xl">☁</span> {location}
                         </h2>
-                        <p className="text-[var(--text-tertiary)] text-sm font-medium mt-1">Live Weather Updates</p>
+                        <p className="text-[var(--text-tertiary)] text-sm font-medium mt-1">{t.weather.liveUpdates}</p>
                     </div>
                     <button
                         onClick={onClose}
@@ -46,7 +48,7 @@ const WeatherModal: React.FC<WeatherModalProps> = ({ isOpen, onClose, data, load
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-10 space-y-4">
                             <div className="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-[var(--color-primary)]"></div>
-                            <p className="text-[var(--text-tertiary)] font-medium">Fetching latest weather...</p>
+                            <p className="text-[var(--text-tertiary)] font-medium">{t.weather.fetching}</p>
                         </div>
                     ) : data ? (
                         <div className="space-y-8">
@@ -57,26 +59,26 @@ const WeatherModal: React.FC<WeatherModalProps> = ({ isOpen, onClose, data, load
                                     <div className="text-[var(--color-accent)] font-bold text-lg mt-1">{data.condition}</div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-sm text-[var(--text-tertiary)] font-bold uppercase tracking-widest mb-1">High / Low</div>
+                                    <div className="text-sm text-[var(--text-tertiary)] font-bold uppercase tracking-widest mb-1">{t.weather.highLow}</div>
                                     <div className="text-xl font-bold text-[var(--text-primary)]">{data.daily_max_temp}° / {data.daily_min_temp}°</div>
                                 </div>
                             </div>
 
                             {/* Grid Stats */}
-                            <div className="grid grid-cols-3 gap-4">
-                                <div className="bg-[var(--bg-secondary)] p-4 rounded-2xl border border-[var(--border-color)] flex flex-col items-center text-center hover:border-[var(--color-primary)] transition-colors group">
-                                    <span className="text-2xl mb-2">💧</span>
-                                    <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">Humidity</span>
+                            <div className="grid grid-cols-3 gap-2 sm:gap-4">
+                                <div className="bg-[var(--bg-secondary)] p-2 sm:p-4 rounded-2xl border border-[var(--border-color)] flex flex-col items-center text-center hover:border-[var(--color-primary)] transition-colors group">
+                                    <span className="text-xl sm:text-2xl mb-1 sm:mb-2">💧</span>
+                                    <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">{t.weather.humidity}</span>
                                     <span className="text-lg font-extrabold text-[var(--text-primary)] mt-1">{data.humidity}%</span>
                                 </div>
-                                <div className="bg-[var(--bg-secondary)] p-4 rounded-2xl border border-[var(--border-color)] flex flex-col items-center text-center hover:border-[var(--color-primary)] transition-colors group">
-                                    <span className="text-2xl mb-2">💨</span>
-                                    <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">Wind</span>
+                                <div className="bg-[var(--bg-secondary)] p-2 sm:p-4 rounded-2xl border border-[var(--border-color)] flex flex-col items-center text-center hover:border-[var(--color-primary)] transition-colors group">
+                                    <span className="text-xl sm:text-2xl mb-1 sm:mb-2">💨</span>
+                                    <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">{t.weather.wind}</span>
                                     <span className="text-lg font-extrabold text-[var(--text-primary)] mt-1">{data.wind_speed} <span className="text-xs font-bold">km/h</span></span>
                                 </div>
-                                <div className="bg-[var(--bg-secondary)] p-4 rounded-2xl border border-[var(--border-color)] flex flex-col items-center text-center hover:border-[var(--color-primary)] transition-colors group">
-                                    <span className="text-2xl mb-2">☔</span>
-                                    <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">Rain</span>
+                                <div className="bg-[var(--bg-secondary)] p-2 sm:p-4 rounded-2xl border border-[var(--border-color)] flex flex-col items-center text-center hover:border-[var(--color-primary)] transition-colors group">
+                                    <span className="text-xl sm:text-2xl mb-1 sm:mb-2">☔</span>
+                                    <span className="text-xs font-bold text-[var(--text-tertiary)] uppercase tracking-wider group-hover:text-[var(--color-primary)] transition-colors">{t.weather.rain}</span>
                                     <span className="text-lg font-extrabold text-[var(--text-primary)] mt-1">{data.rainfall_probability}%</span>
                                 </div>
                             </div>
@@ -87,11 +89,11 @@ const WeatherModal: React.FC<WeatherModalProps> = ({ isOpen, onClose, data, load
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2a10 10 0 1 0 10 10 4 4 0 0 1-5-5 4 4 0 0 1-5-5c0-2 2-4 2-4s-4-2-4-2z" /></svg>
                                 </div>
                                 <div>
-                                    <p className="text-sm text-[var(--color-primary)] font-bold">Farming Tip</p>
+                                    <p className="text-sm text-[var(--color-primary)] font-bold">{t.weather.farmingTip}</p>
                                     <p className="text-xs text-[var(--text-secondary)] font-medium mt-1 leading-relaxed">
                                         {data.rainfall_probability > 50
-                                            ? "High chance of rain today. Avoid spraying pesticides or fertilizers."
-                                            : "Conditions are good for field activities."}
+                                            ? t.weather.rainWarning
+                                            : t.weather.goodConditions}
                                     </p>
                                 </div>
                             </div>
@@ -99,7 +101,7 @@ const WeatherModal: React.FC<WeatherModalProps> = ({ isOpen, onClose, data, load
                         </div>
                     ) : (
                         <div className="text-center py-10">
-                            <p className="text-red-500 font-bold">Failed to load weather data.</p>
+                            <p className="text-red-500 font-bold">{t.weather.loadError}</p>
                         </div>
                     )}
                 </div>

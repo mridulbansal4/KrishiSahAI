@@ -87,150 +87,153 @@ interface Recommendation {
     implementation_steps?: string[];
 }
 
-// ─── EXPERT DATA ────────────────────────────────────────────────────────────
-const EXPERTS = [
-    {
-        id: 1,
-        name: "Dr. Ramesh Patil",
-        title: "Agri-Business Consultant",
-        specialization: "Dairy Farming & Organic Inputs",
-        experience: "18 years",
-        location: "Pune, Maharashtra",
-        rating: 4.9,
-        consultations: 1240,
-        bio: "Former NABARD officer turned independent consultant. Helped 500+ farmers set up sustainable agri-businesses across Maharashtra, Madhya Pradesh and Rajasthan. Expert in low-investment, high-return models.",
-        expertise: ["Dairy Farming", "Organic Manure", "Agri-Input Trading", "Government Schemes"],
-        photo: "/experts/expert_1.png",
-        available: true
-    },
-    {
-        id: 2,
-        name: "Dr. Sunita Yadav",
-        title: "Horticulture & Nursery Expert",
-        specialization: "Plant Nursery & Greenhouse Farming",
-        experience: "14 years",
-        location: "Nashik, Maharashtra",
-        rating: 4.8,
-        consultations: 890,
-        bio: "PhD in Horticulture from IARI, New Delhi. Founded three successful plant nurseries and serves as advisor to FPOs in Nashik region. Specialises in export-quality produce and value-added horticulture products.",
-        expertise: ["Plant Nursery", "Greenhouse Farming", "Floriculture", "Export Market"],
-        photo: "/experts/expert_2.png",
-        available: true
-    },
-    {
-        id: 3,
-        name: "Mr. Arvind Sharma",
-        title: "Poultry & Livestock Specialist",
-        specialization: "Poultry, Goat Farming & Fishery",
-        experience: "22 years",
-        location: "Nagpur, Maharashtra",
-        rating: 4.7,
-        consultations: 2100,
-        bio: "India's leading poultry business mentor. Has scaled 300+ rural poultry units from backyard to commercial. Certified trainer under National Livestock Mission. Author of 'Poultry Profit Playbook'.",
-        expertise: ["Poultry Farming", "Goat Farming", "Fishery", "Animal Health"],
-        photo: "/experts/expert_3.png",
-        available: false
-    },
-    {
-        id: 4,
-        name: "Ms. Priya Kulkarni",
-        title: "Agri-Finance & Market Linkage Expert",
-        specialization: "Agri Finance, FPOs & Market Access",
-        experience: "11 years",
-        location: "Aurangabad, Maharashtra",
-        rating: 4.9,
-        consultations: 670,
-        bio: "MBA in Agribusiness from IIM Ahmedabad. Works with NABARD and State Bank to connect farmers to credit and market systems. Expert in FPO formation, cold chain logistics and agri-export compliance.",
-        expertise: ["Agri Finance", "Market Linkage", "FPO Formation", "Cold Chain"],
-        photo: "/experts/expert_4.png",
-        available: true
-    }
-];
-
-// ─── MOCK KNOW-MORE DATA PER BUSINESS ────────────────────────────────────────
-const getKnowMoreData = (rec: Recommendation) => ({
-    title: rec.title,
-    matchScore: rec.match_score,
-    investment: rec.estimated_cost,
-    profit: rec.profit_potential,
-    timeline: rec.timeline || '3–6 months',
-    basicIdea: [
-        rec.detailed_description || rec.reason,
-        `Your estimated starting investment is ${rec.estimated_cost}, with a projected monthly profit of ${rec.profit_potential} once fully operational.`,
-        `Expected timeline to reach first returns: ${rec.timeline || '3–6 months depending on local season and setup pace.'}.`,
-        `This business has a ${rec.match_score}% match with your profile — based on your land size, capital, experience and risk preference.`,
-        `Government schemes such as NABARD rural credit and state agri subsidies may reduce your net investment significantly.`
-    ],
-    sections: [
-        {
-            title: "Market Demand",
-            content: [
-                rec.market_demand || `${rec.title} products enjoy consistent year-round demand in local mandis, urban retail chains and online grocery platforms.`,
-                "Rising consumer preference for farm-fresh, locally sourced and traceable produce drives prices 15–30% above commodity rates.",
-                "District-level FPOs (Farmer Producer Organisations) provide direct market linkage — bypassing middlemen and improving margin by up to 20%.",
-                "Export opportunities exist for certified organic variants; APEDA provides subsidised assistance for export registration.",
-                "Festival and seasonal demand spikes (Oct–Jan) can boost revenue by 40–60% if production is timed correctly."
-            ]
-        },
-        {
-            title: "Key Requirements",
-            content: [
-                ...(rec.requirements.length > 0 ? rec.requirements : ["Land", "Water access", "Basic equipment", "Skilled labour"]),
-                `Minimum working capital buffer of 20% of ${rec.estimated_cost} recommended for first 2 months.`,
-                "Basic record-keeping or a mobile app like eNAM or AgriBazaar is helpful for price discovery and sales tracking.",
-                "FSSAI registration may be required if processing or packaging farm produce for direct consumer sale."
-            ]
-        },
-        {
-            title: "Risk Factors & Mitigation",
-            content: [
-                ...(rec.risk_factors && rec.risk_factors.length > 0 ? rec.risk_factors : [
-                    "Market price volatility during harvest season — mitigate via forward contracts or FPO tie-ups.",
-                    "Pest or disease outbreaks — adopt IPM (Integrated Pest Management) and maintain crop insurance.",
-                    "Weather dependency (drought/flood) — consider drip irrigation and PM Fasal Bima Yojana coverage."
-                ]),
-                "Labour availability risk during peak seasons — train 2–3 local youth in advance for reliable workforce.",
-                "Input cost inflation (seeds, fertilizers) — reduce exposure by bulk purchasing via Kisan cooperative or e-Kisan Mandi."
-            ]
-        },
-        {
-            title: "Investment Breakdown",
-            content: [
-                `Total estimated capital required: ${rec.estimated_cost}.`,
-                `Expected monthly revenue once operational: ${rec.profit_potential}.`,
-                "Infrastructure setup (land preparation, fencing, shed): approx. 30–40% of total investment.",
-                "Inputs (seeds / livestock / raw materials) and recurring monthly costs: approx. 40–50% of total.",
-                "Working capital buffer and contingency reserve: 10–20% recommended for the first operating quarter."
-            ]
-        },
-        {
-            title: "Steps to Start",
-            content: [
-                ...(rec.implementation_steps && rec.implementation_steps.length > 0 ? rec.implementation_steps : [
-                    "Step 1 — Conduct a local market survey: identify 3–5 potential buyers (mandis, retailers, hotels).",
-                    "Step 2 — Prepare land or infrastructure: clear, level, and set up basic facilities.",
-                    "Step 3 — Register with APMC or nearest FPO to access subsidies and fair pricing.",
-                    "Step 4 — Procure quality inputs (seeds / stock / equipment) from certified dealers.",
-                    "Step 5 — Launch a small-scale trial batch (20–30% capacity) to validate quality and buyer interest.",
-                    "Step 6 — Scale to full capacity after the first successful sales cycle and reinvest profits."
-                ]),
-            ]
-        },
-        {
-            title: "Government Schemes",
-            content: [
-                "PM Kisan Sampada Yojana — provides grants up to ₹10L for agri-processing units.",
-                "NABARD RIDF Loans — low-interest rural infrastructure finance at 5.5–7% per annum.",
-                "PM Fasal Bima Yojana — crop insurance covering weather, pest and price risk.",
-                "National Livestock Mission — livestock-based businesses eligible for 50% capital subsidy.",
-                "State Horticulture Mission — greenhouse and nursery setups get 40–50% subsidy on infrastructure."
-            ]
-        }
-    ]
-});
 
 const BusinessAdvisory: React.FC = () => {
     const { language: lang, t } = useLanguage();
+
+    const EXPERTS = [
+        {
+            id: 1,
+            name: "Dr. Ramesh Patil",
+            title: t.advisory.experts.ramesh.title,
+            specialization: t.advisory.experts.ramesh.specialization,
+            experience: t.advisory.experts.ramesh.experience,
+            location: t.advisory.experts.ramesh.location,
+            rating: 4.9,
+            consultations: 1240,
+            bio: t.advisory.experts.ramesh.bio,
+            expertise: t.advisory.experts.ramesh.expertise,
+            photo: "/experts/expert_1.png",
+            available: true
+        },
+        {
+            id: 2,
+            name: "Dr. Sunita Deshmukh",
+            title: t.advisory.experts.sunita.title,
+            specialization: t.advisory.experts.sunita.specialization,
+            experience: t.advisory.experts.sunita.experience,
+            location: t.advisory.experts.sunita.location,
+            rating: 4.8,
+            consultations: 890,
+            bio: t.advisory.experts.sunita.bio,
+            expertise: t.advisory.experts.sunita.expertise,
+            photo: "/experts/expert_2.png",
+            available: true
+        },
+        {
+            id: 3,
+            name: "Arvind Kulkarni",
+            title: t.advisory.experts.arvind.title,
+            specialization: t.advisory.experts.arvind.specialization,
+            experience: t.advisory.experts.arvind.experience,
+            location: t.advisory.experts.arvind.location,
+            rating: 4.7,
+            consultations: 2150,
+            bio: t.advisory.experts.arvind.bio,
+            expertise: t.advisory.experts.arvind.expertise,
+            photo: "/experts/expert_3.png",
+            available: false
+        },
+        {
+            id: 4,
+            name: "Priya Sharma",
+            title: t.advisory.experts.priya.title,
+            specialization: t.advisory.experts.priya.specialization,
+            experience: t.advisory.experts.priya.experience,
+            location: t.advisory.experts.priya.location,
+            rating: 4.9,
+            consultations: 560,
+            bio: t.advisory.experts.priya.bio,
+            expertise: t.advisory.experts.priya.expertise,
+            photo: "/experts/expert_4.png",
+            available: true
+        }
+    ];
+
+    const getKnowMoreData = (rec: Recommendation) => ({
+        title: rec.title,
+        matchScore: rec.match_score,
+        investment: rec.estimated_cost,
+        profit: rec.profit_potential,
+        timeline: rec.timeline || '3–6 months',
+        basicIdea: [
+            rec.detailed_description || rec.reason,
+            t.advisory.knowMore.investmentExplanation
+                .replace('{{cost}}', rec.estimated_cost)
+                .replace('{{profit}}', rec.profit_potential),
+            t.advisory.knowMore.timelineExplanation
+                .replace('{{timeline}}', rec.timeline || '3–6 months'),
+            t.advisory.knowMore.matchExplanation
+                .replace('{{score}}', rec.match_score?.toString() || '0'),
+            t.advisory.agreementText
+        ],
+        sections: [
+            {
+                title: t.advisory.knowMore.marketDemand,
+                content: [
+                    rec.market_demand || `${rec.title} products enjoy consistent year-round demand in local mandis, urban retail chains and online grocery platforms.`,
+                    "Rising consumer preference for farm-fresh, locally sourced and traceable produce drives prices 15–30% above commodity rates.",
+                    "District-level FPOs (Farmer Producer Organisations) provide direct market linkage — bypassing middlemen and improving margin by up to 20%.",
+                    "Export opportunities exist for certified organic variants; APEDA provides subsidised assistance for export registration.",
+                    "Festival and seasonal demand spikes (Oct–Jan) can boost revenue by 40–60% if production is timed correctly."
+                ]
+            },
+            {
+                title: t.advisory.knowMore.keyRequirements,
+                content: [
+                    ...(rec.requirements.length > 0 ? rec.requirements : ["Land", "Water access", "Basic equipment", "Skilled labour"]),
+                    `Minimum working capital buffer of 20% of ${rec.estimated_cost} recommended for first 2 months.`,
+                    "Basic record-keeping or a mobile app like eNAM or AgriBazaar is helpful for price discovery and sales tracking.",
+                    "FSSAI registration may be required if processing or packaging farm produce for direct consumer sale."
+                ]
+            },
+            {
+                title: t.advisory.knowMore.riskAndMitigation,
+                content: [
+                    ...(rec.risk_factors && rec.risk_factors.length > 0 ? rec.risk_factors : [
+                        "Market price volatility during harvest season — mitigate via forward contracts or FPO tie-ups.",
+                        "Pest or disease outbreaks — adopt IPM (Integrated Pest Management) and maintain crop insurance.",
+                        "Weather dependency (drought/flood) — consider drip irrigation and PM Fasal Bima Yojana coverage."
+                    ]),
+                    "Labour availability risk during peak seasons — train 2–3 local youth in advance for reliable workforce.",
+                    "Input cost inflation (seeds, fertilizers) — reduce exposure by bulk purchasing via Kisan cooperative or e-Kisan Mandi."
+                ]
+            },
+            {
+                title: t.advisory.knowMore.investmentBreakdown,
+                content: [
+                    `Total estimated capital required: ${rec.estimated_cost}.`,
+                    `Expected monthly revenue once operational: ${rec.profit_potential}.`,
+                    "Infrastructure setup (land preparation, fencing, shed): approx. 30–40% of total investment.",
+                    "Inputs (seeds / livestock / raw materials) and recurring monthly costs: approx. 40–50% of total.",
+                    "Working capital buffer and contingency reserve: 10–20% recommended for the first operating quarter."
+                ]
+            },
+            {
+                title: t.advisory.knowMore.stepsToStart,
+                content: [
+                    ...(rec.implementation_steps && rec.implementation_steps.length > 0 ? rec.implementation_steps : [
+                        "Step 1 — Conduct a local market survey: identify 3–5 potential buyers (mandis, retailers, hotels).",
+                        "Step 2 — Prepare land or infrastructure: clear, level, and set up basic facilities.",
+                        "Step 3 — Register with APMC or nearest FPO to access subsidies and fair pricing.",
+                        "Step 4 — Procure quality inputs (seeds / stock / equipment) from certified dealers.",
+                        "Step 5 — Launch a small-scale trial batch (20–30% capacity) to validate quality and buyer interest.",
+                        "Step 6 — Scale to full capacity after the first successful sales cycle and reinvest profits."
+                    ]),
+                ]
+            },
+            {
+                title: t.advisory.knowMore.govSchemes,
+                content: [
+                    "PM Kisan Sampada Yojana — provides grants up to ₹10L for agri-processing units.",
+                    "NABARD RIDF Loans — low-interest rural infrastructure finance at 5.5–7% per annum.",
+                    "PM Fasal Bima Yojana — crop insurance covering weather, pest and price risk.",
+                    "National Livestock Mission — livestock-based businesses eligible for 50% capital subsidy.",
+                    "State Horticulture Mission — greenhouse and nursery setups get 40–50% subsidy on infrastructure."
+                ]
+            }
+        ]
+    });
     const { activeFarm, farms } = useFarm();
     const [user, setUser] = useState<UserProfile | null>(null);
 
@@ -336,10 +339,7 @@ const BusinessAdvisory: React.FC = () => {
     }, [formData.selectedFarmNickname, user]);
 
 
-    const interestOptions = [
-        "Dairy Farming", "Poultry", "Greenhouse Farming", "Goat Farming",
-        "Shop Handling", "Factory Business", "Fishery", "Mushroom Cultivation"
-    ];
+    const interestOptions = t.advisoryForm.interestOptions;
 
     const handleInterestToggle = (interest: string) => {
         setFormData(prev => ({
@@ -352,7 +352,7 @@ const BusinessAdvisory: React.FC = () => {
 
     const handleAnalyze = async () => {
         if (!formData.agreement) {
-            alert("Please agree to the terms.");
+            alert(t.advisoryForm.agreement);
             return;
         }
 
@@ -360,7 +360,7 @@ const BusinessAdvisory: React.FC = () => {
         const business = parseFloat(formData.businessLand);
 
         if (formData.spaceType === 'Agri' && (isNaN(business) || business <= 0)) {
-            alert("Please enter a valid land size for your business.");
+            alert(t.advisoryForm.invalidLand);
             return;
         }
 
@@ -434,11 +434,11 @@ const BusinessAdvisory: React.FC = () => {
                 if (response.session_id) setBackendSessionId(response.session_id);
                 setStep(2);
             } else {
-                alert("Failed to generate recommendations. Please try again.");
+                alert(t.advisoryForm.analysisFailed);
             }
         } catch (error) {
             console.error("Analysis Error:", error);
-            alert("An error occurred. Please try again.");
+            alert(t.advisoryForm.genericError);
         } finally {
             setLoading(false);
         }
@@ -447,7 +447,7 @@ const BusinessAdvisory: React.FC = () => {
     const handleAskChatbot = (businessName: string) => {
         navigate('/chat', {
             state: {
-                initialMessage: `I want detailed analysis for ${businessName}`,
+                initialMessage: t.prompts.businessPrompt.replace('{business}', businessName),
                 backendSessionId: backendSessionId,
                 fromAdvisory: true,
                 previousState: { formData, recommendations, step }
@@ -461,14 +461,20 @@ const BusinessAdvisory: React.FC = () => {
         setTimeout(() => {
             setConnectingExpert(null);
             // Show success feedback
-            alert("✅ Connection request sent! The expert will reach out to you within 24 hours.");
+            alert(t.advisoryForm.connectionSent);
         }, 1500);
     };
 
     // ─── STEP 0: LANDING ──────────────────────────────────────────────────────
     if (step === 0) {
         return (
-            <div className="p-8 max-w-7xl mx-auto flex items-center justify-center min-h-[80vh]">
+            <div className="p-8 max-w-7xl mx-auto flex items-center justify-center min-h-[80vh] relative">
+                <button
+                    onClick={() => navigate(-1)}
+                    className="absolute top-8 left-8 text-[#555555] font-bold hover:text-[#1B5E20] flex items-center gap-2 text-lg transition-colors cursor-pointer"
+                >
+                    <ArrowLeft className="w-5 h-5" /> {t.back}
+                </button>
                 <div className="text-center py-20 px-10 bg-white rounded-[48px] border border-[#E6E6E6] shadow-xl max-w-3xl w-full">
                     <div className="w-24 h-24 bg-[#E8F5E9] rounded-full flex items-center justify-center mx-auto mb-8 shadow-sm">
                         <Briefcase className="w-12 h-12 text-[#1B5E20]" />
@@ -522,7 +528,7 @@ const BusinessAdvisory: React.FC = () => {
                 {/* Navigation Header */}
                 <div className="mb-8 flex items-center justify-between">
                     <button onClick={handleBack} className="flex items-center gap-2 text-[#555555] font-bold hover:text-[#1B5E20] transition-colors">
-                        <ArrowLeft className="w-5 h-5" /> {subStep === 1 ? t.back : 'Previous Step'}
+                        <ArrowLeft className="w-5 h-5" /> {subStep === 1 ? t.back : t.advisory.steps.prevStep}
                     </button>
                     <div className="flex items-center gap-4">
                         <div className="hidden md:block w-48 h-2 bg-[#E6E6E6] rounded-full overflow-hidden">
@@ -531,16 +537,16 @@ const BusinessAdvisory: React.FC = () => {
                                 style={{ width: `${progress}%` }}
                             />
                         </div>
-                        <span className="text-sm font-bold text-[#1B5E20]">Step {subStep} of {totalSubSteps}</span>
+                        <span className="text-sm font-bold text-[#1B5E20]">{t.signupFlow.step || 'Step'} {subStep} {t.signupFlow.of || 'of'} {totalSubSteps}</span>
                     </div>
                 </div>
 
                 <div className="bg-white rounded-[40px] border border-[#E6E6E6] shadow-2xl p-6 md:p-12 animate-in fade-in slide-in-from-bottom-6 duration-700">
                     <h1 className="text-4xl font-extrabold text-[#1E1E1E] mb-10 tracking-tight">
-                        {subStep === 1 && "Farm & Finance"}
-                        {subStep === 2 && "Land & Infrastructure"}
-                        {subStep === 3 && "Workforce & Market"}
-                        {subStep === 4 && "Risk & Goals"}
+                        {subStep === 1 && t.advisory.steps.step1}
+                        {subStep === 2 && t.advisory.steps.step2}
+                        {subStep === 3 && t.advisory.steps.step3}
+                        {subStep === 4 && t.advisory.steps.step5}
                     </h1>
 
                     <div className="space-y-12">
@@ -550,7 +556,7 @@ const BusinessAdvisory: React.FC = () => {
                                 {/* Farm Selection (Dynamic) */}
                                 {user && user.farms && user.farms.length > 0 && (
                                     <div className="space-y-6">
-                                        <label className="block text-lg font-bold text-[#1E1E1E]">Which farm is this business for?</label>
+                                        <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.farmSelection}</label>
                                         <div className="flex flex-wrap gap-4">
                                             {user.farms.map(farm => (
                                                 <button
@@ -573,18 +579,18 @@ const BusinessAdvisory: React.FC = () => {
                                                     }`}
                                             >
                                                 <Target className="w-4 h-4" />
-                                                Other/Custom
+                                                {t.advisoryForm.otherCustom}
                                             </button>
                                         </div>
                                         {formData.selectedFarmNickname && (
                                             <p className="text-xs text-[#1B5E20] font-bold animate-pulse flex items-center gap-1">
-                                                <CheckCircle className="w-3 h-3" /> Auto-filling data from "{formData.selectedFarmNickname}"...
+                                                <CheckCircle className="w-3 h-3" /> {t.advisoryForm.autoFilling.replace('{farm}', formData.selectedFarmNickname)}
                                             </p>
                                         )}
                                     </div>
                                 )}
                                 <div className="space-y-6">
-                                    <label className="block text-lg font-bold text-[#1E1E1E]">What is your available investment budget?</label>
+                                    <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.budgetLabel}</label>
                                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
                                         {['< 1 lakh', '1-3 lakh', '3-6 lakh', '6-10 lakh', '10+ lakh'].map(opt => (
                                             <label key={opt} className={`flex flex-col items-center justify-center p-6 text-center rounded-[24px] border-2 cursor-pointer transition-all duration-300 ${formData.budget === opt ? 'border-[#1B5E20] bg-[#E8F5E9] shadow-lg ring-2 ring-[#1B5E20]/20 scale-105' : 'border-[#F1F5F9] bg-[#F8FAFC] hover:border-gray-300 hover:bg-white'}`}>
@@ -597,7 +603,7 @@ const BusinessAdvisory: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-6">
-                                    <label className="block text-lg font-bold text-[#1E1E1E]">Current average monthly profit?</label>
+                                    <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.profitLabel}</label>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                                         {['< ₹10,000', '₹10,000 - ₹20,000', '₹20,000 - ₹50,000', 'Above ₹50,000'].map(opt => (
                                             <label key={opt} className={`flex items-center p-6 rounded-[24px] border-2 cursor-pointer transition-all duration-300 ${formData.currentProfit === opt ? 'border-[#1B5E20] bg-[#E8F5E9] shadow-md' : 'border-[#F1F5F9] bg-[#F8FAFC] hover:border-gray-300'}`}>
@@ -609,11 +615,11 @@ const BusinessAdvisory: React.FC = () => {
                                 </div>
 
                                 <div className="space-y-6">
-                                    <label className="block text-lg font-bold text-[#1E1E1E]">Operational Intent?</label>
+                                    <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.intentLabel}</label>
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                         {[
-                                            { label: 'Full-Time Business', sub: 'I want this to be my primary income source', value: 'Full Replacement' },
-                                            { label: 'Side Income', sub: 'I will run this along with current work', value: 'Side Income' }
+                                            { label: t.advisoryForm.intentFull.title, sub: t.advisoryForm.intentFull.sub, value: 'Full Replacement' },
+                                            { label: t.advisoryForm.intentSide.title, sub: t.advisoryForm.intentSide.sub, value: 'Side Income' }
                                         ].map(opt => (
                                             <label key={opt.value} className={`flex flex-col p-6 rounded-[24px] border-2 cursor-pointer transition-all duration-300 ${formData.runningPlan === opt.value ? 'border-[#1B5E20] bg-[#E8F5E9] shadow-md scale-[1.02]' : 'border-[#F1F5F9] bg-[#F8FAFC] hover:border-gray-300'}`}>
                                                 <div className="flex items-center mb-2">
@@ -628,9 +634,9 @@ const BusinessAdvisory: React.FC = () => {
 
                                 <div className="space-y-6 pt-6 border-t border-[#F1F5F9]">
                                     <div className="flex justify-between items-center">
-                                        <label className="block text-lg font-bold text-[#1E1E1E]">Target Business Plot Size <span className="text-sm font-medium text-[#64748B] ml-2">(in acres)</span></label>
+                                        <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.plotSizeLabel} <span className="text-sm font-medium text-[#64748B] ml-2">({t.advisoryForm.acres})</span></label>
                                         {formData.totalLand && parseFloat(formData.totalLand) > 0 && (
-                                            <span className="text-[10px] font-bold text-[#1B5E20] bg-[#E8F5E9] px-4 py-2 rounded-full border border-[#1B5E20]/10 shadow-sm">Available Land: {formData.totalLand} acres</span>
+                                            <span className="text-[10px] font-bold text-[#1B5E20] bg-[#E8F5E9] px-4 py-2 rounded-full border border-[#1B5E20]/10 shadow-sm">{t.advisoryForm.availableLand.replace('{size}', formData.totalLand)}</span>
                                         )}
                                     </div>
                                     <div className="relative group">
@@ -649,14 +655,14 @@ const BusinessAdvisory: React.FC = () => {
                                                 // We allow the input but handle validation styling
                                                 setFormData({ ...formData, businessLand: val });
                                             }}
-                                            placeholder="Enter plot size for business..."
+                                            placeholder={t.advisoryForm.plotPlaceholder}
                                             className={`block w-full pl-16 pr-24 py-6 bg-[#F8FAFC] border-2 rounded-[24px] text-xl font-bold transition-all outline-none ${(formData.totalLand && parseFloat(formData.businessLand) > parseFloat(formData.totalLand))
                                                 ? 'border-red-500 text-red-600 focus:border-red-600'
                                                 : 'border-[#F1F5F9] text-[#1E1E1E] focus:border-[#1B5E20] focus:shadow-md focus:bg-white'
                                                 }`}
                                         />
                                         <div className="absolute inset-y-0 right-0 pr-8 flex items-center pointer-events-none">
-                                            <span className={`text-lg font-bold ${(formData.totalLand && parseFloat(formData.businessLand) > parseFloat(formData.totalLand)) ? 'text-red-500' : 'text-[#1B5E20]'}`}>Acres</span>
+                                            <span className={`text-lg font-bold ${(formData.totalLand && parseFloat(formData.businessLand) > parseFloat(formData.totalLand)) ? 'text-red-500' : 'text-[#1B5E20]'}`}>{t.advisoryForm.acres}</span>
                                         </div>
                                     </div>
                                     <div className="flex justify-between items-center">
@@ -665,8 +671,8 @@ const BusinessAdvisory: React.FC = () => {
                                             : 'text-[#64748B]'
                                             }`}>
                                             {(formData.totalLand && parseFloat(formData.businessLand) > parseFloat(formData.totalLand))
-                                                ? `⚠️ Cannot exceed available land (${formData.totalLand} acres)`
-                                                : `Enter how much land you plan to use for your new agri-business. (Must be less than ${formData.totalLand || 'total'} acres)`}
+                                                ? t.advisoryForm.plotError.replace('{size}', formData.totalLand)
+                                                : t.advisoryForm.plotHint.replace('{size}', formData.totalLand || 'total')}
                                         </p>
                                     </div>
                                 </div>
@@ -676,12 +682,12 @@ const BusinessAdvisory: React.FC = () => {
                         {subStep === 2 && (
                             <div className="animate-in fade-in slide-in-from-right-4 duration-500 space-y-10">
                                 <div className="space-y-6">
-                                    <label className="block text-lg font-bold text-[#1E1E1E]">Where will the business be located?</label>
+                                    <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.locationLabel}</label>
                                     <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
                                         {[
-                                            { label: 'Open Agricultural Land', sub: 'Fields, plots', value: 'Agri', icon: Sprout },
-                                            { label: 'Covered / Rented Space', sub: 'Shed, rooftop, backyard', value: 'Non-Agri', icon: Briefcase },
-                                            { label: 'Pond / Water Body', sub: 'Water based setup', value: 'Water', icon: Droplets }
+                                            { label: t.advisoryForm.spaceOptions.agri.label, sub: t.advisoryForm.spaceOptions.agri.sub, value: 'Agri', icon: Sprout },
+                                            { label: t.advisoryForm.spaceOptions.nonAgri.label, sub: t.advisoryForm.spaceOptions.nonAgri.sub, value: 'Non-Agri', icon: Briefcase },
+                                            { label: t.advisoryForm.spaceOptions.water.label, sub: t.advisoryForm.spaceOptions.water.sub, value: 'Water', icon: Droplets }
                                         ].map(opt => (
                                             <label key={opt.value} className={`flex flex-col p-6 rounded-[28px] border-2 cursor-pointer transition-all duration-300 ${formData.spaceType === opt.value ? 'border-[#1B5E20] bg-[#E8F5E9] shadow-lg ring-2 ring-[#1B5E20]/10' : 'border-[#F1F5F9] bg-[#F8FAFC] hover:border-gray-300'}`}>
                                                 <input type="radio" name="spaceType" value={opt.value} checked={formData.spaceType === opt.value} onChange={e => setFormData({ ...formData, spaceType: e.target.value })} className="sr-only" />
@@ -701,13 +707,13 @@ const BusinessAdvisory: React.FC = () => {
                                             <div className="w-10 h-10 bg-[#E8F5E9] rounded-xl flex items-center justify-center">
                                                 <Ruler className="text-[#1B5E20] w-5 h-5" />
                                             </div>
-                                            <h4 className="font-bold text-[#1B5E20]">Agricultural Plot Details</h4>
+                                            <h4 className="font-bold text-[#1B5E20]">{t.advisoryForm.agriDetails}</h4>
                                         </div>
                                         <div className="space-y-12">
                                             <div className="space-y-6">
-                                                <label className="block text-lg font-bold text-[#1E1E1E]">Soil Condition</label>
+                                                <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.soilLabel}</label>
                                                 <div className="flex flex-col gap-4">
-                                                    {['Highly fertile', 'Average/Normal', 'Barren/Degraded'].map(opt => (
+                                                    {t.advisoryForm.soilOptions.map(opt => (
                                                         <label key={opt} className={`flex items-center p-5 rounded-[24px] border-2 cursor-pointer transition-all ${formData.soilCondition === opt ? 'border-[#1B5E20] bg-[#E8F5E9] shadow-sm' : 'border-[#F1F5F9] bg-[#F8FAFC] hover:border-gray-300'}`}>
                                                             <input type="radio" name="soilCondition" value={opt} checked={formData.soilCondition === opt} onChange={e => setFormData({ ...formData, soilCondition: e.target.value })} className="w-5 h-5 accent-[#1B5E20] mr-4" />
                                                             <span className="text-sm font-bold text-[#64748B]">{opt}</span>
@@ -716,9 +722,9 @@ const BusinessAdvisory: React.FC = () => {
                                                 </div>
                                             </div>
                                             <div className="space-y-6">
-                                                <label className="block text-lg font-bold text-[#1E1E1E]">Water Availability</label>
+                                                <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.waterLabel}</label>
                                                 <div className="flex flex-col gap-4">
-                                                    {['Borewell', 'Canal', 'Seasonal/Rainfed only'].map(opt => (
+                                                    {t.advisoryForm.waterOptions.map(opt => (
                                                         <label key={opt} className={`flex items-center p-5 rounded-[24px] border-2 cursor-pointer transition-all ${formData.waterSource === opt ? 'border-[#1B5E20] bg-[#E8F5E9] shadow-sm' : 'border-[#F1F5F9] bg-[#F8FAFC] hover:border-gray-300'}`}>
                                                             <input type="radio" name="waterSource" value={opt} checked={formData.waterSource === opt} onChange={e => setFormData({ ...formData, waterSource: e.target.value })} className="w-5 h-5 accent-[#1B5E20] mr-4" />
                                                             <span className="text-sm font-bold text-[#64748B]">{opt}</span>
@@ -736,12 +742,12 @@ const BusinessAdvisory: React.FC = () => {
                                             <div className="w-10 h-10 bg-[#E8F5E9] rounded-xl flex items-center justify-center">
                                                 <Briefcase className="text-[#1B5E20] w-5 h-5" />
                                             </div>
-                                            <h4 className="font-bold text-[#1B5E20]">Facility & Infrastructure</h4>
+                                            <h4 className="font-bold text-[#1B5E20]">{t.advisoryForm.infraTitle}</h4>
                                         </div>
                                         <div className="space-y-8">
-                                            <label className="block text-lg font-bold text-[#1E1E1E]">Available Space</label>
+                                            <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.spaceLabel}</label>
                                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                                {['< 500 sq.ft', '500-1,000 sq.ft', '1,000-5,000 sq.ft'].map(opt => (
+                                                {t.advisoryForm.spaceOptionsList.map(opt => (
                                                     <label key={opt} className={`flex items-center p-6 rounded-2xl border-2 cursor-pointer transition-all ${formData.coveredSpace === opt ? 'border-[#1B5E20] bg-[#E8F5E9] shadow-md ring-2 ring-[#1B5E20]/5' : 'border-transparent bg-white/50 hover:bg-white'}`}>
                                                         <input type="radio" name="coveredSpace" value={opt} checked={formData.coveredSpace === opt} onChange={e => setFormData({ ...formData, coveredSpace: e.target.value })} className="w-5 h-5 accent-[#1B5E20] mr-4" />
                                                         <span className="text-sm font-bold text-[#64748B]">{opt}</span>
@@ -751,9 +757,9 @@ const BusinessAdvisory: React.FC = () => {
                                         </div>
                                         <div className="space-y-12">
                                             <div className="space-y-6">
-                                                <label className="block text-lg font-bold text-[#1E1E1E]">Electricity Access</label>
+                                                <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.electricityLabel}</label>
                                                 <div className="flex flex-col gap-4">
-                                                    {['Yes, 24/7', 'Yes, but frequent power cuts', 'No electricity'].map(opt => (
+                                                    {t.advisoryForm.electricityOptions.map(opt => (
                                                         <label key={opt} className={`flex items-center p-5 rounded-[24px] border-2 cursor-pointer transition-all ${formData.electricity === opt ? 'border-[#1B5E20] bg-[#E8F5E9] shadow-sm' : 'border-[#F1F5F9] bg-[#F8FAFC] hover:border-gray-300'}`}>
                                                             <input type="radio" name="electricity" value={opt} checked={formData.electricity === opt} onChange={e => setFormData({ ...formData, electricity: e.target.value })} className="w-5 h-5 accent-[#1B5E20] mr-4" />
                                                             <span className="text-sm font-bold text-[#64748B]">{opt}</span>
@@ -762,9 +768,9 @@ const BusinessAdvisory: React.FC = () => {
                                                 </div>
                                             </div>
                                             <div className="space-y-6">
-                                                <label className="block text-lg font-bold text-[#1E1E1E]">Infrastructure Type</label>
+                                                <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.infraTypeLabel}</label>
                                                 <div className="grid grid-cols-2 gap-4">
-                                                    {['Fully enclosed room', 'Open shed', 'Rooftop', 'Empty plot'].map(opt => (
+                                                    {t.advisoryForm.infraTypeOptions.map(opt => (
                                                         <label key={opt} className={`flex flex-col items-center justify-center p-8 rounded-[32px] border-2 cursor-pointer transition-all ${formData.infraType === opt ? 'border-[#1B5E20] bg-[#E8F5E9] shadow-lg scale-[1.02]' : 'border-[#F1F5F9] bg-[#F8FAFC] hover:border-gray-300'}`}>
                                                             <input type="radio" name="infraType" value={opt} checked={formData.infraType === opt} onChange={e => setFormData({ ...formData, infraType: e.target.value })} className="sr-only" />
                                                             <span className="text-xs font-black uppercase tracking-[0.2em] text-[#64748B] text-center w-full leading-relaxed">{opt}</span>
@@ -786,14 +792,14 @@ const BusinessAdvisory: React.FC = () => {
                                         <div className="w-10 h-10 bg-[#E8F5E9] rounded-xl flex items-center justify-center">
                                             <User className="text-[#1B5E20] w-5 h-5" />
                                         </div>
-                                        <h3 className="text-xl font-bold text-[#1E1E1E]">Workforce Profile</h3>
+                                        <h3 className="text-xl font-bold text-[#1E1E1E]">{t.advisoryForm.workforceTitle}</h3>
                                     </div>
 
                                     <div className="flex flex-col gap-12">
                                         <div className="space-y-4">
-                                            <label className="text-lg font-bold text-[#1E1E1E]">Daily labor source?</label>
+                                            <label className="text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.laborLabel}</label>
                                             <div className="flex flex-col gap-3">
-                                                {['Mostly myself', 'My family', 'External labor'].map(opt => (
+                                                {t.advisoryForm.laborOptions.map(opt => (
                                                     <label key={opt} className={`flex items-center p-5 rounded-2xl border-2 cursor-pointer transition-all ${formData.dailyLabor === opt ? 'border-[#1B5E20] bg-[#E8F5E9] font-bold' : 'border-[#F1F5F9] bg-[#F8FAFC]'}`}>
                                                         <input type="radio" name="dailyLabor" value={opt} checked={formData.dailyLabor === opt} onChange={e => setFormData({ ...formData, dailyLabor: e.target.value })} className="w-5 h-5 accent-[#1B5E20] mr-4" />
                                                         <span className="text-sm font-bold">{opt}</span>
@@ -802,9 +808,9 @@ const BusinessAdvisory: React.FC = () => {
                                             </div>
                                         </div>
                                         <div className="space-y-4">
-                                            <label className="text-lg font-bold text-[#1E1E1E]">Are you comfortable working with animals?</label>
+                                            <label className="text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.animalLabel}</label>
                                             <div className="flex flex-col gap-3">
-                                                {['Yes, regularly', 'Yes, limited', 'No experience'].map(opt => (
+                                                {t.advisoryForm.animalOptions.map(opt => (
                                                     <label key={opt} className={`flex items-center p-5 rounded-2xl border-2 cursor-pointer transition-all ${formData.animalHandling === opt ? 'border-[#1B5E20] bg-[#E8F5E9] font-bold' : 'border-[#F1F5F9] bg-[#F8FAFC]'}`}>
                                                         <input type="radio" name="animalHandling" value={opt} checked={formData.animalHandling === opt} onChange={e => setFormData({ ...formData, animalHandling: e.target.value })} className="w-5 h-5 accent-[#1B5E20] mr-4" />
                                                         <span className="text-sm font-bold">{opt}</span>
@@ -820,13 +826,13 @@ const BusinessAdvisory: React.FC = () => {
                                         <div className="w-10 h-10 bg-[#FEF3F2] rounded-xl flex items-center justify-center">
                                             <MapPin className="text-[#B91C1C] w-5 h-5" />
                                         </div>
-                                        <h3 className="text-xl font-bold text-[#1E1E1E]">Market Connectivity</h3>
+                                        <h3 className="text-xl font-bold text-[#1E1E1E]">{t.advisoryForm.marketTitle}</h3>
                                     </div>
 
                                     <div className="space-y-6">
-                                        <label className="block text-lg font-bold text-[#1E1E1E]">Market Access Distance?</label>
+                                        <label className="block text-lg font-bold text-[#1E1E1E]">{t.advisoryForm.distanceLabel}</label>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-                                            {['Village only', 'Small town within 10 km', 'City within 30 km', 'Direct buyers already available'].map(opt => (
+                                            {t.advisoryForm.distanceOptions.map(opt => (
                                                 <label key={opt} className={`flex items-center justify-center p-6 rounded-[24px] border-2 cursor-pointer text-center transition-all ${formData.marketAccess === opt ? 'border-[#1B5E20] bg-[#E8F5E9] font-bold' : 'border-[#F1F5F9] bg-[#F8FAFC]'}`}>
                                                     <input type="radio" name="marketAccess" value={opt} checked={formData.marketAccess === opt} onChange={e => setFormData({ ...formData, marketAccess: e.target.value })} className="sr-only" />
                                                     <span className="text-base leading-tight">{opt}</span>
@@ -843,12 +849,12 @@ const BusinessAdvisory: React.FC = () => {
                             <div className="animate-in fade-in slide-in-from-right-4 duration-500 space-y-16">
                                 <section className="space-y-12">
                                     <div className="space-y-8">
-                                        <h3 className="text-xl font-bold text-[#1E1E1E]">Financial Mindset</h3>
+                                        <h3 className="text-xl font-bold text-[#1E1E1E]">{t.advisory.options.mindset.balanced}</h3>
                                         <div className="space-y-10">
                                             <div className="space-y-4">
-                                                <label className="text-xs font-bold text-[#64748B] uppercase tracking-widest leading-none">Loss Tolerance</label>
+                                                <label className="text-xs font-bold text-[#64748B] uppercase tracking-widest leading-none">{t.advisoryForm.lossLabel}</label>
                                                 <div className="flex flex-col gap-3">
-                                                    {['I understand initial losses are possible', 'Small losses acceptable', 'I cannot afford losses'].map(opt => (
+                                                    {t.advisoryForm.lossOptions.map(opt => (
                                                         <label key={opt} className={`flex items-center p-5 rounded-2xl border-2 cursor-pointer transition-all ${formData.lossAttitude === opt ? 'border-[#1B5E20] bg-[#E8F5E9] font-bold' : 'border-[#F1F5F9] bg-[#F8FAFC]'}`}>
                                                             <input type="radio" name="lossAttitude" value={opt} checked={formData.lossAttitude === opt} onChange={e => setFormData({ ...formData, lossAttitude: e.target.value })} className="w-5 h-5 accent-[#1B5E20] mr-4" />
                                                             <span className="text-sm font-medium">{opt}</span>
@@ -857,9 +863,9 @@ const BusinessAdvisory: React.FC = () => {
                                                 </div>
                                             </div>
                                             <div className="space-y-4">
-                                                <label className="text-xs font-bold text-[#64748B] uppercase tracking-widest">Business Goal</label>
+                                                <label className="text-xs font-bold text-[#64748B] uppercase tracking-widest">{t.advisoryForm.goalLabel}</label>
                                                 <div className="flex flex-col gap-3">
-                                                    {['Stable monthly income', 'High growth & scaling', 'Asset building'].map(opt => (
+                                                    {t.advisoryForm.goalOptions.map(opt => (
                                                         <label key={opt} className={`flex items-center p-5 rounded-2xl border-2 cursor-pointer transition-all ${formData.mainGoal === opt ? 'border-[#1B5E20] bg-[#E8F5E9] font-bold' : 'border-[#F1F5F9] bg-[#F8FAFC]'}`}>
                                                             <input type="radio" name="mainGoal" value={opt} checked={formData.mainGoal === opt} onChange={e => setFormData({ ...formData, mainGoal: e.target.value })} className="w-5 h-5 accent-[#1B5E20] mr-4" />
                                                             <span className="text-sm font-medium">{opt}</span>
@@ -871,9 +877,9 @@ const BusinessAdvisory: React.FC = () => {
                                     </div>
 
                                     <div className="space-y-8 pt-8 border-t border-[#F1F5F9]">
-                                        <h3 className="text-xl font-bold text-[#1E1E1E]">Areas of Interest</h3>
+                                        <h3 className="text-xl font-bold text-[#1E1E1E]">{t.advisoryForm.interestLabel}</h3>
                                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                            {['Dairy', 'Poultry', 'Goat farming', 'Fishery', 'Mushroom', 'Nursery', 'Organic inputs', 'Manufacturing'].map(interest => (
+                                            {t.advisoryForm.interestOptions.map(interest => (
                                                 <button
                                                     key={interest}
                                                     onClick={() => handleInterestToggle(interest)}
@@ -911,7 +917,7 @@ const BusinessAdvisory: React.FC = () => {
                                         disabled={loading || !formData.agreement}
                                         className={`w-full py-5 bg-[#1B5E20] text-white rounded-2xl font-black text-xl transition-all shadow-xl shadow-[#1B5E20]/20 hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-4 ${loading || !formData.agreement ? 'opacity-50 cursor-not-allowed grayscale' : 'hover:bg-[#000D0F]'}`}
                                     >
-                                        {loading ? <><Loader2 className="animate-spin w-6 h-6" /> {t.analyzingBtn}</> : <>{t.analyze} <ArrowRight className="w-6 h-6" /></>}
+                                        {loading ? <><Loader2 className="animate-spin w-6 h-6" /> {t.advisory.steps.analyzing}</> : <>{t.advisory.steps.generate} <ArrowRight className="w-6 h-6" /></>}
                                     </button>
                                 </div>
                             </div>
@@ -925,7 +931,7 @@ const BusinessAdvisory: React.FC = () => {
                                 onClick={handleNext}
                                 className="px-12 py-4 bg-[#1B5E20] text-white rounded-2xl font-bold text-lg hover:bg-[#000D0F] transition-all shadow-lg hover:shadow-[#1B5E20]/20 flex items-center gap-2 group"
                             >
-                                Continue <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                                {t.common.continue} <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                             </button>
                         </div>
                     )}
@@ -958,7 +964,7 @@ const BusinessAdvisory: React.FC = () => {
                         className="flex items-center gap-2 px-5 py-2.5 bg-[#1B5E20] text-white rounded-xl font-bold text-sm hover:bg-[#000D0F] transition-all shadow-md hover:scale-105 active:scale-95 flex-shrink-0"
                     >
                         <Users className="w-4 h-4" />
-                        Contact To Expert
+                        {t.advisory.experts.contactExpertBtn}
                     </button>
                 </div>
 
@@ -990,14 +996,14 @@ const BusinessAdvisory: React.FC = () => {
                                         <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1">{t.investmentLabel}</p>
                                         <p className="text-[#1E1E1E] font-bold text-sm">{rec.estimated_cost}</p>
                                     </div>
-                                    <div>
-                                        <p className="text-[10px] font-bold text-[#1B5E20] uppercase tracking-widest mb-1">{t.profitLabel}</p>
+                                    <div className="bg-[#E8F5E9] rounded-xl p-3 border border-[#E6E6E6]">
+                                        <p className="text-[10px] font-bold text-[#1B5E20] uppercase tracking-widest mb-1">{t.advisory.steps.profitLabel}</p>
                                         <p className="text-[#2E7D32] font-bold text-sm">{rec.profit_potential}</p>
                                     </div>
                                 </div>
 
                                 <div className="mb-8 flex-grow">
-                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{t.requirementsLabel}</p>
+                                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-2">{t.advisory.steps.requirementsLabel}</p>
                                     <div className="flex flex-wrap gap-2">
                                         {rec.requirements.map((req, i) => (
                                             <span key={i} className="px-2 py-1 bg-[#E8F5E9] border border-[#E6E6E6] rounded-lg text-xs text-[#555555] font-medium">
@@ -1018,7 +1024,7 @@ const BusinessAdvisory: React.FC = () => {
                                         })}
                                         className="w-full py-4 bg-[#1B5E20] text-white rounded-xl font-bold text-lg hover:bg-[#000D0F] transition-all shadow-lg flex items-center justify-center gap-2 transform hover:scale-[1.02]"
                                     >
-                                        <TrendingUp className="w-5 h-5" /> {t.simulateBtn}
+                                        <TrendingUp className="w-5 h-5" /> {t.advisory.steps.simulateBtn}
                                     </button>
 
                                     <div className="flex gap-3">
@@ -1026,13 +1032,13 @@ const BusinessAdvisory: React.FC = () => {
                                             onClick={() => handleAskChatbot(rec.title)}
                                             className="flex-1 py-3 bg-white border border-[#1B5E20] text-[#1B5E20] rounded-xl font-bold text-sm hover:bg-[#E8F5F5] transition-colors flex items-center justify-center gap-2"
                                         >
-                                            <MessageCircle className="w-4 h-4" /> {t.askChatbotBtn}
+                                            <MessageCircle className="w-4 h-4" /> {t.common.askChatbot}
                                         </button>
                                         <button
                                             onClick={() => setSelectedBusiness(rec)}
                                             className="flex-1 py-3 bg-white border-2 border-[#1B5E20] text-[#1B5E20] rounded-xl font-bold text-sm hover:bg-[#1B5E20] hover:text-white transition-all flex items-center justify-center gap-2 group-hover:shadow-md"
                                         >
-                                            <Info className="w-4 h-4" /> {t.knowMore}
+                                            <Info className="w-4 h-4" /> {t.advisory.knowMore.button}
                                         </button>
                                     </div>
                                 </div>
@@ -1054,7 +1060,7 @@ const BusinessAdvisory: React.FC = () => {
                             {/* Modal Header */}
                             <div className="p-6 border-b border-[#E6E6E6] flex justify-between items-center bg-[#1B5E20]">
                                 <div>
-                                    <p className="text-white/70 text-xs font-bold uppercase tracking-widest mb-1">Business Details</p>
+                                    <p className="text-white/70 text-xs font-bold uppercase tracking-widest mb-1">{t.advisory.knowMore.businessDetails}</p>
                                     <h3 className="text-2xl font-extrabold text-white leading-tight">
                                         {knowMoreData.title}
                                     </h3>
@@ -1072,15 +1078,15 @@ const BusinessAdvisory: React.FC = () => {
                                 {/* Stats bar */}
                                 <div className="grid grid-cols-3 gap-4">
                                     <div className="bg-[#E8F5E9] rounded-2xl p-4 text-center border border-[#E6E6E6]">
-                                        <p className="text-[10px] font-bold text-[#555555] uppercase tracking-widest mb-1">Match Score</p>
+                                        <p className="text-[10px] font-bold text-[#555555] uppercase tracking-widest mb-1">{t.advisory.knowMore.matchScore}</p>
                                         <p className="text-2xl font-extrabold text-[#1B5E20]">{knowMoreData.matchScore}%</p>
                                     </div>
                                     <div className="bg-[#FFFBEB] rounded-2xl p-4 text-center border border-[#FCD34D]/40">
-                                        <p className="text-[10px] font-bold text-[#555555] uppercase tracking-widest mb-1">Investment</p>
+                                        <p className="text-[10px] font-bold text-[#555555] uppercase tracking-widest mb-1">{t.advisory.knowMore.investment}</p>
                                         <p className="text-lg font-extrabold text-[#92400E]">{knowMoreData.investment}</p>
                                     </div>
                                     <div className="bg-green-50 rounded-2xl p-4 text-center border border-green-100">
-                                        <p className="text-[10px] font-bold text-[#555555] uppercase tracking-widest mb-1">Monthly Profit</p>
+                                        <p className="text-[10px] font-bold text-[#555555] uppercase tracking-widest mb-1">{t.advisory.knowMore.monthlyProfit}</p>
                                         <p className="text-lg font-extrabold text-[#1B5E20]">{knowMoreData.profit}</p>
                                     </div>
                                 </div>
@@ -1088,7 +1094,7 @@ const BusinessAdvisory: React.FC = () => {
                                 {/* Basic Idea */}
                                 <div className="bg-green-50 p-6 rounded-2xl border border-green-100">
                                     <h4 className="text-lg font-bold text-[#1B5E20] mb-3 flex items-center gap-2">
-                                        <Sprout className="w-5 h-5" /> Overview
+                                        <Sprout className="w-5 h-5" /> {t.advisory.knowMore.overview}
                                     </h4>
                                     <ul className="space-y-2">
                                         {knowMoreData.basicIdea.map((line, idx) => (
@@ -1126,13 +1132,13 @@ const BusinessAdvisory: React.FC = () => {
                                         onClick={() => { setSelectedBusiness(null); handleAskChatbot(selectedBusiness.title); }}
                                         className="flex-1 py-3 bg-[#1B5E20] text-white rounded-xl font-bold text-sm hover:bg-[#000D0F] transition-all flex items-center justify-center gap-2 shadow-md"
                                     >
-                                        <MessageCircle className="w-4 h-4" /> Ask AI Chatbot
+                                        <MessageCircle className="w-4 h-4" /> {t.askChatbotBtn}
                                     </button>
                                     <button
                                         onClick={() => { setSelectedBusiness(null); setShowExpertModal(true); }}
                                         className="flex-1 py-3 bg-white border-2 border-[#1B5E20] text-[#1B5E20] rounded-xl font-bold text-sm hover:bg-[#E8F5E9] transition-all flex items-center justify-center gap-2"
                                     >
-                                        <Users className="w-4 h-4" /> Contact Expert
+                                        <Users className="w-4 h-4" /> {t.advisory.experts.contactExpertBtn}
                                     </button>
                                 </div>
                             </div>
@@ -1153,9 +1159,9 @@ const BusinessAdvisory: React.FC = () => {
                             {/* Expert Modal Header */}
                             <div className="p-6 border-b border-[#E6E6E6] flex justify-between items-center bg-[#1B5E20]">
                                 <div>
-                                    <p className="text-white/70 text-xs font-bold uppercase tracking-widest mb-1">Expert Network</p>
-                                    <h3 className="text-2xl font-extrabold text-white">Connect With Agri Experts</h3>
-                                    <p className="text-white/80 text-sm mt-1">Verified farming & agri-business specialists</p>
+                                    <p className="text-white/70 text-xs font-bold uppercase tracking-widest mb-1">{t.advisory.experts.expertNetwork}</p>
+                                    <h3 className="text-2xl font-extrabold text-white">{t.advisory.experts.connectWithExperts}</h3>
+                                    <p className="text-white/80 text-sm mt-1">{t.advisory.experts.verifiedSpecialists}</p>
                                 </div>
                                 <button
                                     onClick={() => setShowExpertModal(false)}
@@ -1209,15 +1215,23 @@ const BusinessAdvisory: React.FC = () => {
                                                     </span>
                                                     <span className="flex items-center gap-1">
                                                         <Award className="w-3.5 h-3.5 text-[#1B5E20]" />
-                                                        {expert.experience} experience
+                                                        {expert.experience} {t.advisory.experts.experience}
                                                     </span>
                                                     <span className="flex items-center gap-1">
                                                         <Users className="w-3.5 h-3.5 text-[#1B5E20]" />
-                                                        {expert.consultations.toLocaleString()} consultations
+                                                        {expert.consultations.toLocaleString()} {t.advisory.experts.consultations}
                                                     </span>
-                                                    <span className={`font-bold ${expert.available ? 'text-green-600' : 'text-gray-400'}`}>
-                                                        ● {expert.available ? 'Available Now' : 'Busy'}
-                                                    </span>
+                                                    {expert.available ? (
+                                                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-[#E8F5E9] text-[#1B5E20] text-[10px] font-black rounded-full uppercase tracking-widest">
+                                                            <div className="w-1.5 h-1.5 bg-[#1B5E20] rounded-full animate-pulse" />
+                                                            {t.advisory.experts.availableNow}
+                                                        </div>
+                                                    ) : (
+                                                        <div className="flex items-center gap-1.5 px-3 py-1.5 bg-gray-100 text-gray-500 text-[10px] font-black rounded-full uppercase tracking-widest">
+                                                            <div className="w-1.5 h-1.5 bg-gray-400 rounded-full" />
+                                                            {t.advisory.experts.busy}
+                                                        </div>
+                                                    )}
                                                 </div>
 
                                                 <p className="text-[#555555] text-sm leading-relaxed mb-3">{expert.bio}</p>
@@ -1244,11 +1258,11 @@ const BusinessAdvisory: React.FC = () => {
                                                         }`}
                                                 >
                                                     {connectingExpert === expert.id ? (
-                                                        <><Loader2 className="w-4 h-4 animate-spin" /> Connecting...</>
+                                                        <><Loader2 className="w-4 h-4 animate-spin" /> {t.advisory.experts.connecting}</>
                                                     ) : !expert.available ? (
-                                                        <><Phone className="w-4 h-4" /> Currently Unavailable</>
+                                                        <><Phone className="w-4 h-4" /> {t.advisory.experts.unavailable}</>
                                                     ) : (
-                                                        <><Phone className="w-4 h-4" /> Connect</>
+                                                        <><Phone className="w-4 h-4" /> {t.advisory.experts.connect}</>
                                                     )}
                                                 </button>
                                             </div>

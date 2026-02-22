@@ -621,7 +621,7 @@ const Chatbot: React.FC = () => {
                             <Menu className="w-6 h-6 text-[#002105]" />
                         </button>
                         <h1 className="text-lg font-bold text-[#002105]">
-                            {location.state?.isRoadmapPlanner ? `Making 10 year plan for ${location.state?.businessName}...` : t.navAskAI}
+                            {location.state?.isRoadmapPlanner ? `Making 10 year plan for ${location.state?.businessName}...` : 'Ask AI'}
                         </h1>
                     </div>
                 )}
@@ -637,7 +637,7 @@ const Chatbot: React.FC = () => {
                             <div className="w-24 h-24 bg-[#FAFCFC] rounded-[32px] flex items-center justify-center mb-6">
                                 <Bot className="w-12 h-12 text-[#1B5E20]" />
                             </div>
-                            <h2 className="text-2xl font-bold text-[#002105] mb-2">{t.navAskAI}</h2>
+                            <h2 className="text-2xl font-bold text-[#002105] mb-2">{'Ask AI'}</h2>
                             <p className="max-w-xs mx-auto text-[#6B7878]">Ask about crop diseases, market prices, or farming techniques.</p>
                         </div>
                     ) : (
@@ -658,7 +658,7 @@ const Chatbot: React.FC = () => {
 
                                     {/* Loading Fact Card — shown when assistant content is empty (streaming hasn't started) */}
                                     {msg.role === 'assistant' && msg.content === '' && currentFact ? (
-                                        <div className="bg-gradient-to-br from-[#1B5E20] to-[#2E7D32] text-white rounded-[24px] rounded-tl-sm p-6 shadow-lg w-[320px] md:w-[400px]">
+                                        <div className="bg-gradient-to-br from-[#1B5E20] to-[#2E7D32] text-white rounded-[24px] rounded-tl-sm p-6 shadow-lg w-[260px] sm:w-[320px] md:w-[400px]">
                                             <div className="flex items-center gap-2 mb-3">
                                                 <span className="text-xs font-black uppercase tracking-[0.2em] text-green-200">Do You Know?</span>
                                             </div>

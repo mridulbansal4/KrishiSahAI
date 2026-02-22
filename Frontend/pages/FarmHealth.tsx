@@ -15,7 +15,8 @@ import {
     X,
     MessageSquare,
     Send,
-    Loader2
+    Loader2,
+    ArrowLeft
 } from 'lucide-react';
 
 interface AIResult {
@@ -119,6 +120,12 @@ const FarmHealth: React.FC = () => {
             {/* Header */}
             <div className="bg-[#1B5E20] text-white p-6 md:p-10">
                 <div className="max-w-6xl mx-auto">
+                    <button
+                        onClick={() => navigate(-1)}
+                        className="mb-4 text-green-100 hover:text-white flex items-center gap-2 font-bold text-lg transition-colors w-fit cursor-pointer"
+                    >
+                        <ArrowLeft className="w-5 h-5" /> {t.back}
+                    </button>
                     <h1 className="text-3xl md:text-5xl font-black uppercase tracking-tight mb-2">
                         {t.featureHealthLongTitle || "Farm Health Monitor"}
                     </h1>

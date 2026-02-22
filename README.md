@@ -96,6 +96,26 @@ For exhaustive technical specifications, directory structures, and code-level lo
 
 ---
 
+## 📱 Android App (APK) Generation
+
+You can generate a standalone Android APK for your phone that connects to your local development server (via Cloudflare Tunnel).
+
+### Option 1: Automate via GitHub Actions (Recommended)
+1. **Push your changes** to your GitHub repository.
+2. Go to the **Actions** tab in your GitHub repository.
+3. Select the **Build Android APK (TWA)** workflow.
+4. Click **Run workflow** and enter your **Cloudflare Tunnel URL** (e.g., `https://your-url.trycloudflare.com/manifest.webmanifest`).
+5. Once finished, download the APK from the workflow artifacts.
+
+### Option 2: Build Locally (Manual)
+1. Ensure your local server and Cloudflare Tunnel are running.
+2. Install Bubblewrap CLI: `npm install -g @bubblewrap/cli`.
+3. Initialize the project: `bubblewrap init --manifest=https://your-url.trycloudflare.com/manifest.webmanifest`.
+4. Build the APK: `bubblewrap build`.
+5. Transfer the `app-release-signed.apk` to your phone and install.
+
+---
+
 ## Impact & Sustainability
 
 - **Economic**: Increases farmer income by an estimated 30-50% through risk management and waste monetization.

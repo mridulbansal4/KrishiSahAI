@@ -1,6 +1,40 @@
 {
+    "common": {
+        "back": "Back",
+        "continue": "Continue",
+        "save": "Save",
+        "cancel": "Cancel",
+        "loading": "Loading...",
+        "error": "Error",
+        "next": "Next",
+        "askChatbot": "Ask Chatbot",
+        "selected": "Selected"
+    },
     "brandName": "KrishiSahAI",
     "close": "Close",
+    "notifications": {
+        "title": "Notifications",
+        "checkNow": "Check Now",
+        "checking": "Checking...",
+        "markAllRead": "Mark all read",
+        "empty": "No notifications",
+        "via": "via",
+        "action": "Action",
+        "justNow": "Just now",
+        "minute": "m ago",
+        "hour": "h ago",
+        "day": "d ago",
+        "placeholders": {
+            "weatherTitle": "Heavy Rain Alert",
+            "weatherMsg": "Heavy rainfall expected in your area (>75%).",
+            "weatherAction": "Delay pesticide spraying. Cover harvested crops.",
+            "pestTitle": "Brown Planthopper Risk",
+            "pestMsg": "Humid conditions favor pest breeding in Rice.",
+            "pestAction": "Monitor field for hopper burn patches.",
+            "marketTitle": "Wheat Price Up",
+            "marketMsg": "Wheat prices increased by ₹50/quintal in local mandi."
+        }
+    },
     "submit": "Submit",
     "next": "Next",
     "back": "Back",
@@ -80,8 +114,6 @@
     "weatherPill": "28°C | Low Rain",
     "lastDays": "Last 7 Days",
     "askWeatherAI": "Ask AI about weather",
-    "notifications": "Notifications",
-    "notificationEmpty": "No new updates.",
     "heroTitle": "Smarter Decisions for Every Farm.",
     "heroSub": "The unfair advantage every farmer deserves.",
     "startConv": "Speak with KrishiSahAI",
@@ -141,6 +173,18 @@
     "noCropSelected": "Select crop in Farm Profile to enable fertilizer suggestions.",
     "noCropMandi": "No crop selected for this farm.",
     "weatherForecast": "Weather Forecast",
+    "weather": {
+        "liveUpdates": "Live Weather Updates",
+        "fetching": "Fetching latest weather...",
+        "highLow": "High / Low",
+        "humidity": "Humidity",
+        "wind": "Wind",
+        "rain": "Rain",
+        "farmingTip": "Farming Tip",
+        "rainWarning": "High chance of rain today. Avoid spraying pesticides or fertilizers.",
+        "goodConditions": "Conditions are good for field activities.",
+        "loadError": "Failed to load weather data."
+    },
     "humidity": "Humidity",
     "wind": "Wind",
     "rainAlerts": "Rain Alerts",
@@ -276,6 +320,7 @@
     "signupFlow": {
         "step": "Step",
         "of": "of",
+        "defaultFarmName": "Home Farm",
         "personalInfo": "Personal Information",
         "locationDetails": "Location Details",
         "farmInfo": "Farm Information",
@@ -397,6 +442,24 @@
             ]
         }
     },
+    "homeChat": {
+        "title": "Ask SahAI",
+        "subtitle": "Ask anything about your farm.",
+        "welcome": "Namaste! I am your AI Agriculture Assistant. How can I help you increase your harvest today?",
+        "placeholder": "Type question..."
+    },
+    "chat": {
+        "menu": "Menu",
+        "newChat": "New Chat",
+        "noHistory": "No chat history.",
+        "startNew": "Start a new conversation with the advisor.",
+        "deleteChat": "Delete Chat",
+        "confirmDelete": "Are you sure you want to permanently delete this chat?",
+        "chatTitle": "Chat Title:",
+        "undoneWarning": "This action cannot be undone. All messages will be permanently deleted.",
+        "deleting": "Deleting...",
+        "delete": "Delete"
+    },
     "selectLanguage": "Select Your Language",
     "switchFarm": "Switch Farm",
     "viewWeatherDetails": "View Weather Details",
@@ -422,5 +485,329 @@
         "farmNickname": "Please provide a nickname for all farms",
         "loginBoth": "Please enter both phone number and password",
         "invalidLogin": "Invalid phone number or password"
+    },
+    "analyzingLifecycle": "Analyzing lifecycle for",
+    "unableToLoadPlan": "Unable to Load Plan",
+    "addCropToFarm": "Add Crop to Farm",
+    "activeFarm": "Active Farm:",
+    "currentCrop": "Current Crop:",
+    "noCrop": "No Crop",
+    "homeActions": {
+        "chatbot": {
+            "title": "Ask Chatbot",
+            "desc": "Get AI-driven insights and tips for this phase."
+        },
+        "fertilizers": {
+            "title": "Fertilizers",
+            "desc": "Check and manage optimal fertilizers for healthy growth."
+        },
+        "cropCare": {
+            "title": "Disease/Pest Solution",
+            "desc": "Identify and treat potential plant diseases and pests."
+        },
+        "wasteToValue": {
+            "title": "Waste to Value",
+            "desc": "Learn strategies to turn crop waste into profitable resources."
+        }
+    },
+    "advisory": {
+        "steps": {
+            "step1": "Financials",
+            "step2": "Land & Infra",
+            "step3": "Workforce & Experience",
+            "step4": "Risk & Goals",
+            "step5": "Assessment Results",
+            "step6": "Business Roadmap",
+            "prevStep": "Previous Step",
+            "analyzing": "Experts analyzing...",
+            "generate": "Get Recommendations",
+            "profitLabel": "PROFIT POTENTIAL",
+            "requirementsLabel": "KEY REQUIREMENTS",
+            "simulateBtn": "Simulate Professional Roadmap"
+        },
+        "options": {
+            "spaceType": {
+                "open": "Open Agricultural Land",
+                "covered": "Covered/Indoor Space"
+            },
+            "soilCondition": {
+                "good": "Good Fertility",
+                "average": "Average/Requires Treatment",
+                "poor": "Poor/Degraded"
+            },
+            "handsOnWork": {
+                "fullTime": "Full-time (Hands-on)",
+                "partTime": "Part-time (Supervisory)",
+                "investment": "Strictly Investment (Managers)"
+            },
+            "experience": {
+                "professional": "Professional (Advanced)",
+                "intermediate": "Intermediate (Familiar)",
+                "beginner": "Beginner (Newbie)"
+            },
+            "mindset": {
+                "aggressive": "Aggressive (High risks, High rewards)",
+                "balanced": "Balanced (Moderate risks)",
+                "conservative": "Conservative (Protect capital)",
+                "social": "Social Impact (Community focused)"
+            },
+            "market": {
+                "local": "Local (Village/Mandi)",
+                "urban": "Urban (B2C/Cities)",
+                "export": "Export (Global)",
+                "processing": "Food Processing/B2B"
+            },
+            "workforce": {
+                "self": "Self & Family",
+                "hired": "Hired Labor",
+                "contract": "Contracted Management"
+            },
+            "goals": {
+                "passive": "Passive Income",
+                "fullTime": "Full-time Business",
+                "sustainable": "Sustainable Living",
+                "retirement": "Retirement Shield"
+            }
+        },
+        "interests": {
+            "primary": "Primary Agriculture",
+            "animal": "Animal Husbandry",
+            "processing": "Value Addition/Food Processing",
+            "tech": "Agri-Technology & Services",
+            "organic": "Organic & Specialty"
+        },
+        "experts": {
+            "title": "Connect With Agri Experts",
+            "subtitle": "Verified farming & agri-business specialists",
+            "availableNow": "Available Now",
+            "busy": "BUSY",
+            "experience": "years experience",
+            "consultations": "consultations",
+            "contactBtn": "Contact Expert",
+            "contactExpertBtn": "Contact Consultant",
+            "connecting": "Connecting...",
+            "unavailable": "Currently Unavailable",
+            "connect": "Connect",
+            "expertNetwork": "Expert Network",
+            "connectWithExperts": "Connect With Agri Experts",
+            "verifiedSpecialists": "Verified farming & agri-business specialists",
+            "ramesh": {
+                "title": "Agri-Business Consultant",
+                "specialization": "Dairy Farming & Organic Inputs",
+                "experience": "18 years",
+                "location": "Pune, Maharashtra",
+                "bio": "Former NABARD officer turned independent consultant. Helped 500+ farmers set up sustainable agri-businesses across Maharashtra, Madhya Pradesh and Rajasthan. Expert in low-investment, high-return models.",
+                "expertise": [
+                    "Dairy Farming",
+                    "Organic Manure",
+                    "Agri-Input Trading",
+                    "Government Schemes"
+                ]
+            },
+            "sunita": {
+                "title": "Horticulture & Nursery Expert",
+                "specialization": "Plant Nursery & Greenhouse Farming",
+                "experience": "14 years",
+                "location": "Nashik, Maharashtra",
+                "bio": "PhD in Horticulture from IARI, New Delhi. Founded three successful plant nurseries and serves as advisor to FPOs in Nashik region. Specialises in export-quality produce and value-added horticulture products.",
+                "expertise": [
+                    "Plant Nursery",
+                    "Greenhouse Farming",
+                    "Floriculture",
+                    "Export Market"
+                ]
+            },
+            "arvind": {
+                "title": "Poultry & Livestock Specialist",
+                "specialization": "Poultry, Goat Farming & Fishery",
+                "experience": "22 years",
+                "location": "Nagpur, Maharashtra",
+                "bio": "India's leading poultry business mentor. Has scaled 300+ rural poultry units from backyard to commercial. Certified trainer under National Livestock Mission. Author of 'Poultry Profit Playbook'.",
+                "expertise": [
+                    "Poultry Farming",
+                    "Goat Farming",
+                    "Fishery",
+                    "Animal Health"
+                ]
+            },
+            "priya": {
+                "title": "Agri-Finance & Market Linkage Expert",
+                "specialization": "Agri Finance, FPOs & Market Access",
+                "experience": "11 years",
+                "location": "Aurangabad, Maharashtra",
+                "bio": "MBA in Agribusiness from IIM Ahmedabad. Works with NABARD and State Bank to connect farmers to credit and market systems. Expert in FPO formation, cold chain logistics and agri-export compliance.",
+                "expertise": [
+                    "Agri Finance",
+                    "Market Linkage",
+                    "FPO Formation",
+                    "Cold Chain"
+                ]
+            }
+        },
+        "knowMore": {
+            "businessDetails": "Business Details",
+            "matchScore": "Match Score",
+            "investment": "Investment",
+            "monthlyProfit": "Monthly Profit",
+            "overview": "Overview",
+            "marketDemand": "Market Demand",
+            "keyRequirements": "Key Requirements",
+            "riskAndMitigation": "Risk Factors & Mitigation",
+            "investmentBreakdown": "Investment Breakdown",
+            "stepsToStart": "Steps to Start",
+            "govSchemes": "Government Schemes",
+            "button": "Know More",
+            "matchExplanation": "This business has a {{score}}% match with your profile — based on your land size, capital, experience and risk preference.",
+            "timelineExplanation": "Expected timeline to reach first returns: {{timeline}} depending on local season and setup pace.",
+            "investmentExplanation": "Your estimated starting investment is {{cost}}, with a projected monthly profit of {{profit}} once fully operational."
+        },
+        "agreementText": "I understand that these are AI-generated suggestions and I will conduct my own due diligence before investing."
+    },
+    "fallbacks": {
+        "detectionFailed": "Detection failed. Please try again.",
+        "uploadFailed": "Failed to upload image.",
+        "noData": "No data available.",
+        "unauthorizedNews": "Please login to view personalized news",
+        "newsFetchError": "Failed to load news",
+        "genericError": "An unexpected error occurred"
+    },
+    "prompts": {
+        "diseasePrompt": "I found {disease} in my {crop}. {treatment}. Can you tell me more about this disease and how to prevent it?",
+        "pestPrompt": "I detected {pest} with {confidence}% confidence. Can you tell me more about this pest and how to control it?",
+        "businessPrompt": "I am interested in starting a {business} business. Based on my resources, can you give me a detailed guide and risk analysis?",
+        "wastePrompt": "I have {waste} on my farm. Can you explain more about the '{idea}' opportunity and how to implement it?"
+    },
+    "landTypes": {
+        "irrigated": "Irrigated",
+        "rainfed": "Rainfed",
+        "semiIrrigated": "Semi-Irrigated",
+        "organicCertified": "Organic Certified",
+        "greenhouse": "Greenhouse",
+        "polyhouse": "Polyhouse",
+        "mixed": "Mixed"
+    },
+    "advisoryForm": {
+        "farmSelection": "Which farm is this business for?",
+        "otherCustom": "Other/Custom",
+        "autoFilling": "Auto-filling data from \"{farm}\"...",
+        "budgetLabel": "What is your available investment budget?",
+        "profitLabel": "Current average monthly profit?",
+        "intentLabel": "Operational Intent?",
+        "intentFull": {
+            "title": "Full-Time Business",
+            "sub": "I want this to be my primary income source"
+        },
+        "intentSide": {
+            "title": "Side Income",
+            "sub": "I will run this along with current work"
+        },
+        "plotSizeLabel": "Target Business Plot Size",
+        "acres": "acres",
+        "availableLand": "Available Land: {size} acres",
+        "plotPlaceholder": "Enter plot size for business...",
+        "plotError": "⚠️ Cannot exceed available land ({size} acres)",
+        "plotHint": "Enter how much land you plan to use for your new agri-business. (Must be less than {size} acres)",
+        "locationLabel": "Where will the business be located?",
+        "spaceOptions": {
+            "agri": {
+                "label": "Open Agricultural Land",
+                "sub": "Fields, plots"
+            },
+            "nonAgri": {
+                "label": "Covered / Rented Space",
+                "sub": "Shed, rooftop, backyard"
+            },
+            "water": {
+                "label": "Pond / Water Body",
+                "sub": "Water based setup"
+            }
+        },
+        "agriDetails": "Agricultural Plot Details",
+        "soilLabel": "Soil Condition",
+        "soilOptions": [
+            "Highly fertile",
+            "Average/Normal",
+            "Barren/Degraded"
+        ],
+        "waterLabel": "Water Availability",
+        "waterOptions": [
+            "Borewell",
+            "Canal",
+            "Seasonal/Rainfed only"
+        ],
+        "infraTitle": "Facility & Infrastructure",
+        "spaceLabel": "Available Space",
+        "spaceOptionsList": [
+            "< 500 sq.ft",
+            "500-1,000 sq.ft",
+            "1,000-5,000 sq.ft"
+        ],
+        "electricityLabel": "Electricity Access",
+        "electricityOptions": [
+            "Yes, 24/7",
+            "Yes, but frequent power cuts",
+            "No electricity"
+        ],
+        "infraTypeLabel": "Infrastructure Type",
+        "infraTypeOptions": [
+            "Fully enclosed room",
+            "Open shed",
+            "Rooftop",
+            "Empty plot"
+        ],
+        "workforceTitle": "Workforce Profile",
+        "laborLabel": "Daily labor source?",
+        "laborOptions": [
+            "Mostly myself",
+            "My family",
+            "External labor"
+        ],
+        "animalLabel": "Are you comfortable working with animals?",
+        "animalOptions": [
+            "Yes, regularly",
+            "Yes, limited",
+            "No experience"
+        ],
+        "marketTitle": "Market Connectivity",
+        "distanceLabel": "Market Access Distance?",
+        "distanceOptions": [
+            "Village only",
+            "Small town within 10 km",
+            "City within 30 km",
+            "Direct buyers already available"
+        ],
+        "lossLabel": "Loss Tolerance",
+        "lossOptions": [
+            "I understand initial losses are possible",
+            "Small losses acceptable",
+            "I cannot afford losses"
+        ],
+        "goalLabel": "Business Goal",
+        "goalOptions": [
+            "Stable monthly income",
+            "High growth & scaling",
+            "Asset building"
+        ],
+        "interestLabel": "Areas of Interest",
+        "interestOptions": [
+            "Dairy",
+            "Poultry",
+            "Goat farming",
+            "Fishery",
+            "Mushroom",
+            "Nursery",
+            "Organic inputs",
+            "Manufacturing"
+        ],
+        "agreement": "I agree to the terms.",
+        "invalidLand": "Please enter a valid land size for your business.",
+        "analysisFailed": "Failed to generate recommendations. Please try again.",
+        "genericError": "An error occurred. Please try again.",
+        "connectionSent": "✅ Connection request sent! The expert will reach out to you within 24 hours.",
+        "expertNetwork": {
+            "title": "Expert Network",
+            "connect": "Connect With Agri Experts",
+            "verified": "Verified farming & agri-business specialists"
+        }
     }
 }

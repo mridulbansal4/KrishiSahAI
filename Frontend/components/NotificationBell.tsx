@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Bell, AlertTriangle, Info, CheckCircle, Cloud, TrendingUp, Bug } from 'lucide-react';
 import { api } from '../src/services/api';
+import { useLanguage } from '../src/context/LanguageContext';
 
 interface Notification {
     id: string;
@@ -30,12 +31,51 @@ const priorityStyles = {
 };
 
 const NotificationBell: React.FC = () => {
+    const { t } = useLanguage();
     const [notifications, setNotifications] = useState<Notification[]>([]);
     const [isOpen, setIsOpen] = useState(false);
     const [loading, setLoading] = useState(false);
     const ref = useRef<HTMLDivElement>(null);
 
     const unreadCount = notifications.filter(n => !n.read).length;
+
+    function getFallbackNotifications(): Notification[] {
+        const now = new Date().toISOString();
+        return [
+            {
+                id: '1',
+                title: t.notifications.placeholders.weatherTitle,
+                message: t.notifications.placeholders.weatherMsg,
+                type: 'weather',
+                priority: 'high',
+                action: t.notifications.placeholders.weatherAction,
+                source: 'Weather API',
+                timestamp: now,
+                read: false
+            },
+            {
+                id: '2',
+                title: t.notifications.placeholders.pestTitle,
+                message: t.notifications.placeholders.pestMsg,
+                type: 'pest',
+                priority: 'medium',
+                action: t.notifications.placeholders.pestAction,
+                source: 'AI Insights',
+                timestamp: now,
+                read: false
+            },
+            {
+                id: '3',
+                title: t.notifications.placeholders.marketTitle,
+                message: t.notifications.placeholders.marketMsg,
+                type: 'market',
+                priority: 'low',
+                source: 'News API',
+                timestamp: now,
+                read: false
+            },
+        ];
+    }
 
     // Fetch notifications on mount
     useEffect(() => {
@@ -92,11 +132,11 @@ const NotificationBell: React.FC = () => {
     const timeAgo = (ts: string) => {
         const diff = Date.now() - new Date(ts).getTime();
         const mins = Math.floor(diff / 60000);
-        if (mins < 1) return 'Just now';
-        if (mins < 60) return `${mins}m ago`;
+        if (mins < 1) return t.notifications.justNow;
+        if (mins < 60) return `${mins}${t.notifications.minute}`;
         const hrs = Math.floor(mins / 60);
-        if (hrs < 24) return `${hrs}h ago`;
-        return `${Math.floor(hrs / 24)}d ago`;
+        if (hrs < 24) return `${hrs}${t.notifications.hour}`;
+        return `${Math.floor(hrs / 24)}${t.notifications.day}`;
     };
 
     return (
@@ -105,7 +145,7 @@ const NotificationBell: React.FC = () => {
             <button
                 onClick={() => setIsOpen(prev => !prev)}
                 className="relative flex items-center justify-center w-10 h-10 bg-[#FAFAF7] border border-[#E6E6E6] rounded-full hover:bg-[#E8F5E9] transition-all"
-                title="Notifications"
+                title={t.notifications.title}
             >
                 <Bell size={18} className="text-[#043744]" />
                 {unreadCount > 0 && (
@@ -127,21 +167,21 @@ const NotificationBell: React.FC = () => {
                     <div className="fixed left-4 right-4 top-20 z-50 sm:absolute sm:right-0 sm:left-auto sm:top-full sm:mt-2 sm:w-96 bg-white border border-[#E6E6E6] rounded-2xl shadow-2xl overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
                         {/* Header */}
                         <div className="flex items-center justify-between px-4 py-3 border-b border-[#E6E6E6] bg-[#FAFAF7]">
-                            <h3 className="text-sm font-extrabold text-[#1E1E1E]">Notifications</h3>
+                            <h3 className="text-sm font-extrabold text-[#1E1E1E]">{t.notifications.title}</h3>
                             <div className="flex gap-2">
                                 <button
                                     onClick={handleTriggerUpdate}
                                     disabled={loading}
                                     className="text-[11px] bg-green-100 text-green-700 px-3 py-1.5 rounded-full hover:bg-green-200 disabled:opacity-50 font-medium transition-colors"
                                 >
-                                    {loading ? 'Checking...' : 'Check Now'}
+                                    {loading ? t.notifications.checking : t.notifications.checkNow}
                                 </button>
                                 {unreadCount > 0 && (
                                     <button
                                         onClick={markAllRead}
                                         className="text-[11px] font-bold text-[#043744] hover:underline pt-1"
                                     >
-                                        Mark all read
+                                        {t.notifications.markAllRead}
                                     </button>
                                 )}
                             </div>
@@ -150,7 +190,7 @@ const NotificationBell: React.FC = () => {
                         {/* List */}
                         <div className="max-h-[60vh] sm:max-h-[32rem] overflow-y-auto">
                             {notifications.length === 0 ? (
-                                <div className="px-4 py-8 text-center text-sm text-[#999]">No notifications</div>
+                                <div className="px-4 py-8 text-center text-sm text-[#999]">{t.notifications.empty}</div>
                             ) : (
                                 notifications.map((n, idx) => {
                                     const Icon = typeIcons[n.type] || Info;
@@ -183,7 +223,7 @@ const NotificationBell: React.FC = () => {
 
                                                 {n.action && (
                                                     <div className="mt-2 text-[11px] bg-white/60 p-2 rounded border border-black/5 text-[#333] break-words">
-                                                        <span className="font-semibold text-[#043744]">Action:</span> {n.action}
+                                                        <span className="font-semibold text-[#043744]">{t.notifications.action}:</span> {n.action}
                                                     </div>
                                                 )}
 
@@ -193,7 +233,7 @@ const NotificationBell: React.FC = () => {
                                                     </span>
                                                     {n.source && (
                                                         <span className="text-[9px] text-gray-400">
-                                                            via {n.source}
+                                                            {t.notifications.via} {n.source}
                                                         </span>
                                                     )}
                                                 </div>
@@ -209,43 +249,5 @@ const NotificationBell: React.FC = () => {
         </div>
     );
 };
-
-function getFallbackNotifications(): Notification[] {
-    const now = new Date().toISOString();
-    return [
-        {
-            id: '1',
-            title: 'Heavy Rain Alert',
-            message: 'Heavy rainfall expected in your area (>75%).',
-            type: 'weather',
-            priority: 'high',
-            action: 'Delay pesticide spraying. Cover harvested crops.',
-            source: 'Weather API',
-            timestamp: now,
-            read: false
-        },
-        {
-            id: '2',
-            title: 'Brown Planthopper Risk',
-            message: 'Humid conditions favor pest breeding in Rice.',
-            type: 'pest',
-            priority: 'medium',
-            action: 'Monitor field for hopper burn patches.',
-            source: 'AI Insights',
-            timestamp: now,
-            read: false
-        },
-        {
-            id: '3',
-            title: 'Wheat Price Up',
-            message: 'Wheat prices increased by ₹50/quintal in local mandi.',
-            type: 'market',
-            priority: 'low',
-            source: 'News API',
-            timestamp: now,
-            read: false
-        },
-    ];
-}
 
 export default NotificationBell;

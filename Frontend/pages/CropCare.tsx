@@ -1,15 +1,21 @@
 import { useLanguage } from '../src/context/LanguageContext';
 import { useNavigate } from 'react-router-dom';
-import { Sprout, Bug, ArrowRight } from 'lucide-react';
+import { Sprout, Bug, ArrowRight, ArrowLeft } from 'lucide-react';
 
 const CropCare: React.FC = () => {
     const { t } = useLanguage();
     const navigate = useNavigate();
 
     return (
-        <div className="max-w-6xl mx-auto p-4 md:p-8 pb-32">
+        <div className="max-w-6xl mx-auto p-4 md:p-8 pb-32 relative">
             {/* Header */}
-            <div className="mb-12 text-center border-b-4 border-deep-green pb-6">
+            <button
+                onClick={() => navigate(-1)}
+                className="absolute top-4 left-4 md:top-8 md:left-8 text-gray-600 hover:text-deep-green flex items-center gap-2 font-bold text-lg transition-colors cursor-pointer z-10"
+            >
+                <ArrowLeft className="w-5 h-5" /> {t.back}
+            </button>
+            <div className="mb-12 text-center border-b-4 border-deep-green pb-6 mt-12 md:mt-0">
                 <h1 className="text-4xl md:text-5xl font-extrabold text-deep-green tracking-tight mb-4 uppercase">
                     {t.cropCareTitle}
                 </h1>

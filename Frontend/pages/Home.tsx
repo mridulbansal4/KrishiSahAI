@@ -114,28 +114,27 @@ const Home: React.FC = () => {
 
     const phaseButtons = [
         {
-            label: 'Ask Chatbot',
+            label: t.homeActions?.chatbot?.title || 'Ask Chatbot',
             path: '/chat',
             icon: <Briefcase className="w-8 h-8 md:w-10 md:h-10" />,
-            description: 'Get AI-driven insights and tips for this phase.'
+            description: t.homeActions?.chatbot?.desc || 'Get AI-driven insights and tips for this phase.'
         },
         {
-            label: 'Fertilizers',
+            label: t.homeActions?.fertilizers?.title || 'Fertilizers',
             path: '/health',
             icon: <Activity className="w-8 h-8 md:w-10 md:h-10" />,
-            description: 'Check and manage optimal fertilizers for healthy growth.'
         },
         {
-            label: 'Disease/Pest Solution',
+            label: t.homeActions?.cropCare?.title || 'Disease/Pest Solution',
             path: '/crop-care',
             icon: <ShieldCheck className="w-8 h-8 md:w-10 md:h-10" />,
-            description: 'Identify and treat potential plant diseases and pests.'
+            description: t.homeActions?.cropCare?.desc || 'Identify and treat potential plant diseases and pests.'
         },
         {
-            label: 'Waste to Value',
+            label: t.homeActions?.wasteToValue?.title || 'Waste to Value',
             path: '/waste-to-value',
             icon: <Recycle className="w-8 h-8 md:w-10 md:h-10" />,
-            description: 'Learn strategies to turn crop waste into profitable resources.'
+            description: t.homeActions?.wasteToValue?.desc || 'Learn strategies to turn crop waste into profitable resources.'
         }
     ];
 
@@ -144,11 +143,11 @@ const Home: React.FC = () => {
             {/* FARM CONTEXT RIBBON */}
             <div className="w-full bg-[#1B5E20] border-t border-white/10 text-white px-4 md:px-8 py-3 md:py-4 mb-6 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 text-xs md:text-sm font-bold shadow-md sticky top-[68px] z-30">
                 <div className="flex items-center gap-2">
-                    <span className="opacity-70 uppercase tracking-widest text-[10px] md:text-xs">Active Farm:</span>
+                    <span className="opacity-70 uppercase tracking-widest text-[10px] md:text-xs">{t.activeFarm || 'Active Farm:'}</span>
                     <span className="text-white bg-white/20 px-3 py-1 rounded-full border border-white/10 shadow-inner">{activeFarm?.nickname || 'Default'}</span>
                 </div>
                 <div className="flex items-center gap-3 flex-wrap">
-                    <span className="opacity-70 uppercase tracking-widest text-[10px] md:text-xs">Current Crop:</span>
+                    <span className="opacity-70 uppercase tracking-widest text-[10px] md:text-xs">{t.currentCrop || 'Current Crop:'}</span>
                     {activeFarm?.crops?.length ? (
                         <div className="flex gap-1 bg-black/20 rounded-full p-1 border border-black/10">
                             {activeFarm.crops.map((crop) => (
@@ -165,7 +164,7 @@ const Home: React.FC = () => {
                             ))}
                         </div>
                     ) : (
-                        <span className="text-white bg-white/10 px-3 py-1 rounded-full">No Crop</span>
+                        <span className="text-white bg-white/10 px-3 py-1 rounded-full">{t.noCrop || 'No Crop'}</span>
                     )}
                 </div>
             </div>
@@ -179,7 +178,7 @@ const Home: React.FC = () => {
                             <Loader2 className="w-16 h-16 text-[#1B5E20] animate-spin relative z-10" />
                         </div>
                         <h2 className="text-2xl font-black text-[#1E1E1E] mt-6 tracking-tight">{t.generatingRoadmap || 'Fetching Smart Crop Plan...'}</h2>
-                        <p className="text-[#555555] mt-2 font-medium">Analyzing lifecycle for {selectedCrop}...</p>
+                        <p className="text-[#555555] mt-2 font-medium">{t.analyzingLifecycle || 'Analyzing lifecycle for'} {selectedCrop}...</p>
                     </div>
                 )}
 
@@ -190,14 +189,14 @@ const Home: React.FC = () => {
                             <div className="w-20 h-20 bg-red-50 text-red-500 rounded-full flex items-center justify-center mx-auto mb-6 shadow-inner">
                                 <AlertTriangle className="w-10 h-10" />
                             </div>
-                            <h2 className="text-2xl font-black text-[#1E1E1E] mb-3">Unable to Load Plan</h2>
+                            <h2 className="text-2xl font-black text-[#1E1E1E] mb-3">{t.unableToLoadPlan || 'Unable to Load Plan'}</h2>
                             <p className="text-gray-500 mb-8 font-medium">{error}</p>
                             {activeFarm?.crops?.length === 0 && (
                                 <button
                                     onClick={() => navigate('/profile/edit')}
                                     className="w-full px-6 py-4 bg-[#1B5E20] text-white rounded-xl font-bold hover:bg-[#2E7D32] transition-colors shadow-lg active:scale-95 uppercase tracking-wider text-sm"
                                 >
-                                    Add Crop to Farm
+                                    {t.addCropToFarm || 'Add Crop to Farm'}
                                 </button>
                             )}
                         </div>

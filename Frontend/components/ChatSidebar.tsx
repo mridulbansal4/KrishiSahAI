@@ -1,6 +1,7 @@
 import React from 'react';
-import { Plus, MessageSquare, Menu, X, Trash2 } from 'lucide-react';
+import { Plus, MessageSquare, X, Trash2 } from 'lucide-react';
 import { ChatSession } from '../src/services/chatService';
+import { useLanguage } from '../src/context/LanguageContext';
 
 interface ChatSidebarProps {
     chats: ChatSession[];
@@ -21,6 +22,8 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
     isOpen,
     onClose
 }) => {
+    const { t } = useLanguage();
+
     return (
         <>
             {/* Mobile Overlay */}
@@ -46,7 +49,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 {/* Header / New Chat */}
                 <div className="p-4 border-b border-[#E6E6E6]">
                     <div className="flex justify-between items-center md:hidden mb-4">
-                        <h2 className="font-bold text-[#1E1E1E]">Menu</h2>
+                        <h2 className="font-bold text-[#1E1E1E]">{t.chat.menu}</h2>
                         <button onClick={onClose} className="p-2">
                             <X className="w-5 h-5 text-[#555555]" />
                         </button>
@@ -57,7 +60,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                         className="w-full py-3 px-4 bg-[#1B5E20] text-white rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-[#144919] transition-all shadow-sm"
                     >
                         <Plus className="w-5 h-5" />
-                        New Chat
+                        {t.chat.newChat}
                     </button>
                 </div>
 
@@ -65,8 +68,8 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 <div className="flex-1 overflow-y-auto p-3 space-y-2">
                     {chats.length === 0 ? (
                         <div className="text-center text-[#555555] text-sm mt-10 p-4">
-                            <p>No chat history.</p>
-                            <p className="text-xs mt-2 opacity-70">Start a new conversation with the advisor.</p>
+                            <p>{t.chat.noHistory}</p>
+                            <p className="text-xs mt-2 opacity-70">{t.chat.startNew}</p>
                         </div>
                     ) : (
                         chats.map(chat => (
@@ -89,7 +92,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                                     <div className="flex items-center gap-3 pr-8">
                                         <MessageSquare className={`w-4 h-4 flex-shrink-0 ${activeChatId === chat.id ? 'text-[#1B5E20]' : 'text-stone-400'}`} />
                                         <div className="flex-1 overflow-hidden">
-                                            <p className="truncate text-sm">{chat.title || "New Chat"}</p>
+                                            <p className="truncate text-sm">{chat.title || t.chat.newChat}</p>
                                             {chat.updatedAt && (
                                                 <p className="text-[10px] opacity-60 mt-0.5 font-normal">
                                                     {new Date(chat.updatedAt?.seconds * 1000 || Date.now()).toLocaleDateString()}
@@ -103,11 +106,11 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                                 <button
                                     onClick={(e) => {
                                         e.stopPropagation();
-                                        onDeleteChat(chat.id, chat.title || "New Chat");
+                                        onDeleteChat(chat.id, chat.title || t.chat.newChat);
                                     }}
                                     className="absolute right-3 top-1/2 -translate-y-1/2 p-2 rounded-lg opacity-0 group-hover:opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity hover:bg-red-50"
-                                    aria-label="Delete chat"
-                                    title="Delete chat"
+                                    aria-label={t.chat.delete}
+                                    title={t.chat.delete}
                                 >
                                     <Trash2 className="w-4 h-4 text-red-600" />
                                 </button>

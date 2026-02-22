@@ -9,7 +9,7 @@ interface ArticleCardProps {
 }
 
 const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
-    const { language } = useLanguage();
+    const { language, t } = useLanguage();
 
     // Helper to get content based on current language
     const getContent = (content: LocalizedContent) => {
@@ -49,7 +49,7 @@ const ArticleCard: React.FC<ArticleCardProps> = ({ article }) => {
                 </p>
 
                 <div className="flex items-center text-green-700 font-semibold text-sm mt-auto group-hover:text-green-800 transition-colors">
-                    Read More
+                    {t.readMore}
                     <ArrowRight className="ml-1 w-4 h-4 transition-transform group-hover:translate-x-1" />
                 </div>
             </div>

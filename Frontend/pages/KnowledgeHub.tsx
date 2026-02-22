@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Article } from '../src/types/article';
 import ArticleCard from '../components/KnowledgeHub/ArticleCard';
 import { useLanguage } from '../src/context/LanguageContext';
-
+import { useNavigate } from 'react-router-dom';
+import { ArrowLeft } from 'lucide-react';
 const KnowledgeHub: React.FC = () => {
     const [articles, setArticles] = useState<Article[]>([]);
     const { language, t } = useLanguage();
+    const navigate = useNavigate();
 
     useEffect(() => {
         const loadArticles = async () => {
@@ -52,8 +54,14 @@ const KnowledgeHub: React.FC = () => {
     }, []);
 
     return (
-        <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto">
+        <div className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 relative">
+            <button
+                onClick={() => navigate(-1)}
+                className="absolute top-4 left-4 md:top-8 md:left-8 text-gray-600 hover:text-deep-green flex items-center gap-2 font-bold text-lg transition-colors cursor-pointer z-10"
+            >
+                <ArrowLeft className="w-5 h-5" /> {t.back}
+            </button>
+            <div className="max-w-7xl mx-auto mt-8 md:mt-0">
                 <div className="text-center mb-12">
                     <h1 className="text-4xl md:text-5xl font-bold text-deep-green mb-4 font-display">
                         {t.knowledgeHubTitle}

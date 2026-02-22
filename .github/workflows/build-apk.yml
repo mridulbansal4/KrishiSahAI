@@ -1,0 +1,64 @@
+name: Build Android APK (TWA)
+
+on:
+  workflow_dispatch:
+    inputs:
+      manifest_url:
+        description: 'Cloudflare Tunnel Manifest URL (e.g. https://xyz.trycloudflare.com/manifest.webmanifest)'
+        required: true
+        default: 'https://krishisahai.trycloudflare.com/manifest.webmanifest'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Setup Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+
+      - name: Install Bubblewrap
+        run: npm install -g @bubblewrap/cli
+
+      - name: Configure Bubblewrap
+        run: |
+          mkdir -p ~/.bubblewrap
+          echo '{"jdkPath":"/usr/lib/jvm/temurin-17-amd64","androidSdkPath":"/usr/local/lib/android/sdk"}' > ~/.bubblewrap/config.json
+
+      - name: Initialize TWA Project
+        run: |
+          mkdir android-app
+          cd android-app
+          # Use yes to accept all defaults from the manifest
+          yes "" | bubblewrap init --manifest="${{ github.event.inputs.manifest_url }}"
+
+      - name: Build APK
+        run: |
+          cd android-app
+          # Bubblewrap build requires signing keys. For CI, we can use the 'build' command with dummy inputs or skip signing if just for testing.
+          # However, to install on a phone, it MUST be signed.
+          # Bubblewrap build will generate a key if one doesn't exist.
+          # We pipe answers for the key generation.
+          yes "password" | bubblewrap build
+          
+      - name: Find APK
+# Identify the generated APK name (usually app-release-signed.apk)
+        run: |
+          ls -R android-app/
+          echo "APK_PATH=$(find android-app -name "*.apk" | head -n 1)" >> $GITHUB_ENV
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: KrishiSahAI-Android-APK
+          path: ${{ env.APK_PATH }}

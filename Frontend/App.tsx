@@ -29,18 +29,16 @@ import logo from './src/assets/logo.png';
 import WeatherModal from './components/WeatherModal';
 import NotificationBell from './components/NotificationBell';
 
-const getBestLocation = (u: UserProfile | null) => {
-  if (!u || !u.farms || u.farms.length === 0) return "";
-  const primaryFarm = u.farms[0];
-  const { district, state } = primaryFarm;
+const getBestLocation = (farm: Farm | null) => {
+  if (!farm) return "";
+  const { district, state } = farm;
   if (district && state) return `${district}, ${state}`;
   return district || state || "India";
 };
 
-const getDisplayLocation = (u: UserProfile | null) => {
-  if (!u || !u.farms || u.farms.length === 0) return "";
-  const primaryFarm = u.farms[0];
-  const { district, state } = primaryFarm;
+const getDisplayLocation = (farm: Farm | null) => {
+  if (!farm) return "";
+  const { district, state } = farm;
   return district || state || "India";
 };
 
@@ -67,12 +65,12 @@ const LanguageSelection: React.FC<{ onSelect: (lang: Language) => void }> = ({ o
             <button
               key={l.code}
               onClick={() => onSelect(l.code)}
-              className="group relative bg-white border-b-8 border-r-8 border-[#1B5E20] hover:translate-y-[-6px] hover:translate-x-[-3px] hover:border-[#2E7D32] transition-all p-10 md:p-12 rounded-3xl text-center shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-700 overflow-hidden"
+              className="group relative bg-white border-b-8 border-r-8 border-[#1B5E20] hover:translate-y-[-6px] hover:translate-x-[-3px] hover:border-[#2E7D32] transition-all p-6 md:p-12 rounded-3xl text-center shadow-2xl animate-in fade-in slide-in-from-bottom-6 duration-700 overflow-hidden"
               style={{ animationDelay: `${i * 150}ms` }}
             >
               <div className="absolute top-0 left-0 w-2 h-full bg-[#1B5E20] group-hover:bg-[#2E7D32] transition-colors"></div>
-              <h2 className="text-4xl font-black text-[#1B5E20] mb-3 group-hover:text-green-700 transition-colors uppercase tracking-tight">{l.label}</h2>
-              <p className="text-gray-500 font-black uppercase tracking-widest text-xs opacity-60">{l.sub}</p>
+              <h2 className="text-3xl md:text-4xl font-black text-[#1B5E20] mb-3 group-hover:text-green-700 transition-colors uppercase tracking-tight">{l.label}</h2>
+              <p className="text-gray-500 font-black uppercase tracking-widest text-[10px] md:text-xs opacity-60">{l.sub}</p>
             </button>
           ))}
         </div>
@@ -143,7 +141,7 @@ const Header: React.FC<{
           )}
 
           {/* Right Side */}
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 md:gap-4">
             {/* Mobile Menu Button */}
             {user && (
               <button
@@ -165,7 +163,7 @@ const Header: React.FC<{
                   >
                     <span className="text-lg">☁</span>
                     <span className="uppercase tracking-wider">
-                      {getDisplayLocation(user)}: {getWeatherDisplay()}
+                      {getDisplayLocation(activeFarm)}: {getWeatherDisplay()}
                     </span>
                   </button>
                   <button
@@ -194,7 +192,7 @@ const Header: React.FC<{
 
             {user ? (
               <div className="relative group">
-                <button className="flex items-center gap-3 bg-white/5 border border-white/20 px-4 py-2 hover:bg-white/10 transition-colors rounded-xl">
+                <button className="flex items-center gap-2 md:gap-3 bg-white/5 border border-white/20 px-3 py-2 md:px-4 md:py-2 hover:bg-white/10 transition-colors rounded-xl">
                   <div className="w-8 h-8 bg-white flex items-center justify-center text-[#1B5E20] font-bold text-sm rounded-full">
                     {user.name && user.name.charAt(0).toUpperCase()}
                   </div>
@@ -206,7 +204,7 @@ const Header: React.FC<{
                 <div className="absolute right-0 top-full mt-2 w-64 bg-white border-2 border-[#1B5E20] shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all z-50 rounded-xl overflow-hidden">
                   {/* Farm Switcher */}
                   <div className="px-4 py-3 bg-gray-50 border-b border-gray-100">
-                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">Switch Farm</p>
+                    <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-2">{t.switchFarm}</p>
                     <div className="space-y-1">
                       {farms.map((f, i) => (
                         <button
@@ -214,7 +212,7 @@ const Header: React.FC<{
                           onClick={() => setActiveFarm(f)}
                           className={`w-full text-left px-3 py-2 rounded-lg text-sm font-bold transition-all ${activeFarm?.nickname === f.nickname ? 'bg-[#1B5E20] text-white' : 'text-gray-700 hover:bg-green-50'}`}
                         >
-                          {f.nickname || `Farm ${i + 1}`}
+                          {f.nickname || `${t.step} ${i + 1}`}
                         </button>
                       ))}
                       <Link
@@ -227,7 +225,7 @@ const Header: React.FC<{
                   </div>
 
                   <Link to="/profile/edit" className="flex items-center gap-3 w-full px-5 py-4 text-sm font-bold text-[#1B5E20] hover:bg-green-50 transition-colors border-b border-gray-100">
-                    <Settings size={16} /> Edit Profile
+                    <Settings size={16} /> {t.editProfile}
                   </Link>
                   <button
                     onClick={logout}
@@ -280,7 +278,7 @@ const Header: React.FC<{
                   onClick={() => setIsMobileMenuOpen(false)}
                   className="flex items-center gap-3 px-4 py-3 text-sm font-bold text-white/80 hover:bg-white/10 rounded-lg"
                 >
-                  <Settings size={18} /> Edit Profile
+                  <Settings size={18} /> {t.editProfile}
                 </Link>
                 <button
                   onClick={() => {
@@ -385,7 +383,7 @@ const LoginFlow: React.FC<{ onLogin: (phone: string, password: string) => void; 
 
                 <div className="animate-in fade-in slide-in-from-right-4 duration-500">
                   <label className={labelClasses}>{t.password} <span className="text-xs font-bold text-gray-400">{t.pinHint}</span></label>
-                  <div className="flex gap-2 justify-between">
+                  <div className="flex gap-1 md:gap-2 justify-between">
                     {Array(6).fill(0).map((_, i) => (
                       <input
                         key={i}
@@ -452,7 +450,7 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
     password: '', confirmPassword: ''
   });
   const [signupFarms, setSignupFarms] = useState<Farm[]>([
-    { nickname: 'Home Farm', landType: 'Irrigated', waterResource: 'Borewell', soilType: 'Black', landSize: '', unit: 'Acre', crops: [], state: '', district: '', village: '' }
+    { nickname: t.signupFlow.defaultFarmName, landType: 'Irrigated', waterResource: 'Borewell', soilType: 'Black', landSize: '', unit: 'Acre', crops: [], state: '', district: '', village: '' }
   ]);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -502,7 +500,7 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
   const handleBack = () => setStep(prev => prev - 1);
 
   const addFarm = () => {
-    setSignupFarms(prev => [...prev, { nickname: `Farm ${prev.length + 1}`, landType: 'Irrigated', waterResource: 'Borewell', soilType: 'Black', landSize: '', unit: 'Acre', crops: [], state: '', district: '', village: '' }]);
+    setSignupFarms(prev => [...prev, { nickname: `${t.signupFlow.step} ${prev.length + 1}`, landType: 'Irrigated', waterResource: 'Borewell', soilType: 'Black', landSize: '', unit: 'Acre', crops: [], state: '', district: '', village: '' }]);
     setCustomCropInputs(prev => [...prev, '']);
   };
 
@@ -643,12 +641,12 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                         <label className={labelClasses}>{t.signupFlow.fullName} *</label>
                         <input required placeholder={t.signupFlow.placeholders.fullName} className={inputClasses} value={formData.name} onChange={e => setFormData({ ...formData, name: e.target.value })} />
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex flex-col justify-end">
                           <label className={labelClasses}>{t.signupFlow.age} *</label>
                           <input required type="number" min={18} max={100} placeholder="18–100" className={inputClasses} value={formData.age} onChange={e => setFormData({ ...formData, age: e.target.value })} />
                         </div>
-                        <div>
+                        <div className="flex flex-col justify-end">
                           <label className={labelClasses}>{t.signupFlow.gender} *</label>
                           <select required className={inputClasses} value={formData.gender} onChange={e => setFormData({ ...formData, gender: e.target.value })}>
                             <option value="male">{t.signupFlow.options.gender.male}</option>
@@ -661,8 +659,8 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                         <label className={labelClasses}>{t.signupFlow.phone} *</label>
                         <input required placeholder={t.signupFlow.placeholders.phone} type="text" inputMode="numeric" className={inputClasses} value={formData.phone} onChange={e => setFormData({ ...formData, phone: e.target.value.replace(/\D/g, '').slice(0, 10) })} />
                       </div>
-                      <div className="grid grid-cols-2 gap-4">
-                        <div>
+                      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div className="flex flex-col justify-end">
                           <label className={labelClasses}>{t.signupFlow.language} *</label>
                           <select required className={inputClasses} value={formData.language_choice} onChange={e => {
                             const newLang = e.target.value as any;
@@ -674,7 +672,7 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                             <option value="MR">मराठी (Marathi)</option>
                           </select>
                         </div>
-                        <div>
+                        <div className="flex flex-col justify-end">
                           <label className={labelClasses}>{t.signupFlow.experienceYears} *</label>
                           <input required type="text" inputMode="numeric" placeholder="0" className={inputClasses} value={formData.experience_years || ''} onChange={e => {
                             const val = e.target.value.replace(/\D/g, '');
@@ -685,7 +683,7 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                       {/* 6-Box PIN */}
                       <div>
                         <label className={labelClasses}>{t.signupFlow.password} * <span className="text-xs font-bold text-gray-400">{t.pinHint}</span></label>
-                        <div className="flex gap-2 justify-between">
+                        <div className="flex gap-1 md:gap-2 justify-between">
                           {Array(6).fill(0).map((_, i) => (
                             <input
                               key={i}
@@ -704,7 +702,7 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                       </div>
                       <div>
                         <label className={labelClasses}>{t.signupFlow.confirmPassword} *</label>
-                        <div className="flex gap-2 justify-between">
+                        <div className="flex gap-1 md:gap-2 justify-between">
                           {Array(6).fill(0).map((_, i) => (
                             <input
                               key={i}
@@ -765,12 +763,12 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                                 {t.signupFlow.options.states.map(s => <option key={s} value={s}>{s}</option>)}
                               </select>
                             </div>
-                            <div className="grid grid-cols-2 gap-3">
-                              <div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                              <div className="flex flex-col justify-end">
                                 <label className={labelClasses}>{t.district} *</label>
                                 <input required placeholder={t.signupFlow.placeholders.district} className={inputClasses} value={farm.district || ''} onChange={e => updateFarm(index, 'district', e.target.value)} />
                               </div>
-                              <div>
+                              <div className="flex flex-col justify-end">
                                 <label className={labelClasses}>{t.village}</label>
                                 <input placeholder={t.signupFlow.placeholders.village} className={inputClasses} value={farm.village || ''} onChange={e => updateFarm(index, 'village', e.target.value)} />
                               </div>
@@ -780,20 +778,20 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
 
                         {/* Land & Water */}
                         <div className="pt-2 border-t border-gray-100">
-                          <div className="grid grid-cols-2 gap-4">
-                            <div>
+                          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="flex flex-col justify-end">
                               <label className={labelClasses}>{t.landType}</label>
                               <select className={inputClasses} value={farm.landType} onChange={e => updateFarm(index, 'landType', e.target.value)}>
-                                <option value="Irrigated">{t.irrigated}</option>
-                                <option value="Rainfed">{t.rainfed}</option>
-                                <option value="Semi-Irrigated">{language === 'HI' ? 'अर्द्ध-सिंचित' : language === 'MR' ? 'अर्ध-ओलिताखालील' : 'Semi-Irrigated'}</option>
-                                <option value="Organic Certified">{language === 'HI' ? 'जैविक प्रमाणित' : language === 'MR' ? 'सेंद्रिय प्रमाणित' : 'Organic Certified'}</option>
-                                <option value="Greenhouse">{language === 'HI' ? 'ग्रीनहाउस' : language === 'MR' ? 'ग्रीनहाउस' : 'Greenhouse'}</option>
-                                <option value="Polyhouse">{language === 'HI' ? 'पॉलीहाउस' : language === 'MR' ? 'पॉलीहाउस' : 'Polyhouse'}</option>
-                                <option value="Mixed">{t.mixed}</option>
+                                <option value="Irrigated">{t.landTypes.irrigated}</option>
+                                <option value="Rainfed">{t.landTypes.rainfed}</option>
+                                <option value="Semi-Irrigated">{t.landTypes.semiIrrigated}</option>
+                                <option value="Organic Certified">{t.landTypes.organicCertified}</option>
+                                <option value="Greenhouse">{t.landTypes.greenhouse}</option>
+                                <option value="Polyhouse">{t.landTypes.polyhouse}</option>
+                                <option value="Mixed">{t.landTypes.mixed}</option>
                               </select>
                             </div>
-                            <div>
+                            <div className="flex flex-col justify-end">
                               <label className={labelClasses}>{t.signupFlow.waterAvailabilityTitle}</label>
                               <select className={inputClasses} value={farm.waterResource} onChange={e => updateFarm(index, 'waterResource', e.target.value)}>
                                 <option value="Borewell">{t.signupFlow.options.waterAvailability.borewell}</option>
@@ -810,12 +808,12 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                         </div>
 
                         {/* Land Size + Soil Type */}
-                        <div className="grid grid-cols-2 gap-4">
-                          <div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                          <div className="flex flex-col justify-end">
                             <label className={labelClasses}>{t.landSizeAcres || 'Land Size (Acres) *'}</label>
                             <input required type="number" min="0" step="0.1" placeholder="e.g. 2.5" className={inputClasses} value={farm.landSize} onChange={e => updateFarm(index, 'landSize', e.target.value)} />
                           </div>
-                          <div>
+                          <div className="flex flex-col justify-end">
                             <label className={labelClasses}>{t.soilType}</label>
                             <select className={inputClasses} value={farm.soilType || 'black'} onChange={e => updateFarm(index, 'soilType', e.target.value)}>
                               <option value="black">{t.signupFlow.options.soilType.black}</option>
@@ -854,7 +852,7 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                           <div className="flex gap-2 mt-2">
                             <input
                               type="text"
-                              placeholder="Add custom crop..."
+                              placeholder={t.customCropPlaceholder}
                               className={`${inputClasses} text-sm py-2`}
                               value={customCropInputs[index] || ''}
                               onChange={e => setCustomCropInputs(prev => { const n = [...prev]; n[index] = e.target.value; return n; })}
@@ -867,7 +865,7 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
                             >+</button>
                           </div>
                           {(farm.crops && farm.crops.length > 0) && (
-                            <p className="text-xs text-gray-500 mt-2 font-bold">Selected: {farm.crops.join(', ')}</p>
+                            <p className="text-xs text-gray-500 mt-2 font-bold">{t.common.selected}: {farm.crops.join(', ')}</p>
                           )}
                         </div>
                       </div>
@@ -909,7 +907,7 @@ const SignupFlow: React.FC<{ onSignup: (p: UserProfile, password?: string) => vo
 
 const AppContent: React.FC = () => {
   const { setLanguage, hasSelectedLanguage, t, language } = useLanguage();
-  const { setFarms, setActiveFarm } = useFarm();
+  const { setFarms, setActiveFarm, activeFarm } = useFarm();
   const location = useLocation();
 
   const [user, setUser] = useState<UserProfile | null>(null);
@@ -937,7 +935,8 @@ const AppContent: React.FC = () => {
             setUser(profile);
             setFarms(profile.farms || []);
             if (profile.farms && profile.farms.length > 0) setActiveFarm(profile.farms[0]);
-            fetchWeather(getBestLocation(profile));
+            // Removed direct fetchWeather here as the useEffect below will handle it when activeFarm is set
+
 
             // Mandatory Language Sync: If user has a preference, sync it global state
             if (profile.language && profile.language !== language) {
@@ -959,6 +958,12 @@ const AppContent: React.FC = () => {
     };
   }, []);
 
+  useEffect(() => {
+    if (activeFarm) {
+      fetchWeather(getBestLocation(activeFarm));
+    }
+  }, [activeFarm]);
+
   const fetchWeather = async (location: string) => {
     if (!location) return;
     setWeatherLoading(true);
@@ -976,14 +981,14 @@ const AppContent: React.FC = () => {
 
   const handleToggleWeather = () => {
     setIsWeatherOpen(true);
-    if (!weatherData && user) {
-      fetchWeather(getBestLocation(user));
+    if (!weatherData && activeFarm) {
+      fetchWeather(getBestLocation(activeFarm));
     }
   };
 
   const handleRefreshWeather = () => {
-    if (user) {
-      fetchWeather(getBestLocation(user));
+    if (activeFarm) {
+      fetchWeather(getBestLocation(activeFarm));
     }
   };
 
@@ -1052,7 +1057,7 @@ const AppContent: React.FC = () => {
             onClose={() => setIsWeatherOpen(false)}
             data={weatherData}
             loading={weatherLoading}
-            location={getBestLocation(user)}
+            location={getBestLocation(activeFarm)}
           />
 
           <Routes>

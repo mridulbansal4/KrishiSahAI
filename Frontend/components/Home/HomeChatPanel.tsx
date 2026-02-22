@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Send, ArrowRight } from 'lucide-react';
+import { Send } from 'lucide-react';
+import { useLanguage } from '../../src/context/LanguageContext';
 
 const HomeChatPanel: React.FC = () => {
+    const { t } = useLanguage();
     const navigate = useNavigate();
     const [input, setInput] = useState('');
 
@@ -23,10 +25,10 @@ const HomeChatPanel: React.FC = () => {
             {/* Header Area */}
             <div className="p-4 md:p-6 bg-deep-green/5 border-b border-deep-green/10">
                 <h2 className="text-2xl md:text-3xl font-extrabold text-deep-green tracking-tight leading-none">
-                    Ask SahAI
+                    {t.homeChat.title}
                 </h2>
                 <p className="text-sm md:text-md text-deep-green/80 font-medium mt-1">
-                    Ask anything about your farm.
+                    {t.homeChat.subtitle}
                 </p>
             </div>
 
@@ -36,7 +38,7 @@ const HomeChatPanel: React.FC = () => {
                     <div className="flex justify-start">
                         <div className="bg-white border border-deep-green/20 p-3 md:p-4 max-w-[90%] md:max-w-[85%] rounded-2xl rounded-tl-none">
                             <p className="text-text-primary text-xs md:text-sm font-medium leading-relaxed">
-                                Namaste! I am your AI Agriculture Assistant. How can I help you increase your harvest today?
+                                {t.homeChat.welcome}
                             </p>
                         </div>
                     </div>
@@ -51,7 +53,7 @@ const HomeChatPanel: React.FC = () => {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         onKeyDown={handleKeyDown}
-                        placeholder="Type question..."
+                        placeholder={t.homeChat.placeholder}
                         className="flex-1 p-3 md:p-4 bg-gray-50 text-text-primary placeholder:text-gray-400 focus:outline-none font-medium text-base md:text-lg border-2 border-gray-200 focus:border-deep-green transition-all rounded-xl"
                     />
                     <button

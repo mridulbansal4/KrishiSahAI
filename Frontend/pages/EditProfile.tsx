@@ -198,11 +198,11 @@ const EditProfile: React.FC = () => {
                                 {t.signupFlow.personalInfo}
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                <div>
+                                <div className="flex flex-col justify-end">
                                     <label className={labelClasses}>{t.signupFlow.age}</label>
                                     <input type="number" name="age" value={formData.age} onChange={handleChange} className={inputClasses} required />
                                 </div>
-                                <div>
+                                <div className="flex flex-col justify-end">
                                     <label className={labelClasses}>{t.signupFlow.gender}</label>
                                     <select name="gender" value={formData.gender} onChange={handleChange} className={inputClasses} required>
                                         <option value="male">{t.signupFlow.options.gender.male}</option>
@@ -210,7 +210,7 @@ const EditProfile: React.FC = () => {
                                         <option value="other">{t.signupFlow.options.gender.other}</option>
                                     </select>
                                 </div>
-                                <div>
+                                <div className="flex flex-col justify-end">
                                     <label className={labelClasses}>{t.signupFlow.experienceYears}</label>
                                     <input type="text" inputMode="numeric" name="experience_years" value={formData.experience_years || ''} onChange={handleChange} className={inputClasses} placeholder="0" required />
                                 </div>
@@ -226,15 +226,15 @@ const EditProfile: React.FC = () => {
                                 {t.personalInfo}
                             </h2>
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                <div>
+                                <div className="flex flex-col justify-end">
                                     <label className={labelClasses}>{t.fullName}</label>
                                     <input name="name" value={formData.name} onChange={handleChange} className={inputClasses} required />
                                 </div>
-                                <div>
+                                <div className="flex flex-col justify-end">
                                     <label className={labelClasses}>{t.phoneNumber}</label>
                                     <input name="phone" value={formData.phone} onChange={handleChange} className={inputClasses} required />
                                 </div>
-                                <div className="md:col-span-2">
+                                <div className="md:col-span-2 flex flex-col justify-end">
                                     <label className={labelClasses}>{t.email} ({t.other})</label>
                                     <input name="email" value={formData.email} onChange={handleChange} className={inputClasses} />
                                 </div>
@@ -277,24 +277,24 @@ const EditProfile: React.FC = () => {
 
                                             {/* Farm Location */}
                                             <div className="md:col-span-2 grid grid-cols-1 md:grid-cols-3 gap-6 p-4 bg-white/50 rounded-2xl border border-dashed border-green-100">
-                                                <div>
+                                                <div className="flex flex-col justify-end">
                                                     <label className={labelClasses}>{t.signupFlow.state}</label>
                                                     <select className={inputClasses} value={farm.state || ''} onChange={e => updateFarm(index, 'state', e.target.value)} required>
                                                         <option value="">{t.selectState}</option>
                                                         {t.signupFlow.options.states.map(s => <option key={s} value={s}>{s}</option>)}
                                                     </select>
                                                 </div>
-                                                <div>
+                                                <div className="flex flex-col justify-end">
                                                     <label className={labelClasses}>{t.district}</label>
                                                     <input placeholder={t.signupFlow.placeholders.district} className={inputClasses} value={farm.district || ''} onChange={e => updateFarm(index, 'district', e.target.value)} required />
                                                 </div>
-                                                <div>
+                                                <div className="flex flex-col justify-end">
                                                     <label className={labelClasses}>{t.village}</label>
                                                     <input placeholder={t.signupFlow.placeholders.village} className={inputClasses} value={farm.village || ''} onChange={e => updateFarm(index, 'village', e.target.value)} />
                                                 </div>
                                             </div>
 
-                                            <div>
+                                            <div className="flex flex-col justify-end">
                                                 <label className={labelClasses}>{t.landType}</label>
                                                 <select className={inputClasses} value={farm.landType} onChange={e => updateFarm(index, 'landType', e.target.value)}>
                                                     <option value="Irrigated">{t.irrigated}</option>
@@ -306,7 +306,7 @@ const EditProfile: React.FC = () => {
                                                     <option value="Mixed">{t.mixed}</option>
                                                 </select>
                                             </div>
-                                            <div>
+                                            <div className="flex flex-col justify-end">
                                                 <label className={labelClasses}>{t.signupFlow.waterAvailabilityTitle}</label>
                                                 <select className={inputClasses} value={farm.waterResource} onChange={e => updateFarm(index, 'waterResource', e.target.value)}>
                                                     <option value="Borewell">{t.signupFlow.options.waterAvailability.borewell}</option>
@@ -321,12 +321,12 @@ const EditProfile: React.FC = () => {
                                             </div>
 
                                             {/* Land Size + Soil Type */}
-                                            <div className="grid grid-cols-2 gap-4">
-                                                <div>
+                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                                <div className="flex flex-col justify-end">
                                                     <label className={labelClasses}>{t.landSizeAcres || 'Land Size (Acres) *'}</label>
                                                     <input required type="number" min="0" step="0.1" placeholder="e.g. 2.5" className={inputClasses} value={farm.landSize} onChange={e => updateFarm(index, 'landSize', e.target.value)} />
                                                 </div>
-                                                <div>
+                                                <div className="flex flex-col justify-end">
                                                     <label className={labelClasses}>{t.soilType}</label>
                                                     <select className={inputClasses} value={farm.soilType || 'black'} onChange={e => updateFarm(index, 'soilType', e.target.value)}>
                                                         <option value="black">{t.signupFlow.options.soilType.black}</option>

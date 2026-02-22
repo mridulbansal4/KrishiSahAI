@@ -1,5 +1,6 @@
 import React from 'react';
 import { X, AlertTriangle } from 'lucide-react';
+import { useLanguage } from '../src/context/LanguageContext';
 
 interface DeleteConfirmationModalProps {
     isOpen: boolean;
@@ -16,6 +17,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
     chatTitle,
     isDeleting
 }) => {
+    const { t } = useLanguage();
     if (!isOpen) return null;
 
     const handleBackdropClick = (e: React.MouseEvent) => {
@@ -47,7 +49,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
                             <AlertTriangle className="w-6 h-6 text-red-600" />
                         </div>
                         <h2 id="delete-modal-title" className="text-2xl font-bold text-[#1E1E1E]">
-                            Delete Chat
+                            {t.chat.deleteChat}
                         </h2>
                     </div>
                     {!isDeleting && (
@@ -64,11 +66,11 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
                 {/* Content */}
                 <div className="mb-8">
                     <p className="text-[#555555] text-base leading-relaxed mb-4">
-                        Are you sure you want to permanently delete this chat?
+                        {t.chat.confirmDelete}
                     </p>
                     <div className="bg-[#FAFAF7] border border-[#E6E6E6] rounded-xl p-4">
                         <p className="text-sm font-semibold text-[#1E1E1E] mb-1">
-                            Chat Title:
+                            {t.chat.chatTitle}
                         </p>
                         <p className="text-sm text-[#555555] truncate">
                             {chatTitle}
@@ -76,7 +78,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
                     </div>
                     <p className="text-sm text-red-600 font-medium mt-4 flex items-center gap-2">
                         <AlertTriangle className="w-4 h-4" />
-                        This action cannot be undone. All messages will be permanently deleted.
+                        {t.chat.undoneWarning}
                     </p>
                 </div>
 
@@ -87,7 +89,7 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
                         disabled={isDeleting}
                         className="flex-1 py-3 px-4 bg-[#FAFAF7] border border-[#E6E6E6] text-[#555555] rounded-xl font-bold hover:bg-[#E6E6E6] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        Cancel
+                        {t.common?.cancel || 'Cancel'}
                     </button>
                     <button
                         onClick={onConfirm}
@@ -97,10 +99,10 @@ export const DeleteConfirmationModal: React.FC<DeleteConfirmationModalProps> = (
                         {isDeleting ? (
                             <>
                                 <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
-                                Deleting...
+                                {t.chat.deleting}
                             </>
                         ) : (
-                            'Delete'
+                            t.chat.delete
                         )}
                     </button>
                 </div>
