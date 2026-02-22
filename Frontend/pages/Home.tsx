@@ -148,10 +148,10 @@ const Home: React.FC = () => {
                     <span className="opacity-70 uppercase tracking-widest text-[10px] md:text-xs">{t.activeFarm || 'Active Farm:'}</span>
                     <span className="text-white bg-white/20 px-3 py-1 rounded-full border border-white/10 shadow-inner">{activeFarm?.nickname || 'Default'}</span>
                 </div>
-                <div className="flex items-center gap-3 flex-wrap">
-                    <span className="opacity-70 uppercase tracking-widest text-[10px] md:text-xs">{t.currentCrop || 'Current Crop:'}</span>
+                <div className="flex items-center gap-2 min-w-0 flex-1">
+                    <span className="opacity-70 uppercase tracking-widest text-[10px] md:text-xs shrink-0">{t.currentCrop || 'Current Crop:'}</span>
                     {activeFarm?.crops?.length ? (
-                        <div className="flex gap-1 bg-black/20 rounded-full p-1 border border-black/10">
+                        <div className="flex gap-1 bg-black/20 rounded-full p-1 border border-black/10 overflow-x-auto scrollbar-none flex-nowrap min-w-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
                             {activeFarm.crops.map((crop) => (
                                 <button
                                     key={crop}

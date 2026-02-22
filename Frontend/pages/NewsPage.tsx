@@ -42,9 +42,8 @@ const NewsPage: React.FC = () => {
                 const uid = auth.currentUser.uid;
                 data = await api.get(`/news/${uid}`);
             } else {
-                // General news - no authentication required
-                const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/news/general`);
-                data = await response.json();
+                // General news - use shared api service so BASE_URL is consistent (no double /api/ prefix)
+                data = await api.get('/news/general');
             }
 
             if (data.success) {
