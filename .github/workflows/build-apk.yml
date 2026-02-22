@@ -26,10 +26,21 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
 
-      - name: Verify Manifest URL
+      - name: Verify and Fix Manifest URL
+        id: fix_url
         run: |
-          echo "Checking if manifest is reachable: ${{ github.event.inputs.manifest_url }}"
-          curl -f -I "${{ github.event.inputs.manifest_url }}" || (echo "ERROR: Manifest URL is not reachable from GitHub. Ensure your Cloudflare Tunnel is running and accessible." && exit 1)
+          URL="${{ github.event.inputs.manifest_url }}"
+          # Remove trailing slash if present
+          URL="${URL%/}"
+          # If URL doesn't end with .webmanifest or .json, append /manifest.webmanifest
+          if [[ ! "$URL" =~ \.(webmanifest|json)$ ]]; then
+            URL="$URL/manifest.webmanifest"
+          fi
+          echo "Corrected Manifest URL: $URL"
+          echo "url=$URL" >> $GITHUB_OUTPUT
+          
+          # Check reachability with a browser-like User-Agent to avoid 403 Forbidden
+          curl -f -I -H "User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" "$URL" || (echo "ERROR: Manifest URL is not reachable from GitHub. Ensure your Cloudflare Tunnel is running and that you can open $URL in your computer's browser." && exit 1)
 
       - name: Install Bubblewrap
         run: sudo npm install -g @bubblewrap/cli
@@ -44,17 +55,13 @@ jobs:
         run: |
           mkdir android-app
           cd android-app
-          # Bubblewrap init can be tricky with interactive prompts. 
-          # We use yes to accept all defaults and suppress standard output except errors.
-          yes "" | bubblewrap init --manifest="${{ github.event.inputs.manifest_url }}" --confirmResNames
+          # Use corrected URL from the fix_url step
+          yes "" | bubblewrap init --manifest="${{ steps.fix_url.outputs.url }}" --confirmResNames
 
       - name: Build APK
         run: |
           cd android-app
           # We need to provide dummy answers for signing key generation
-          # 1. Key store password
-          # 2. Key password
-          # 3. Name, unit, org, etc.
           printf "password\npassword\nJohn Doe\nIT\nKrishiSahAI\nBaramati\nMaharashtra\nIN\nyes\n" | bubblewrap build
           
       - name: Find APK
