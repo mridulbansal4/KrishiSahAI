@@ -39,9 +39,10 @@ const Home: React.FC = () => {
     // Initial crop selection
     useEffect(() => {
         if (activeFarm?.crops && activeFarm.crops.length > 0) {
+            const uniqueCrops = [...new Set(activeFarm.crops)];
             // If the selected crop is not in the active farm's crops (or hasn't been set), select the first one
-            if (!selectedCrop || !activeFarm.crops.includes(selectedCrop)) {
-                setSelectedCrop(activeFarm.crops[0]);
+            if (!selectedCrop || !uniqueCrops.includes(selectedCrop)) {
+                setSelectedCrop(uniqueCrops[0]);
             }
         } else {
             setSelectedCrop(null);
@@ -152,7 +153,7 @@ const Home: React.FC = () => {
                     <span className="opacity-70 uppercase tracking-widest text-[10px] md:text-xs shrink-0">{t.currentCrop || 'Current Crop:'}</span>
                     {activeFarm?.crops?.length ? (
                         <div className="flex gap-1 bg-black/20 rounded-full p-1 border border-black/10 overflow-x-auto scrollbar-none flex-nowrap min-w-0" style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}>
-                            {activeFarm.crops.map((crop) => (
+                            {[...new Set(activeFarm.crops)].map((crop) => (
                                 <button
                                     key={crop}
                                     onClick={() => setSelectedCrop(crop)}
